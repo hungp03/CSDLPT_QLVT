@@ -1,0 +1,20 @@
+*****View lấy danh sách phân mảnh*****
+SELECT PUBS.description AS TENCN, SUBS.subscriber_server AS TENSERVER
+FROM dbo.sysmergepublications AS PUBS INNER JOIN
+dbo.sysmergesubscriptions AS SUBS ON PUBS.pubid = SUBS.pubid AND PUBS.publisher <> SUBS.subscriber_server
+WHERE (PUBS.description <> N'TRA CỨU')
+
+*****SP lấy thông tin user khi đăng nhập
+CREATE PROC [dbo].[SP_LaythongtinNV]
+	@TENLOGIN NVARCHAR( 100)
+AS
+	DECLARE @UID INT
+	DECLARE @MANV NVARCHAR(100)
+	SELECT @UID= uid , @MANV= NAME FROM sys.sysusers 
+  	WHERE sid = SUSER_SID(@TENLOGIN)
+
+	SELECT  MAGV= @MANV, 
+       		HOTEN = (SELECT HO+ ' '+TEN FROM dbo.NHANVIEN WHERE MANV=@MANV ), 
+       		TENNHOM=NAME
+  	FROM sys.sysusers
+    	WHERE UID = (SELECT groupuid FROM sys.sysmembers WHERE memberuid=@uid)

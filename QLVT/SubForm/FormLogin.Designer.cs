@@ -28,25 +28,26 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.comboBox1 = new System.Windows.Forms.ComboBox();
+            this.cbxChiNhanh = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.textBox1 = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
-            this.textBox2 = new System.Windows.Forms.TextBox();
-            this.button2 = new System.Windows.Forms.Button();
+            this.txtTaiKhoan = new System.Windows.Forms.TextBox();
+            this.btnDangNhap = new System.Windows.Forms.Button();
+            this.txtMatKhau = new System.Windows.Forms.TextBox();
+            this.btnThoat = new System.Windows.Forms.Button();
             this.label4 = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
-            // comboBox1
+            // cbxChiNhanh
             // 
-            this.comboBox1.FormattingEnabled = true;
-            this.comboBox1.Location = new System.Drawing.Point(220, 104);
-            this.comboBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.comboBox1.Name = "comboBox1";
-            this.comboBox1.Size = new System.Drawing.Size(194, 22);
-            this.comboBox1.TabIndex = 0;
+            this.cbxChiNhanh.FormattingEnabled = true;
+            this.cbxChiNhanh.Location = new System.Drawing.Point(220, 104);
+            this.cbxChiNhanh.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.cbxChiNhanh.Name = "cbxChiNhanh";
+            this.cbxChiNhanh.Size = new System.Drawing.Size(194, 22);
+            this.cbxChiNhanh.TabIndex = 0;
+            this.cbxChiNhanh.SelectedIndexChanged += new System.EventHandler(this.cbxChiNhanh_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -78,46 +79,49 @@
             this.label3.TabIndex = 3;
             this.label3.Text = "MẬT KHẨU";
             // 
-            // textBox1
+            // txtTaiKhoan
             // 
-            this.textBox1.Location = new System.Drawing.Point(220, 144);
-            this.textBox1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(194, 22);
-            this.textBox1.TabIndex = 4;
+            this.txtTaiKhoan.Location = new System.Drawing.Point(220, 144);
+            this.txtTaiKhoan.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtTaiKhoan.Name = "txtTaiKhoan";
+            this.txtTaiKhoan.Size = new System.Drawing.Size(194, 22);
+            this.txtTaiKhoan.TabIndex = 4;
             // 
-            // button1
+            // btnDangNhap
             // 
-            this.button1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
-            this.button1.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(134, 266);
-            this.button1.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(108, 39);
-            this.button1.TabIndex = 5;
-            this.button1.Text = "ĐĂNG NHẬP";
-            this.button1.UseVisualStyleBackColor = false;
+            this.btnDangNhap.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(40)))), ((int)(((byte)(167)))), ((int)(((byte)(69)))));
+            this.btnDangNhap.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnDangNhap.ForeColor = System.Drawing.Color.White;
+            this.btnDangNhap.Location = new System.Drawing.Point(134, 266);
+            this.btnDangNhap.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnDangNhap.Name = "btnDangNhap";
+            this.btnDangNhap.Size = new System.Drawing.Size(108, 39);
+            this.btnDangNhap.TabIndex = 5;
+            this.btnDangNhap.Text = "ĐĂNG NHẬP";
+            this.btnDangNhap.UseVisualStyleBackColor = false;
+            this.btnDangNhap.Click += new System.EventHandler(this.btnDangNhap_Click);
             // 
-            // textBox2
+            // txtMatKhau
             // 
-            this.textBox2.Location = new System.Drawing.Point(220, 182);
-            this.textBox2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.textBox2.Name = "textBox2";
-            this.textBox2.Size = new System.Drawing.Size(194, 22);
-            this.textBox2.TabIndex = 6;
+            this.txtMatKhau.Location = new System.Drawing.Point(220, 182);
+            this.txtMatKhau.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.txtMatKhau.Name = "txtMatKhau";
+            this.txtMatKhau.Size = new System.Drawing.Size(194, 22);
+            this.txtMatKhau.TabIndex = 6;
+            this.txtMatKhau.UseSystemPasswordChar = true;
             // 
-            // button2
+            // btnThoat
             // 
-            this.button2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
-            this.button2.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.button2.Location = new System.Drawing.Point(323, 266);
-            this.button2.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
-            this.button2.Name = "button2";
-            this.button2.Size = new System.Drawing.Size(108, 39);
-            this.button2.TabIndex = 7;
-            this.button2.Text = "THOÁT";
-            this.button2.UseVisualStyleBackColor = false;
+            this.btnThoat.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(193)))), ((int)(((byte)(7)))));
+            this.btnThoat.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnThoat.Location = new System.Drawing.Point(323, 266);
+            this.btnThoat.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.btnThoat.Name = "btnThoat";
+            this.btnThoat.Size = new System.Drawing.Size(108, 39);
+            this.btnThoat.TabIndex = 7;
+            this.btnThoat.Text = "THOÁT";
+            this.btnThoat.UseVisualStyleBackColor = false;
+            this.btnThoat.Click += new System.EventHandler(this.btnThoat_Click);
             // 
             // label4
             // 
@@ -137,16 +141,18 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(570, 355);
             this.Controls.Add(this.label4);
-            this.Controls.Add(this.button2);
-            this.Controls.Add(this.textBox2);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox1);
+            this.Controls.Add(this.btnThoat);
+            this.Controls.Add(this.txtMatKhau);
+            this.Controls.Add(this.btnDangNhap);
+            this.Controls.Add(this.txtTaiKhoan);
             this.Controls.Add(this.label3);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Controls.Add(this.comboBox1);
+            this.Controls.Add(this.cbxChiNhanh);
             this.Font = new System.Drawing.Font("Tahoma", 9F);
+            this.IconOptions.LargeImage = global::QLVT.Properties.Resources.assignto_32x321;
             this.Margin = new System.Windows.Forms.Padding(4, 3, 4, 3);
+            this.MaximizeBox = false;
             this.Name = "FormLogin";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Đăng nhập";
@@ -158,14 +164,14 @@
 
         #endregion
 
-        private System.Windows.Forms.ComboBox comboBox1;
+        private System.Windows.Forms.ComboBox cbxChiNhanh;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.TextBox textBox1;
-        private System.Windows.Forms.Button button1;
-        private System.Windows.Forms.TextBox textBox2;
-        private System.Windows.Forms.Button button2;
+        private System.Windows.Forms.TextBox txtTaiKhoan;
+        private System.Windows.Forms.Button btnDangNhap;
+        private System.Windows.Forms.TextBox txtMatKhau;
+        private System.Windows.Forms.Button btnThoat;
         private System.Windows.Forms.Label label4;
     }
 }

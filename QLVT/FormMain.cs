@@ -1,5 +1,4 @@
 ﻿using DevExpress.XtraBars;
-using QLVT.SubForm;
 using System;
 using System.Windows.Forms;
 
@@ -114,5 +113,20 @@ namespace QLVT
             Program.mName = "";
             Program.mGroup = "";
         }
+
+        private void btnNhanVien_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = this.CheckExists(typeof(FormNhanVien));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormNhanVien form = new FormNhanVien();
+                form.Show();
+            }
+        }
+
     }
 }

@@ -10,7 +10,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace QLVT.SubForm
+namespace QLVT
 {
     public partial class FormLogin : DevExpress.XtraEditors.XtraForm
     {   

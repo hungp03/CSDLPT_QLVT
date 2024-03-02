@@ -1,4 +1,4 @@
-﻿namespace QLVT.SubForm
+﻿namespace QLVT
 {
     partial class FormLogin
     {

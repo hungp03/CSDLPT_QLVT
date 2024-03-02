@@ -1,6 +1,5 @@
 ﻿using DevExpress.Skins;
 using DevExpress.UserSkins;
-using QLVT.SubForm;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -23,7 +22,7 @@ namespace QLVT
 
         //Chuỗi kết nối về server
         public static string conStr = "";
-        public static string conPublisher = "Data Source=DESKTOP-53JQKSJ;Initial Catalog=QLVT_DATHANG;User ID=HTKN;Password=123456;TrustServerCertificate=True";
+        public static string conPublisher = "Data Source=DESKTOP-53JQKSJ\\HNG;Initial Catalog=QLVT_DATHANG;User ID=HTKN;Password=123456;TrustServerCertificate=True";
 
         //Tên server (phân mảnh) kết nối tới
         public static String servername = "";
@@ -56,6 +55,7 @@ namespace QLVT
         //Các form
         public static FormLogin formLogin;
         public static FormMain formMain;
+        public static FormNhanVien formNhanVien;
 
         /* Hàm ExecSqlDataReader thực hiện câu lệnh mà dữ liệu trả về chỉ dùng để xem
          * không thao tác, chỉnh sửa.
@@ -82,6 +82,43 @@ namespace QLVT
             }
         }
 
+        // Hàm thực hiện truy xuất dữ liệu, có thể CRUD thoải mái
+        public static DataTable ExecSqlDataTable(String strLenh)
+        {
+            DataTable dt = new DataTable();
+            if (Program.conn.State == ConnectionState.Closed)
+                Program.conn.Open();
+            SqlDataAdapter da = new SqlDataAdapter(strLenh, conn);
+            da.Fill(dt);
+            conn.Close();
+            return dt;
+        }
+
+        //Hàm cập nhật SP và không trả về dữ liệu
+        public static int ExecSqlNonQuery(String strLenh)
+        {
+            SqlCommand sqlCmd = new SqlCommand(strLenh, conn);
+            sqlCmd.CommandType = CommandType.Text;
+            sqlCmd.CommandTimeout = 300; //5p
+            if (conn.State == ConnectionState.Closed)
+            {
+                conn.Open();
+            }
+            try
+            {
+                sqlCmd.ExecuteNonQuery();
+                conn.Close();
+                return 0;
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Message.Contains("Error converting data type varchar to int"))
+                    MessageBox.Show("Bạn format Cell lại các cột dữ liệu");
+                else MessageBox.Show(ex.Message);
+                conn.Close();
+                return ex.State;
+            }
+        }
         //Hàm kết nối CSDL
         public static int connectDB()
         {

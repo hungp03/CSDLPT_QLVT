@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.ribbonControl1 = new DevExpress.XtraBars.Ribbon.RibbonControl();
             this.btnLogin = new DevExpress.XtraBars.BarButtonItem();
             this.btnDangXuat = new DevExpress.XtraBars.BarButtonItem();
@@ -40,8 +41,10 @@
             this.UID = new System.Windows.Forms.ToolStripStatusLabel();
             this.NAME = new System.Windows.Forms.ToolStripStatusLabel();
             this.GROUP = new System.Windows.Forms.ToolStripStatusLabel();
+            this.xtraTabbedMdiManager1 = new DevExpress.XtraTabbedMdi.XtraTabbedMdiManager(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xtraTabbedMdiManager1)).BeginInit();
             this.SuspendLayout();
             // 
             // ribbonControl1
@@ -62,7 +65,7 @@
             this.ribbonControl1.Pages.AddRange(new DevExpress.XtraBars.Ribbon.RibbonPage[] {
             this.ribbonPage1,
             this.ribbonPage2});
-            this.ribbonControl1.Size = new System.Drawing.Size(1022, 158);
+            this.ribbonControl1.Size = new System.Drawing.Size(1338, 158);
             // 
             // btnLogin
             // 
@@ -86,6 +89,7 @@
             // btnNhanVien
             // 
             this.btnNhanVien.Caption = "Nhân viên";
+            this.btnNhanVien.Enabled = false;
             this.btnNhanVien.Id = 8;
             this.btnNhanVien.ImageOptions.Image = global::QLVT.Properties.Resources.usergroup_16x16;
             this.btnNhanVien.ImageOptions.LargeImage = global::QLVT.Properties.Resources.usergroup_32x32;
@@ -124,9 +128,9 @@
             this.UID,
             this.NAME,
             this.GROUP});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 677);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 707);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1022, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1338, 22);
             this.statusStrip1.TabIndex = 3;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -150,15 +154,20 @@
             this.GROUP.Size = new System.Drawing.Size(40, 17);
             this.GROUP.Text = "Vai trò";
             // 
+            // xtraTabbedMdiManager1
+            // 
+            this.xtraTabbedMdiManager1.MdiParent = this;
+            // 
             // FormMain
             // 
             this.Appearance.Options.UseFont = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1022, 699);
+            this.ClientSize = new System.Drawing.Size(1338, 729);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.ribbonControl1);
             this.Font = new System.Drawing.Font("Tahoma", 11F);
+            this.IsMdiContainer = true;
             this.Margin = new System.Windows.Forms.Padding(5, 4, 5, 4);
             this.Name = "FormMain";
             this.Ribbon = this.ribbonControl1;
@@ -169,6 +178,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).EndInit();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.xtraTabbedMdiManager1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -188,6 +198,7 @@
         public System.Windows.Forms.ToolStripStatusLabel GROUP;
         private DevExpress.XtraBars.BarButtonItem btnDangXuat;
         private DevExpress.XtraBars.BarButtonItem btnNhanVien;
+        private DevExpress.XtraTabbedMdi.XtraTabbedMdiManager xtraTabbedMdiManager1;
     }
 }
 

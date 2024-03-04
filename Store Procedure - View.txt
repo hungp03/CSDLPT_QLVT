@@ -1,8 +1,13 @@
 *****View lấy danh sách phân mảnh*****
-SELECT PUBS.description AS TENCN, SUBS.subscriber_server AS TENSERVER
-FROM dbo.sysmergepublications AS PUBS INNER JOIN
-dbo.sysmergesubscriptions AS SUBS ON PUBS.pubid = SUBS.pubid AND PUBS.publisher <> SUBS.subscriber_server
-WHERE (PUBS.description <> N'TRA CỨU')
+CREATE VIEW [dbo].[V_DS_PHANMANH]
+AS
+
+SELECT  TENCN=PUBS.description, TENSERVER= subscriber_server
+   FROM dbo.sysmergepublications PUBS,  dbo.sysmergesubscriptions SUBS
+   WHERE PUBS.pubid= SUBS.PUBID  AND PUBS.publisher <> SUBS.subscriber_server
+   AND PUBS.description <> N'TRA CỨU'
+GO
+
 
 *****SP lấy thông tin user khi đăng nhập
 CREATE PROC [dbo].[SP_LaythongtinNV]
@@ -13,7 +18,7 @@ AS
 	SELECT @UID= uid , @MANV= NAME FROM sys.sysusers 
   	WHERE sid = SUSER_SID(@TENLOGIN)
 
-	SELECT  MAGV= @MANV, 
+	SELECT  MANV= @MANV, 
        		HOTEN = (SELECT HO+ ' '+TEN FROM dbo.NHANVIEN WHERE MANV=@MANV ), 
        		TENNHOM=NAME
   	FROM sys.sysusers

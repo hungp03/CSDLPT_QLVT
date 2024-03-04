@@ -1,5 +1,6 @@
 ﻿using DevExpress.XtraBars;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace QLVT
@@ -11,10 +12,19 @@ namespace QLVT
         {
             btnLogin.Enabled = false;
             btnDangXuat.Enabled = true;
+            btnNhanVien.Enabled = true;
+        }
+
+        //Dùng hàm này để delay 1s tránh việc máy không phản hồi kịp
+        private async void InitializeAsync()
+        {
+            await Task.Delay(1000); // Chờ 1 giây
+            btnLogin.PerformClick(); // Tự động bấm nút btnLogin
         }
         public FormMain()
         {
             InitializeComponent();
+            InitializeAsync();
         }
 
         //Check xem form đã có chưa, nếu chưa thì mới khởi tạo form
@@ -40,6 +50,7 @@ namespace QLVT
 
             btnLogin.Enabled = true;
             btnDangXuat.Enabled = false;
+            btnNhanVien.Enabled = false;
 
             Form f = this.CheckExists(typeof(FormLogin));
             if (f != null)
@@ -124,6 +135,7 @@ namespace QLVT
             else
             {
                 FormNhanVien form = new FormNhanVien();
+                form.MdiParent = this;
                 form.Show();
             }
         }

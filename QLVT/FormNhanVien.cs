@@ -22,14 +22,6 @@ namespace QLVT
         //Undo -> dùng để hoàn tác dữ liệu nếu lỡ có thao tác không mong muốn
         Stack undoStack = new Stack();
         
-        //Kiểm tra form đã có hay chưa
-        private Form CheckExists(Type ftype)
-        {
-            foreach (Form f in this.MdiChildren)
-                if (f.GetType() == ftype)
-                    return f;
-            return null;
-        }
         public FormNhanVien()
         {
             InitializeComponent();
@@ -63,13 +55,13 @@ namespace QLVT
             if (Program.mGroup == "CONGTY")
             {
                 cbxChiNhanh.Enabled = true;
-                this.barBtnThem.Enabled = false;
-                this.barBtnSua.Enabled = false;
-                this.barBtnLuu.Enabled = false;
-                this.barBtnChuyenCN.Enabled = false;
-                this.barBtnXoa.Enabled = false;
-                this.barBtnPhucHoi.Enabled = false;
-                this.panelNhapLieu.Enabled = false;
+                barBtnThem.Enabled = false;
+                barBtnSua.Enabled = false;
+                barBtnLuu.Enabled = false;
+                barBtnChuyenCN.Enabled = false;
+                barBtnXoa.Enabled = false;
+                barBtnPhucHoi.Enabled = false;
+                panelNhapLieu.Enabled = false;
             }
             
             //Phân quyền nhóm CHINHANH-USER có thể thao tác với dữ liệu
@@ -222,21 +214,21 @@ namespace QLVT
             {
                 //Đổ data từ DS vào GC
                 this.nhanVienTableAdapter.Connection.ConnectionString = Program.conStr;
-                this.nhanVienTableAdapter.Fill(this.dataSet1.NhanVien);
+                this.nhanVienTableAdapter.Fill(dataSet1.NhanVien);
             }
         }
 
         private void barButtonItem8_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            this.Close();
+            Close();
         }
         //Nút này có tác dụng đổ dữ liệu mới từ DS vào GC NhanVien
         private void barBtnLammoi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
             {
-                this.nhanVienTableAdapter.Fill(this.dataSet1.NhanVien);
-                this.nhanVienGridControl.Enabled = true;
+                nhanVienTableAdapter.Fill(dataSet1.NhanVien);
+                nhanVienGridControl.Enabled = true;
             }
             catch(Exception ex)
             {

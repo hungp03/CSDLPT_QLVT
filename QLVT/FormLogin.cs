@@ -133,7 +133,7 @@ namespace QLVT
             try
             {
                 Program.servername = cbxChiNhanh.SelectedValue.ToString();
-                Console.WriteLine(cbxChiNhanh.SelectedValue.ToString());
+                //Console.WriteLine(cbxChiNhanh.SelectedValue.ToString());
             }
             catch (Exception)
             {

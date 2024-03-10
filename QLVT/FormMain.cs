@@ -103,6 +103,7 @@ namespace QLVT
             logout();
             btnDangXuat.Enabled = false;
             btnLogin.Enabled = true;
+            btnNhanVien.Enabled = false;
 
             Form f = this.CheckExists(typeof(FormLogin));
             if (f != null)

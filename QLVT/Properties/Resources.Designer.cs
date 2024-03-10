@@ -263,6 +263,16 @@ namespace QLVT.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap close_16x164 {
+            get {
+                object obj = ResourceManager.GetObject("close_16x164", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap close_32x32 {
             get {
                 object obj = ResourceManager.GetObject("close_32x32", resourceCulture);
@@ -296,6 +306,16 @@ namespace QLVT.Properties {
         internal static System.Drawing.Bitmap close_32x323 {
             get {
                 object obj = ResourceManager.GetObject("close_32x323", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap close_32x324 {
+            get {
+                object obj = ResourceManager.GetObject("close_32x324", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
@@ -523,6 +543,26 @@ namespace QLVT.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap trash_16x162 {
+            get {
+                object obj = ResourceManager.GetObject("trash_16x162", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap trash_16x163 {
+            get {
+                object obj = ResourceManager.GetObject("trash_16x163", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap trash_32x32 {
             get {
                 object obj = ResourceManager.GetObject("trash_32x32", resourceCulture);
@@ -536,6 +576,26 @@ namespace QLVT.Properties {
         internal static System.Drawing.Bitmap trash_32x321 {
             get {
                 object obj = ResourceManager.GetObject("trash_32x321", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap trash_32x322 {
+            get {
+                object obj = ResourceManager.GetObject("trash_32x322", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap trash_32x323 {
+            get {
+                object obj = ResourceManager.GetObject("trash_32x323", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

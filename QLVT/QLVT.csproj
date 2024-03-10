@@ -94,6 +94,12 @@
     <Compile Include="FormNhanVien.Designer.cs">
       <DependentUpon>FormNhanVien.cs</DependentUpon>
     </Compile>
+    <Compile Include="SubForm\FormChuyenCN.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SubForm\FormChuyenCN.Designer.cs">
+      <DependentUpon>FormChuyenCN.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="FormMain.resx">
       <DependentUpon>FormMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -116,6 +122,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormNhanVien.resx">
       <DependentUpon>FormNhanVien.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SubForm\FormChuyenCN.resx">
+      <DependentUpon>FormChuyenCN.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="DataSet1.xsc">
@@ -220,9 +229,7 @@
   <ItemGroup>
     <None Include="Resources\chartsrotate_16x16.png" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="SubForm\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Resources\usergroup_32x32.png" />
   </ItemGroup>
@@ -303,6 +310,24 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\close_16x163.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trash_32x322.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trash_16x162.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trash_32x323.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\trash_16x163.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_32x324.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\close_16x164.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.

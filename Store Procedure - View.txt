@@ -9,7 +9,7 @@ SELECT  TENCN=PUBS.description, TENSERVER= subscriber_server
 GO
 
 
-*****SP lấy thông tin user khi đăng nhập
+*****SP lấy thông tin user khi đăng nhập******
 CREATE PROC [dbo].[SP_LaythongtinNV]
 	@TENLOGIN NVARCHAR( 100)
 AS
@@ -23,3 +23,28 @@ AS
        		TENNHOM=NAME
   	FROM sys.sysusers
     	WHERE UID = (SELECT groupuid FROM sys.sysmembers WHERE memberuid=@uid)
+
+
+*****SP kiểm tra nhân viên đã tồn tại chưa*****
+CREATE PROC SP_TracuuNV
+    @MANHANVIEN INT
+AS
+BEGIN
+    DECLARE @Result INT;
+
+    IF EXISTS (SELECT MANV FROM LINK2.QLVT_DATHANG.DBO.NHANVIEN AS NV WHERE NV.MANV = @MANHANVIEN)
+        SET @Result = 1;
+    ELSE
+        SET @Result = 0;
+
+    RETURN @Result;
+END;
+
+
+LINK2 là link từ site phân mảnh tới site tra cứu
+Trả về kết quả:
+declare @res int
+exec @res = SP_TracuuNV '1'
+select @res
+
+

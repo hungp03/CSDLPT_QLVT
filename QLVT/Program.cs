@@ -1,5 +1,6 @@
 ﻿using DevExpress.Skins;
 using DevExpress.UserSkins;
+using QLVT.SubForm;
 using System;
 using System.Collections.Generic;
 using System.Data;
@@ -30,6 +31,9 @@ namespace QLVT
         public static String mlogin = "";
         public static String password = "";
 
+        //Tên server (chi nhánh) còn lại
+        public static String otherServerName = "";
+
         //Remote login
         public static String database = "QLVT_DATHANG";
         public static String remotelogin = "HTKN";
@@ -56,6 +60,7 @@ namespace QLVT
         public static FormLogin formLogin;
         public static FormMain formMain;
         public static FormNhanVien formNhanVien;
+        public static FormChuyenCN formChuyenCN;
 
         /* Hàm ExecSqlDataReader thực hiện câu lệnh mà dữ liệu trả về chỉ dùng để xem
          * không thao tác, chỉnh sửa.
@@ -126,7 +131,7 @@ namespace QLVT
                 Program.conn.Close();
             try
             {
-                Console.WriteLine(Program.mlogin);
+                //Console.WriteLine(Program.mlogin);
                 Program.conStr = "Data Source=" + Program.servername + ";Initial Catalog=" +
                       Program.database + ";User ID=" +
                       Program.mlogin + ";password=" + Program.password;

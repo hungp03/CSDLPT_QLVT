@@ -7,7 +7,6 @@ namespace QLVT
 {
     public partial class FormMain : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        //Bật, tắt các nút
         public void EnableBtn()
         {
             btnLogin.Enabled = false;
@@ -15,11 +14,10 @@ namespace QLVT
             btnNhanVien.Enabled = true;
         }
 
-        //Dùng hàm này để delay 1s tránh việc máy không phản hồi kịp
         private async void InitializeAsync()
         {
-            await Task.Delay(1000); // Chờ 1 giây
-            btnLogin.PerformClick(); // Tự động bấm nút btnLogin
+            await Task.Delay(1000); 
+            btnLogin.PerformClick(); 
         }
         public FormMain()
         {
@@ -27,7 +25,6 @@ namespace QLVT
             InitializeAsync();
         }
 
-        //Check xem form đã có chưa, nếu chưa thì mới khởi tạo form
         private Form CheckExists(Type ftype) {
             foreach (Form f in this.MdiChildren) { 
             if (ftype == f.GetType())
@@ -38,7 +35,6 @@ namespace QLVT
             return null;
         }
 
-        //Đăng xuất
         private void logout()
         {
             foreach (Form f in this.MdiChildren)
@@ -60,7 +56,6 @@ namespace QLVT
             else
             {
                 FormLogin form = new FormLogin();
-                //form.MdiParent = this;
                 form.Show();
             }
 
@@ -116,7 +111,6 @@ namespace QLVT
                 form.Show();
             }
 
-            //Hiển thị thông tin ở góc màn hình
             Program.formMain.UID.Text = "Mã nhân viên";
             Program.formMain.NAME.Text = "Tên";
             Program.formMain.GROUP.Text = "Vai trò";

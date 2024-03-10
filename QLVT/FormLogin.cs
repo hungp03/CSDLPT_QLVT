@@ -15,23 +15,20 @@ namespace QLVT
     public partial class FormLogin : DevExpress.XtraEditors.XtraForm
     {   
         private SqlConnection conn = new SqlConnection();
-
-        //Hàm lấy danh sách phân mảnh (trừ phân mảnh tra cứu)
         private void getDSPhanManh(String cmd)
         {
-            //Kiểm tra trạng thái kết nối, nếu đóng thì mở lại
+
             if (conn.State == ConnectionState.Closed)
             {
                 conn.Open();
             }
-            //DataTable: lưu trữ dữ liệu dưới dạng Table
+
             DataTable dt = new DataTable();
-            //SqlDataAdapter dùng để lấy và ghi dữ liệu vào MSSQL, đổ dữ liệu vào DataTable, DataSet...
+
             SqlDataAdapter da = new SqlDataAdapter(cmd, conn);
-            //Đổ dữ liệu vào dt
+
             da.Fill(dt);
 
-            //Đóng kết nối
             conn.Close();
             Program.bindingSource.DataSource = dt;
 
@@ -70,7 +67,7 @@ namespace QLVT
             {
                 return;
             }
-            //Lấy danh sách phân mảnh (chi nhánh), lưu vào comboBox
+
             getDSPhanManh("select * from V_DS_PHANMANH");
             cbxChiNhanh.SelectedIndex = 0;
             Program.servername = cbxChiNhanh.SelectedValue.ToString();
@@ -80,7 +77,7 @@ namespace QLVT
 
         private void btnDangNhap_Click(object sender, EventArgs e)
         {
-            //Kiểm tra thông tin đã nhập hay chưa
+
             if (txtTaiKhoan.Text.Trim() == "" || txtMatKhau.Text.Trim() == "")
             {
                 MessageBox.Show("Tài khoản & mật khẩu không thể bỏ trống", "Thông Báo", MessageBoxButtons.OK);
@@ -98,13 +95,13 @@ namespace QLVT
             Program.passwordDN = Program.password;
 
 
-            //Lấy thông tin người dùng qua SP
+
             String statement = "EXEC SP_LaythongtinNV '" + Program.mlogin + "'";
             Program.myReader = Program.ExecSqlDataReader(statement);
             if (Program.myReader == null)
                 return;
             
-            //Đọc kết quả vào myReader
+
             Program.myReader.Read();
 
             Program.username = Program.myReader.GetString(0);
@@ -118,12 +115,11 @@ namespace QLVT
             Program.myReader.Close();
             Program.conn.Close();
 
-            //Hiển thị thông tin ở góc màn hình
+
             Program.formMain.UID.Text = "Mã nhân viên: " + Program.username;
             Program.formMain.NAME.Text = "Tên: " + Program.mName;
             Program.formMain.GROUP.Text = "Vai trò: " + Program.mGroup;
 
-            //Khi đăng nhập thành công, ẩn form này đi
             this.Visible = false;
             Program.formMain.EnableBtn();
         }
@@ -133,7 +129,6 @@ namespace QLVT
             try
             {
                 Program.servername = cbxChiNhanh.SelectedValue.ToString();
-                //Console.WriteLine(cbxChiNhanh.SelectedValue.ToString());
             }
             catch (Exception)
             {

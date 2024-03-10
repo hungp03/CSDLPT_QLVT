@@ -47,4 +47,3 @@ declare @res int
 exec @res = SP_TracuuNV '1'
 select @res
 
-

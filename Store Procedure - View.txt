@@ -1,0 +1,138 @@
+*****View lấy danh sách phân mảnh*****
+CREATE VIEW [dbo].[V_DS_PHANMANH]
+AS
+
+SELECT  TENCN=PUBS.description, TENSERVER= subscriber_server
+   FROM dbo.sysmergepublications PUBS,  dbo.sysmergesubscriptions SUBS
+   WHERE PUBS.pubid= SUBS.PUBID  AND PUBS.publisher <> SUBS.subscriber_server
+   AND PUBS.description <> N'TRA CỨU'
+GO
+
+
+*****SP lấy thông tin user khi đăng nhập******
+CREATE PROC [dbo].[SP_LaythongtinNV]
+	@TENLOGIN NVARCHAR( 100)
+AS
+	DECLARE @UID INT
+	DECLARE @MANV NVARCHAR(100)
+	SELECT @UID= uid , @MANV= NAME FROM sys.sysusers 
+  	WHERE sid = SUSER_SID(@TENLOGIN)
+
+	SELECT  MANV= @MANV, 
+       		HOTEN = (SELECT HO+ ' '+TEN FROM dbo.NHANVIEN WHERE MANV=@MANV ), 
+       		TENNHOM=NAME
+  	FROM sys.sysusers
+    	WHERE UID = (SELECT groupuid FROM sys.sysmembers WHERE memberuid=@uid)
+
+
+*****SP kiểm tra nhân viên đã tồn tại chưa*****
+CREATE PROC SP_TracuuNV
+    @MANHANVIEN INT
+AS
+BEGIN
+    DECLARE @Result INT;
+
+    IF EXISTS (SELECT MANV FROM LINK2.QLVT.DBO.NHANVIEN AS NV WHERE NV.MANV = @MANHANVIEN)
+        SET @Result = 1;
+    ELSE
+        SET @Result = 0;
+
+    RETURN @Result;
+END;
+
+
+LINK2 là link từ site phân mảnh tới site tra cứu
+Trả về kết quả:
+declare @res int
+exec @res = SP_TracuuNV '1'
+select @res
+
+*****SP thực hiện chức năng chuyển chi nhánh*****
+CREATE PROCEDURE SP_ChuyenCN
+	@MANV INT, 
+	@MACN nchar(10)
+AS
+DECLARE @LOGINNAME VARCHAR(50)
+DECLARE @USERNAME VARCHAR(50)
+SET XACT_ABORT ON;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN
+	BEGIN DISTRIBUTED TRAN
+		DECLARE @HONV NVARCHAR(40)
+		DECLARE @TENNV NVARCHAR(10)
+		DECLARE @DIACHINV NVARCHAR(100)
+		DECLARE @NGAYSINHNV DATETIME
+		DECLARE @LUONGNV FLOAT						
+		-- Lưu lại thông tin nhân viên cần chuyển chi nhánh để làm điều kiện kiểm tra
+		SELECT @HONV = HO, @TENNV = TEN, @DIACHINV = DIACHI, @NGAYSINHNV = NGAYSINH, @LUONGNV = LUONG FROM NhanVien WHERE MANV = @MANV
+		-- Kiểm tra xem bên Site chuyển tới đã có dữ liệu nhân viên đó chưa. Nếu có rồi thì đổi trạng thái, chưa thì thêm vào
+		IF EXISTS(select MANV
+				from LINK1.QLVT.dbo.NhanVien
+				where HO = @HONV and TEN = @TENNV and DIACHI = @DIACHINV
+				and NGAYSINH = @NGAYSINHNV and LUONG = @LUONGNV)
+		BEGIN
+				UPDATE LINK1.QLVT.dbo.NhanVien
+				SET TrangThaiXoa = 0
+				WHERE MANV = (	select MANV
+								from LINK1.QLVT.dbo.NhanVien
+								where HO = @HONV and TEN = @TENNV and DIACHI = @DIACHINV
+										and NGAYSINH = @NGAYSINHNV and LUONG = @LUONGNV)
+		END
+		ELSE
+		-- nếu chưa tồn tại thì thêm mới hoàn toàn vào chi nhánh mới với MANV sẽ là MANV lớn nhất hiện tại + 1
+		BEGIN
+			INSERT INTO LINK1.QLVT.dbo.NhanVien (MANV, HO, TEN, DIACHI, NGAYSINH, LUONG, MACN, TRANGTHAIXOA)
+			VALUES ((SELECT MAX(MANV) FROM LINK2.QLVT.dbo.NhanVien) + 1, @HONV, @TENNV, @DIACHINV, @NGAYSINHNV, @LUONGNV, @MACN, 0)
+		END
+		-- Đổi trạng thái xóa đối với tài khoản cũ ở site hiện tại
+		UPDATE dbo.NhanVien
+		SET TrangThaiXoa = 1
+		WHERE MANV = @MANV
+	COMMIT TRAN;
+		-- sp_droplogin và sp_dropuser không thể được thực thi trong một giao tác do người dùng định nghĩa
+		-- Kiểm tra xem Nhân viên đã có login chưa. Có thì xóa
+		IF EXISTS(SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = CAST(@MANV AS NVARCHAR))
+		BEGIN
+			SET @LOGINNAME = CAST((SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = CAST(@MANV AS NVARCHAR)) AS VARCHAR(50))
+			SET @USERNAME = CAST(@MANV AS VARCHAR(50))
+			EXEC SP_DROPUSER @USERNAME;
+			EXEC SP_DROPLOGIN @LOGINNAME;
+		END	
+END
+
+*****Kiểm tra mã vật tư đã sử dụng chưa*****
+create proc [dbo].[SP_KiemtraVT]
+@MAVT nchar(4)
+as
+begin
+	if exists (select 1 from Vattu where Vattu.MAVT = @MAVT)
+		return 1;
+	else if exists (select 1 from LINK1.QLVT.DBO.Vattu VT where VT.MAVT = @MAVT)
+		return 1;
+	return 0;
+end
+
+*****Kiểm tra vật tư đã được sử dụng ở chi nhánh khác hay chưa*****
+create proc [dbo].[SP_KiemtraVT_CNkhac]
+@MAVT nchar(4)
+as
+begin
+	if exists (select 1 from LINK1.QLVT.DBO.Vattu VT
+	where VT.MAVT = @MAVT and
+	(exists (select 1 from LINK1.QLVT.DBO.CTPN where CTPN.MAVT = @MAVT))
+	or (exists (select 1 from LINK1.QLVT.DBO.CTPX where CTPX.MAVT = @MAVT))
+	or (exists (select 1 from LINK1.QLVT.DBO.CTDDH where CTDDH.MAVT = @MAVT))
+	)
+		return 1;
+	return 0;
+end
+
+*****Kiểm tra mã kho đã được sử dụng hay chưa*****
+create proc [dbo].[SP_KiemtraMaKho]
+@MAKHO NCHAR(4)
+as
+begin
+	if exists (select 1 from LINK2.QLVT.DBO.KHO where KHO.MAKHO = @MAKHO)
+		return 1;
+	return 0;
+end 

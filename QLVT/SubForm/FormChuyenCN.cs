@@ -27,8 +27,8 @@ namespace QLVT.SubForm
         {
             comboBox1.DataSource = Program.bindingSource.DataSource;
             // Sao chép bds từ form đăng nhập
-            comboBox1.DisplayMember = "tencn";
-            comboBox1.ValueMember = "tenserver";
+            comboBox1.DisplayMember = "TENCN";
+            comboBox1.ValueMember = "TENSERVER";
             comboBox1.SelectedIndex = Program.brand;
         }
         private Form CheckExists(Type ftype)

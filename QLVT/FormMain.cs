@@ -1,4 +1,5 @@
 ﻿using DevExpress.XtraBars;
+using QLVT.Report;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -13,13 +14,14 @@ namespace QLVT
 {
     public partial class FormMain : DevExpress.XtraBars.Ribbon.RibbonForm
     {
-        //Bật, tắt các nút
+        //Bật, tắt các nút và ribbon
         public void EnableBtn()
         {
             btnDangNhap.Enabled = false;
             btnDangXuat.Enabled = true;
             btnNhanVien.Enabled = true;
             btnVatTu.Enabled = true;
+            ribbonPage1.Visible = ribbonPage2.Visible = true; 
         }
 
         private async void InitializeAsync()
@@ -34,6 +36,7 @@ namespace QLVT
             InitializeAsync();
         }
 
+       
         //Check xem form đã có chưa, nếu chưa thì mới khởi tạo form
         private Form CheckExists(Type ftype)
         {
@@ -139,6 +142,33 @@ namespace QLVT
                 FormKho form = new FormKho();
                 form.MdiParent = this;
                 form.Show();
+            }
+        }
+
+        private void btnThoat_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("Bạn chắc chắn muốn thoát chứ", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (dr == DialogResult.OK)
+            {
+                this.Close();
+            }
+            else
+            {
+                return;
+            }
+        }
+
+        private void barButtonItem1_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormDSNV));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormDSNV form = new FormDSNV();
+                form.ShowDialog();
             }
         }
     }

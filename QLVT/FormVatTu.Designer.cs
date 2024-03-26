@@ -96,7 +96,8 @@
             // 
             mAVTLabel.AutoSize = true;
             mAVTLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            mAVTLabel.Location = new System.Drawing.Point(132, 77);
+            mAVTLabel.Location = new System.Drawing.Point(165, 96);
+            mAVTLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             mAVTLabel.Name = "mAVTLabel";
             mAVTLabel.Size = new System.Drawing.Size(73, 18);
             mAVTLabel.TabIndex = 0;
@@ -106,7 +107,8 @@
             // 
             tENVTLabel.AutoSize = true;
             tENVTLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            tENVTLabel.Location = new System.Drawing.Point(132, 157);
+            tENVTLabel.Location = new System.Drawing.Point(165, 196);
+            tENVTLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             tENVTLabel.Name = "tENVTLabel";
             tENVTLabel.Size = new System.Drawing.Size(79, 18);
             tENVTLabel.TabIndex = 2;
@@ -116,7 +118,8 @@
             // 
             dVTLabel.AutoSize = true;
             dVTLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            dVTLabel.Location = new System.Drawing.Point(636, 74);
+            dVTLabel.Location = new System.Drawing.Point(795, 92);
+            dVTLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             dVTLabel.Name = "dVTLabel";
             dVTLabel.Size = new System.Drawing.Size(77, 18);
             dVTLabel.TabIndex = 4;
@@ -126,7 +129,8 @@
             // 
             sOLUONGTONLabel.AutoSize = true;
             sOLUONGTONLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            sOLUONGTONLabel.Location = new System.Drawing.Point(636, 152);
+            sOLUONGTONLabel.Location = new System.Drawing.Point(795, 190);
+            sOLUONGTONLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             sOLUONGTONLabel.Name = "sOLUONGTONLabel";
             sOLUONGTONLabel.Size = new System.Drawing.Size(90, 18);
             sOLUONGTONLabel.TabIndex = 6;
@@ -259,19 +263,20 @@
             this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl1.Location = new System.Drawing.Point(0, 30);
-            this.panelControl1.Margin = new System.Windows.Forms.Padding(6);
+            this.panelControl1.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
             this.panelControl1.Name = "panelControl1";
-            this.panelControl1.Size = new System.Drawing.Size(1882, 70);
+            this.panelControl1.Size = new System.Drawing.Size(1882, 60);
             this.panelControl1.TabIndex = 5;
             // 
             // cbChiNhanh
             // 
+            this.cbChiNhanh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbChiNhanh.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbChiNhanh.FormattingEnabled = true;
-            this.cbChiNhanh.Location = new System.Drawing.Point(170, 23);
-            this.cbChiNhanh.Margin = new System.Windows.Forms.Padding(5);
+            this.cbChiNhanh.Location = new System.Drawing.Point(151, 14);
+            this.cbChiNhanh.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
             this.cbChiNhanh.Name = "cbChiNhanh";
-            this.cbChiNhanh.Size = new System.Drawing.Size(370, 26);
+            this.cbChiNhanh.Size = new System.Drawing.Size(375, 26);
             this.cbChiNhanh.TabIndex = 1;
             this.cbChiNhanh.SelectedIndexChanged += new System.EventHandler(this.cbChiNhanh_SelectedIndexChanged);
             // 
@@ -279,8 +284,8 @@
             // 
             this.label1.AutoSize = true;
             this.label1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label1.Location = new System.Drawing.Point(39, 26);
-            this.label1.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
+            this.label1.Location = new System.Drawing.Point(35, 17);
+            this.label1.Margin = new System.Windows.Forms.Padding(6, 0, 6, 0);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(87, 18);
             this.label1.TabIndex = 0;
@@ -331,11 +336,13 @@
             // 
             this.vattuGridControl.DataSource = this.bdsVatTu;
             this.vattuGridControl.Dock = System.Windows.Forms.DockStyle.Top;
-            this.vattuGridControl.Location = new System.Drawing.Point(0, 100);
+            this.vattuGridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.vattuGridControl.Location = new System.Drawing.Point(0, 90);
             this.vattuGridControl.MainView = this.gridView1;
+            this.vattuGridControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.vattuGridControl.MenuManager = this.barManager1;
             this.vattuGridControl.Name = "vattuGridControl";
-            this.vattuGridControl.Size = new System.Drawing.Size(1882, 385);
+            this.vattuGridControl.Size = new System.Drawing.Size(1882, 380);
             this.vattuGridControl.TabIndex = 11;
             this.vattuGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
@@ -347,6 +354,7 @@
             this.colTENVT,
             this.colDVT,
             this.colSOLUONGTON});
+            this.gridView1.DetailHeight = 437;
             this.gridView1.GridControl = this.vattuGridControl;
             this.gridView1.Name = "gridView1";
             // 
@@ -354,41 +362,41 @@
             // 
             this.colMAVT.Caption = "Mã vật tư";
             this.colMAVT.FieldName = "MAVT";
-            this.colMAVT.MinWidth = 25;
+            this.colMAVT.MinWidth = 31;
             this.colMAVT.Name = "colMAVT";
             this.colMAVT.Visible = true;
             this.colMAVT.VisibleIndex = 0;
-            this.colMAVT.Width = 94;
+            this.colMAVT.Width = 117;
             // 
             // colTENVT
             // 
             this.colTENVT.Caption = "Tên vật tư";
             this.colTENVT.FieldName = "TENVT";
-            this.colTENVT.MinWidth = 25;
+            this.colTENVT.MinWidth = 31;
             this.colTENVT.Name = "colTENVT";
             this.colTENVT.Visible = true;
             this.colTENVT.VisibleIndex = 1;
-            this.colTENVT.Width = 94;
+            this.colTENVT.Width = 117;
             // 
             // colDVT
             // 
             this.colDVT.Caption = "Đơn vị tính";
             this.colDVT.FieldName = "DVT";
-            this.colDVT.MinWidth = 25;
+            this.colDVT.MinWidth = 31;
             this.colDVT.Name = "colDVT";
             this.colDVT.Visible = true;
             this.colDVT.VisibleIndex = 2;
-            this.colDVT.Width = 94;
+            this.colDVT.Width = 117;
             // 
             // colSOLUONGTON
             // 
             this.colSOLUONGTON.Caption = "Số lượng tồn";
             this.colSOLUONGTON.FieldName = "SOLUONGTON";
-            this.colSOLUONGTON.MinWidth = 25;
+            this.colSOLUONGTON.MinWidth = 31;
             this.colSOLUONGTON.Name = "colSOLUONGTON";
             this.colSOLUONGTON.Visible = true;
             this.colSOLUONGTON.VisibleIndex = 3;
-            this.colSOLUONGTON.Width = 94;
+            this.colSOLUONGTON.Width = 117;
             // 
             // panelControl2
             // 
@@ -401,9 +409,10 @@
             this.panelControl2.Controls.Add(mAVTLabel);
             this.panelControl2.Controls.Add(this.txtMaVT);
             this.panelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.panelControl2.Location = new System.Drawing.Point(0, 485);
+            this.panelControl2.Location = new System.Drawing.Point(0, 470);
+            this.panelControl2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.panelControl2.Name = "panelControl2";
-            this.panelControl2.Size = new System.Drawing.Size(1882, 268);
+            this.panelControl2.Size = new System.Drawing.Size(1882, 283);
             this.panelControl2.TabIndex = 12;
             // 
             // txtSLT
@@ -414,47 +423,51 @@
             0,
             0,
             0});
-            this.txtSLT.Location = new System.Drawing.Point(735, 149);
+            this.txtSLT.Location = new System.Drawing.Point(919, 186);
+            this.txtSLT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtSLT.MenuManager = this.barManager1;
             this.txtSLT.Name = "txtSLT";
             this.txtSLT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtSLT.Properties.Appearance.Options.UseFont = true;
             this.txtSLT.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
-            this.txtSLT.Size = new System.Drawing.Size(125, 24);
+            this.txtSLT.Size = new System.Drawing.Size(156, 24);
             this.txtSLT.TabIndex = 7;
             // 
             // txtDVT
             // 
             this.txtDVT.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsVatTu, "DVT", true));
-            this.txtDVT.Location = new System.Drawing.Point(735, 71);
+            this.txtDVT.Location = new System.Drawing.Point(919, 89);
+            this.txtDVT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtDVT.MenuManager = this.barManager1;
             this.txtDVT.Name = "txtDVT";
             this.txtDVT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtDVT.Properties.Appearance.Options.UseFont = true;
-            this.txtDVT.Size = new System.Drawing.Size(125, 24);
+            this.txtDVT.Size = new System.Drawing.Size(156, 24);
             this.txtDVT.TabIndex = 5;
             // 
             // txtTenVT
             // 
             this.txtTenVT.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsVatTu, "TENVT", true));
-            this.txtTenVT.Location = new System.Drawing.Point(236, 154);
+            this.txtTenVT.Location = new System.Drawing.Point(295, 192);
+            this.txtTenVT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtTenVT.MenuManager = this.barManager1;
             this.txtTenVT.Name = "txtTenVT";
             this.txtTenVT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtTenVT.Properties.Appearance.Options.UseFont = true;
-            this.txtTenVT.Size = new System.Drawing.Size(204, 24);
+            this.txtTenVT.Size = new System.Drawing.Size(255, 24);
             this.txtTenVT.TabIndex = 3;
             // 
             // txtMaVT
             // 
             this.txtMaVT.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsVatTu, "MAVT", true));
-            this.txtMaVT.Location = new System.Drawing.Point(236, 74);
+            this.txtMaVT.Location = new System.Drawing.Point(295, 92);
+            this.txtMaVT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtMaVT.MenuManager = this.barManager1;
             this.txtMaVT.Name = "txtMaVT";
             this.txtMaVT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtMaVT.Properties.Appearance.Options.UseFont = true;
-            this.txtMaVT.Size = new System.Drawing.Size(204, 24);
+            this.txtMaVT.Size = new System.Drawing.Size(255, 24);
             this.txtMaVT.TabIndex = 1;
             // 
             // bdsCTPN

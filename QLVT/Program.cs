@@ -54,7 +54,7 @@ namespace QLVT
         public static int brand = 0;
 
         //BindingSource -> liên kết dữ liệu từ bảng dữ liệu
-        public static BindingSource bindingSource = new BindingSource();//bds_dspm
+        public static BindingSource bindingSource = new BindingSource();
 
         //Các form
         public static FormLogin formLogin;

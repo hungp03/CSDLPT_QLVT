@@ -600,7 +600,7 @@ namespace QLVT
                 f.Activate();
             }
             FormChuyenCN form = new FormChuyenCN();
-            form.Show();
+            form.ShowDialog();
 
             //Chuyển hàm chuyển CN sang form chuyển CN
             form.branchTransfer = new FormChuyenCN.MyDelegate(chuyenCN);

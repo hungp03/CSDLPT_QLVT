@@ -116,6 +116,12 @@
     <Compile Include="Report\FormDSNV.Designer.cs">
       <DependentUpon>FormDSNV.cs</DependentUpon>
     </Compile>
+    <Compile Include="SubForm\FormChonNV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SubForm\FormChonNV.Designer.cs">
+      <DependentUpon>FormChonNV.cs</DependentUpon>
+    </Compile>
     <Compile Include="SubForm\FormChuyenCN.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -127,6 +133,12 @@
     </Compile>
     <Compile Include="Report\RpDSNV.Designer.cs">
       <DependentUpon>RpDSNV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="FormTaoTK.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormTaoTK.Designer.cs">
+      <DependentUpon>FormTaoTK.cs</DependentUpon>
     </Compile>
     <EmbeddedResource Include="FormKho.resx">
       <DependentUpon>FormKho.cs</DependentUpon>
@@ -157,11 +169,17 @@
     <EmbeddedResource Include="Report\FormDSNV.resx">
       <DependentUpon>FormDSNV.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="SubForm\FormChonNV.resx">
+      <DependentUpon>FormChonNV.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SubForm\FormChuyenCN.resx">
       <DependentUpon>FormChuyenCN.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\RpDSNV.resx">
       <DependentUpon>RpDSNV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormTaoTK.resx">
+      <DependentUpon>FormTaoTK.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="App.config" />
     <None Include="DS1.xsc">

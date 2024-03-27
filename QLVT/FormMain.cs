@@ -17,6 +17,7 @@ namespace QLVT
         //Bật, tắt các nút và ribbon
         public void EnableBtn()
         {
+            btnTaoTK.Enabled = true;
             btnDangNhap.Enabled = false;
             btnDangXuat.Enabled = true;
             btnNhanVien.Enabled = true;
@@ -169,6 +170,21 @@ namespace QLVT
             {
                 FormDSNV form = new FormDSNV();
                 form.ShowDialog();
+            }
+        }
+
+        private void btnTaoTK_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormTaoTK));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormTaoTK form = new FormTaoTK();
+                form.MdiParent = this;
+                form.Show();
             }
         }
     }

@@ -1,5 +1,8 @@
 ﻿using DevExpress.Skins;
 using DevExpress.UserSkins;
+using QLVT.Report;
+using QLVT.SubForm;
+
 //using QLVT.SubForm;
 using System;
 using System.Collections.Generic;
@@ -33,6 +36,8 @@ namespace QLVT
 
         //Tên server (chi nhánh) còn lại
         public static String otherServerName = "";
+        //nhân viên đang được chọn cho việc tạo tài khoản
+        public static string selectedEmp = "";
 
         //Remote login
         public static String database = "QLVT";
@@ -60,9 +65,17 @@ namespace QLVT
         public static FormLogin formLogin;
         public static FormMain formMain;
         public static FormNhanVien formNhanVien;
-        /*public static FormChuyenCN formChuyenCN;
         public static FormVatTu formVatTu;
-        public static FormPhieuNhap formPhieuNhap;*/
+        public static FormKho formKho;
+        public static FormTaoTK formTaoTK;
+
+        //subform
+        public static FormChonNV formChonNV;
+        public static FormChuyenCN formChuyenCN;
+
+        //report form
+        public static FormDSNV formDSNV;
+
         /* Hàm ExecSqlDataReader thực hiện câu lệnh mà dữ liệu trả về chỉ dùng để xem
          * không thao tác, chỉnh sửa.
          *

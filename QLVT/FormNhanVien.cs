@@ -1,4 +1,6 @@
-﻿using QLVT.SubForm;
+﻿using DevExpress.CodeParser;
+using DevExpress.DataProcessing.InMemoryDataProcessor;
+using QLVT.SubForm;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,7 +52,7 @@ namespace QLVT
 
         private void FormNhanVien_Load(object sender, EventArgs e)
         {
-            
+
             //Không cần kiểm tra khóa ngoại
             dS1.EnforceConstraints = false;
             this.nhanVienTableAdapter.Connection.ConnectionString = Program.conStr;
@@ -109,7 +111,9 @@ namespace QLVT
                    validateEmployeeName(txtHo.Text, txtTen.Text) &&
                    validateEmployeeAddress(txtDiaChi.Text) &&
                    validateEmployeeBirthDate(deNgaySinh.DateTime) &&
-                   validateEmployeeSalary(txtLuong.EditValue.ToString());
+                   validateEmployeeSalary(txtLuong.EditValue.ToString())
+            &&
+           validateEmployeeID(txtCMND.Text);
         }
 
         private bool validateEmployeeCode(string code)
@@ -192,6 +196,24 @@ namespace QLVT
             }
             return true;
         }
+
+        private bool validateEmployeeID(string id)
+        {
+            if (string.IsNullOrEmpty(id))
+            {
+                ThongBao("CMND không được bỏ trống");
+                txtCMND.Focus();
+                return false;
+            }
+            if (!Regex.IsMatch(id, @"^\d{12,}$"))
+            {
+                ThongBao("CMND phải có ít nhất 12 số");
+                txtCMND.Focus();
+                return false;
+            }
+            return true;
+        }
+
 
 
         private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)
@@ -322,8 +344,8 @@ namespace QLVT
             DateTime ngsinh = (DateTime)((DataRowView)bdsNhanVien[bdsNhanVien.Position])["NGAYSINH"];
 
             //Tạo truy vấn hoàn tác, đưa vào undoStack
-            String undoQuery = string.Format("INSERT INTO DBO.NHANVIEN( MANV,HO,TEN,DIACHI,NGAYSINH,LUONG,MACN)" +
-            "VALUES({0},N'{1}',N'{2}',N'{3}',CAST('{4}' AS DATETIME), {5},'{6}')", txtManv.Text, txtHo.Text, txtTen.Text, txtDiaChi.Text, ((DateTime)deNgaySinh.EditValue).ToString("yyyy-MM-dd"), txtLuong.EditValue, txtMacn.Text.Trim());
+            String undoQuery = string.Format("INSERT INTO DBO.NHANVIEN( MANV, CMND,HO,TEN,DIACHI,NGAYSINH,LUONG,MACN)" +
+            "VALUES({0},N'{1}',N'{2}',N'{3}',N'{4}',CAST('{5}' AS DATETIME), {6},'{7}')", txtManv.Text, txtCMND.Text, txtHo.Text, txtTen.Text, txtDiaChi.Text, ((DateTime)deNgaySinh.EditValue).ToString("yyyy-MM-dd"), txtLuong.EditValue, txtMacn.Text.Trim());
             /*Console.WriteLine(undoQuery);*/
 
             undoStack.Push(undoQuery);
@@ -359,6 +381,68 @@ namespace QLVT
             }
         }
 
+        private int ExecuteSP_TracuuNV(string maNv)
+        {
+            string cauTruyVan =
+                    "DECLARE @result int " +
+                    "EXEC @result = [dbo].[sp_TraCuuNV] '" +
+                    maNv + "' " +
+                    "SELECT @result";
+
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(cauTruyVan);
+
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+
+                
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kiểm tra MANV thất bại\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //Console.WriteLine("Check manv" + ex.Message);
+            }
+            Program.myReader.Read();
+            int result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            return result;
+        }
+
+        private int ExecuteSP_TracuuCMND(string cmnd, string maNv)
+        {
+            string cauTruyVan =
+                    "DECLARE @result int " +
+                    "EXEC @result = [dbo].[SP_KiemtraCMND] '"
+                     + cmnd + "', " + maNv + "" +
+                    "SELECT @result";
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(cauTruyVan);
+
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kiểm tra CMND thất bại\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                //Console.WriteLine("Check cmnd"+ex.Message);
+            }
+            Program.myReader.Read();
+            int result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            return result;
+        }
+
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // kiểm tra đầu vào có hợp lệ hay không
@@ -370,37 +454,15 @@ namespace QLVT
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
             string maNv = txtManv.Text.Trim();
             DataRowView drv = ((DataRowView)bdsNhanVien[bdsNhanVien.Position]);
+            string cmnd = drv["CMND"].ToString();
             String ho = drv["HO"].ToString();
             String ten = drv["TEN"].ToString();
             String diaChi = drv["DIACHI"].ToString();
             DateTime ngaySinh = ((DateTime)drv["NGAYSINH"]);
             // Console.WriteLine(ngaySinh);
-            int luong = int.Parse(txtLuong.EditValue.ToString());
+            int luong = int.Parse(drv["LUONG"].ToString());
             string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
-
-            string query = "declare @res int\n" + "EXEC @res = SP_TracuuNV '" + maNv + "'\nselect @res";
-            SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
-            // Dùng SP để kiểm tra xem có nhân viên với mã nv đang tạo
-            try
-            {
-                Program.myReader = Program.ExecSqlDataReader(query);
-                // Nếu không có kết quả thì quay về
-                if (Program.myReader == null)
-                {
-                    return;
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Thực thi database thất bại!\n" + ex.Message, "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Console.WriteLine(ex.Message);
-                return;
-            }
-            Program.myReader.Read();
-            int result = int.Parse(Program.myReader.GetValue(0).ToString());
-            Program.myReader.Close();
 
             //Sử dụng kết quả bước trên và vị trí của txtManv => các trường hợp xảy ra
             /*TH1: result = 1 && pointerPosition != nvPosition->Thêm mới nhưng MANV đã tồn tại
@@ -408,78 +470,96 @@ namespace QLVT
             TH3: result = 0 && pointerPosition == nvPosition->Thêm mới bình thường
             TH4: result = 0 && pointerPosition != nvPosition->Thêm mới bình thường*/
 
+            int nvResult = ExecuteSP_TracuuNV(maNv);
             int pointerPosition = bdsNhanVien.Position;
             int nvPosition = bdsNhanVien.Find("MANV", txtManv.Text);
-
+           
+            if (nvResult != 1 && nvResult != 0)
+            {
+                ThongBao("Có lỗi trong quá trình xử lý");
+                return;
+            }
             // TH1
-            if (result == 1 && pointerPosition != nvPosition)
+            if (nvResult == 1 && pointerPosition != nvPosition)
             {
                 ThongBao("Mã NV đã tồn tại");
                 return;
             }
             // TH2,3,4
-            else
+
+            // Kiểm tra CMND
+            int cmndResult = ExecuteSP_TracuuCMND(txtCMND.Text.Trim(), maNv);
+            //Console.WriteLine(cmndResult);
+            if(cmndResult != 0 && cmndResult != 1)
             {
-                DialogResult dr = MessageBox.Show("Bạn có chắc muốn ghi dữ liệu ?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
-                if (dr == DialogResult.OK)
+                ThongBao("Lỗi kiểm tra CMND");
+                return;
+            }
+            if (cmndResult == 0)
+            {
+                ThongBao("CMND đã tồn tại");
+                return;
+            }
+            DialogResult dr = MessageBox.Show("Bạn có chắc muốn ghi dữ liệu ?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (dr == DialogResult.OK)
+            {
+                try
                 {
-                    try
+                    // Bật lại các nút
+                    btnThem.Enabled = true;
+                    btnXoa.Enabled = true;
+                    btnGhi.Enabled = true;
+                    btnLamMoi.Enabled = true;
+                    btnHoanTac.Enabled = true;
+
+                    btnLamMoi.Enabled = true;
+                    btnChuyenCN.Enabled = true;
+                    btnThoat.Enabled = true;
+
+                    this.txtManv.Enabled = false;
+                    this.bdsNhanVien.EndEdit();
+                    this.nhanVienTableAdapter.Update(this.dS1.NhanVien);
+                    this.nhanVienGridControl.Enabled = true;
+
+                    // Lưu truy vấn phục vụ hoàn tác
+                    string undoQuery = "";
+
+                    // Trường hợp thêm nhân viên
+                    if (isAdding == true)
                     {
-                        // Bật lại các nút
-                        btnThem.Enabled = true;
-                        btnXoa.Enabled = true;
-                        btnGhi.Enabled = true;
-                        btnLamMoi.Enabled = true;
-
-
-                        btnLamMoi.Enabled = true;
-                        btnChuyenCN.Enabled = true;
-                        btnThoat.Enabled = true;
-
-                        this.txtManv.Enabled = false;
-                        this.bdsNhanVien.EndEdit();
-                        this.nhanVienTableAdapter.Update(this.dS1.NhanVien);
-                        this.nhanVienGridControl.Enabled = true;
-
-                        // Lưu truy vấn phục vụ hoàn tác
-                        string undoQuery = "";
-
-                        // Trường hợp thêm nhân viên
-                        if (isAdding == true)
-                        {
-                            undoQuery = "" +
-                                "DELETE DBO.NHANVIEN " +
-                                "WHERE MANV = " + txtManv.Text.Trim();
-                        }
-
-                        // Trường hợp sửa nhân viên
-                        else
-                        {
-                            undoQuery = "UPDATE DBO.NhanVien " +
-                            "SET " +
-                            "HO = N'" + ho + "'," +
-                            "TEN = N'" + ten + "'," +
-                            "DIACHI = N'" + diaChi + "'," +
-                            "NGAYSINH = CAST('" + ngaySinh.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
-                            "LUONG = '" + luong + "'," +
-                            "TrangThaiXoa = " + trangThai + " " +
-                            "WHERE MANV = '" + maNv + "'";
-                        }
-                        // Console.WriteLine(undoQuery);
-
-                        // Đưa câu truy vấn hoàn tác vào undoList
-                        undoStack.Push(undoQuery);
-
-                        // Cập nhật lại trạng thái đang thêm mới
-                        isAdding = false;
-                        ThongBao("Ghi thành công");
+                        undoQuery = "" +
+                            "DELETE DBO.NHANVIEN " +
+                            "WHERE MANV = " + txtManv.Text.Trim();
                     }
-                    catch (Exception ex)
+
+                    // Trường hợp sửa nhân viên
+                    else
                     {
-                        bdsNhanVien.RemoveCurrent();
-                        MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        undoQuery = "UPDATE DBO.NhanVien " +
+                        "SET " +
+                        "CMND = N'" + cmnd + "'," +
+                        "HO = N'" + ho + "'," +
+                        "TEN = N'" + ten + "'," +
+                        "DIACHI = N'" + diaChi + "'," +
+                        "NGAYSINH = CAST('" + ngaySinh.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
+                        "LUONG = '" + luong + "'," +
+                        "TrangThaiXoa = " + trangThai + " " +
+                        "WHERE MANV = '" + maNv + "'";
                     }
+                    // Console.WriteLine(undoQuery);
+
+                    // Đưa câu truy vấn hoàn tác vào undoList
+                    undoStack.Push(undoQuery);
+
+                    // Cập nhật lại trạng thái đang thêm mới
+                    isAdding = false;
+                    ThongBao("Ghi thành công");
+                }
+                catch (Exception ex)
+                {
+                    bdsNhanVien.RemoveCurrent();
+                    MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
@@ -578,7 +658,7 @@ namespace QLVT
         {
             int currentPosition = bdsNhanVien.Position;
             int deleteStatus = int.Parse(((DataRowView)(bdsNhanVien[currentPosition]))["TrangThaiXoa"].ToString());
-            String maNv = ((DataRowView)(bdsNhanVien[currentPosition]))["MANV"].ToString();
+            string maNv = ((DataRowView)(bdsNhanVien[currentPosition]))["MANV"].ToString();
 
             //Không cho chuyển chi nhánh của người đang đăng nhập
             if (Program.username == maNv)
@@ -600,7 +680,7 @@ namespace QLVT
                 f.Activate();
             }
             FormChuyenCN form = new FormChuyenCN();
-            form.ShowDialog();
+            form.Show();
 
             //Chuyển hàm chuyển CN sang form chuyển CN
             form.branchTransfer = new FormChuyenCN.MyDelegate(chuyenCN);
@@ -609,17 +689,17 @@ namespace QLVT
         public void chuyenCN(String chiNhanh)
         {
             Console.WriteLine("Chi nhánh đang chọn: " + chiNhanh);
-            // Nếu chi nhánh đang chọn là chi nhánh hiện tại, thì không cho chuyển
-            /*if (chiNhanh == Program.servername)
-            {
-                MessageBox.Show("Hãy chọn chi nhánh khác", "Thông báo", MessageBoxButtons.OK);
-                return;
-            }*/
+            /* if (Program.servername == chiNhanh)
+             {
+                 MessageBox.Show("Hãy chọn chi nhánh khác chi nhánh bạn đang đăng nhập", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                 return;
+             }*/
+
             // Lưu chi nhánh hiện tại và chi nhánh chuyển tới, tên nhân viên được chuyển
-            String currentBrand = "";
-            String newBrand = "";
+            string currentBrand = "";
+            string newBrand = "";
             int currentPosition = bdsNhanVien.Position;
-            String maNhanVien = ((DataRowView)bdsNhanVien[currentPosition])["MANV"].ToString();
+            string maNhanVien = ((DataRowView)bdsNhanVien[currentPosition])["MANV"].ToString();
 
             if (chiNhanh.Contains("1"))
             {
@@ -640,7 +720,7 @@ namespace QLVT
             Console.WriteLine("Chi nhánh mới: " + newBrand);
 
             // Lưu truy vấn để hoàn tác
-            String undoQuery = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + currentBrand + "'";
+            string undoQuery = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + currentBrand + "'";
             undoStack.Push(undoQuery);
 
             // Lấy tên chi nhánh chuyển tới để làm tính năng hoàn tác
@@ -648,7 +728,7 @@ namespace QLVT
             Console.WriteLine("Ten server con lai" + Program.otherServerName);
 
             // Thực hiện chức năng chuyển chi nhánh, dùng SP
-            String query = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + newBrand + "'";
+            string query = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + newBrand + "'";
 
             SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
             try
@@ -671,29 +751,5 @@ namespace QLVT
             this.nhanVienTableAdapter.Fill(this.dS1.NhanVien);
         }
 
-        private void txtTen_EditValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtHo_EditValueChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void hOLabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void dIACHILabel_Click(object sender, EventArgs e)
-        {
-
-        }
-
-        private void txtDiaChi_EditValueChanged(object sender, EventArgs e)
-        {
-
-        }
     }
 }

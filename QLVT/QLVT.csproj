@@ -110,11 +110,11 @@
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
-    <Compile Include="Report\FormDSNV.cs">
+    <Compile Include="Report\FormSupport.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Report\FormDSNV.Designer.cs">
-      <DependentUpon>FormDSNV.cs</DependentUpon>
+    <Compile Include="Report\FormSupport.Designer.cs">
+      <DependentUpon>FormSupport.cs</DependentUpon>
     </Compile>
     <Compile Include="SubForm\FormChonNV.cs">
       <SubType>Form</SubType>
@@ -127,12 +127,6 @@
     </Compile>
     <Compile Include="SubForm\FormChuyenCN.Designer.cs">
       <DependentUpon>FormChuyenCN.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Report\RpDSNV.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Report\RpDSNV.Designer.cs">
-      <DependentUpon>RpDSNV.cs</DependentUpon>
     </Compile>
     <Compile Include="FormTaoTK.cs">
       <SubType>Form</SubType>
@@ -166,17 +160,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <EmbeddedResource Include="Report\FormDSNV.resx">
-      <DependentUpon>FormDSNV.cs</DependentUpon>
+    <EmbeddedResource Include="Report\FormSupport.resx">
+      <DependentUpon>FormSupport.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubForm\FormChonNV.resx">
       <DependentUpon>FormChonNV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubForm\FormChuyenCN.resx">
       <DependentUpon>FormChuyenCN.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Report\RpDSNV.resx">
-      <DependentUpon>RpDSNV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormTaoTK.resx">
       <DependentUpon>FormTaoTK.cs</DependentUpon>
@@ -209,6 +200,7 @@
   <ItemGroup>
     <None Include="Resources\bo_note.svg" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

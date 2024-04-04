@@ -48,7 +48,7 @@ exec @res = SP_TracuuNV '1'
 select @res
 
 *****SP thực hiện chức năng chuyển chi nhánh*****
-CREATE PROCEDURE SP_ChuyenCN
+CREATE PROCEDURE [dbo].[SP_ChuyenCN]
 	@MANV INT, 
 	@MACN nchar(10)
 AS
@@ -58,31 +58,30 @@ SET XACT_ABORT ON;
 SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
 BEGIN
 	BEGIN DISTRIBUTED TRAN
+		DECLARE @CMND NVARCHAR(20)
 		DECLARE @HONV NVARCHAR(40)
 		DECLARE @TENNV NVARCHAR(10)
 		DECLARE @DIACHINV NVARCHAR(100)
 		DECLARE @NGAYSINHNV DATETIME
 		DECLARE @LUONGNV FLOAT						
 		-- Lưu lại thông tin nhân viên cần chuyển chi nhánh để làm điều kiện kiểm tra
-		SELECT @HONV = HO, @TENNV = TEN, @DIACHINV = DIACHI, @NGAYSINHNV = NGAYSINH, @LUONGNV = LUONG FROM NhanVien WHERE MANV = @MANV
+		SELECT @CMND = CMND, @HONV = HO, @TENNV = TEN, @DIACHINV = DIACHI, @NGAYSINHNV = NGAYSINH, @LUONGNV = LUONG FROM NhanVien WHERE MANV = @MANV
 		-- Kiểm tra xem bên Site chuyển tới đã có dữ liệu nhân viên đó chưa. Nếu có rồi thì đổi trạng thái, chưa thì thêm vào
 		IF EXISTS(select MANV
 				from LINK1.QLVT.dbo.NhanVien
-				where HO = @HONV and TEN = @TENNV and DIACHI = @DIACHINV
-				and NGAYSINH = @NGAYSINHNV and LUONG = @LUONGNV)
+				where CMND = @CMND)
 		BEGIN
 				UPDATE LINK1.QLVT.dbo.NhanVien
 				SET TrangThaiXoa = 0
 				WHERE MANV = (	select MANV
 								from LINK1.QLVT.dbo.NhanVien
-								where HO = @HONV and TEN = @TENNV and DIACHI = @DIACHINV
-										and NGAYSINH = @NGAYSINHNV and LUONG = @LUONGNV)
+								where CMND = @CMND)
 		END
 		ELSE
 		-- nếu chưa tồn tại thì thêm mới hoàn toàn vào chi nhánh mới với MANV sẽ là MANV lớn nhất hiện tại + 1
 		BEGIN
-			INSERT INTO LINK1.QLVT.dbo.NhanVien (MANV, HO, TEN, DIACHI, NGAYSINH, LUONG, MACN, TRANGTHAIXOA)
-			VALUES ((SELECT MAX(MANV) FROM LINK2.QLVT.dbo.NhanVien) + 1, @HONV, @TENNV, @DIACHINV, @NGAYSINHNV, @LUONGNV, @MACN, 0)
+			INSERT INTO LINK1.QLVT.dbo.NhanVien (MANV, CMND, HO, TEN, DIACHI, NGAYSINH, LUONG, MACN, TRANGTHAIXOA)
+			VALUES ((SELECT MAX(MANV) FROM LINK2.QLVT.dbo.NhanVien) + 1, @CMND ,@HONV, @TENNV, @DIACHINV, @NGAYSINHNV, @LUONGNV, @MACN, 0)
 		END
 		-- Đổi trạng thái xóa đối với tài khoản cũ ở site hiện tại
 		UPDATE dbo.NhanVien
@@ -99,6 +98,8 @@ BEGIN
 			EXEC SP_DROPLOGIN @LOGINNAME;
 		END	
 END
+
+GO
 
 *****Kiểm tra mã vật tư đã sử dụng chưa*****
 create proc [dbo].[SP_KiemtraVT]
@@ -136,3 +137,26 @@ begin
 		return 1;
 	return 0;
 end 
+
+*****Kiểm tra CMND dùng chưa*****
+CREATE PROCEDURE [dbo].[SP_KiemtraCMND] @CMND nvarchar(20),
+    @MANV int = NULL
+AS
+BEGIN
+    DECLARE @Result INT;
+
+    IF EXISTS (SELECT CMND FROM LINK2.QLVT.DBO.NHANVIEN WHERE CMND = @CMND)
+    BEGIN
+        -- Kiểm tra nếu giá trị CMND trùng với giá trị cũ (dựa trên ID của nhân viên)
+        IF EXISTS (SELECT 1 FROM LINK2.QLVT.DBO.NHANVIEN WHERE CMND = @CMND AND (MANV = @MANV OR @MANV IS NULL))
+            SET @Result = 1; -- Cho phép cập nhật trùng với giá trị cũ
+        ELSE
+            SET @Result = 0; -- Không cho phép thêm mới trùng
+    END
+    ELSE
+        SET @Result = 1; -- Không tồn tại, cho phép thêm mới
+
+    RETURN @Result;
+END;
+END;
+

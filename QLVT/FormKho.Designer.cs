@@ -254,7 +254,7 @@
             this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl1.Location = new System.Drawing.Point(0, 30);
-            this.panelControl1.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.panelControl1.Margin = new System.Windows.Forms.Padding(7);
             this.panelControl1.Name = "panelControl1";
             this.panelControl1.Size = new System.Drawing.Size(1882, 60);
             this.panelControl1.TabIndex = 4;
@@ -265,7 +265,7 @@
             this.cbChiNhanh.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbChiNhanh.FormattingEnabled = true;
             this.cbChiNhanh.Location = new System.Drawing.Point(149, 18);
-            this.cbChiNhanh.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.cbChiNhanh.Margin = new System.Windows.Forms.Padding(7);
             this.cbChiNhanh.Name = "cbChiNhanh";
             this.cbChiNhanh.Size = new System.Drawing.Size(375, 26);
             this.cbChiNhanh.TabIndex = 1;
@@ -315,10 +315,10 @@
             // 
             this.khoGridControl.DataSource = this.bdsKho;
             this.khoGridControl.Dock = System.Windows.Forms.DockStyle.Top;
-            this.khoGridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.khoGridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(7);
             this.khoGridControl.Location = new System.Drawing.Point(0, 90);
             this.khoGridControl.MainView = this.gridView1;
-            this.khoGridControl.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.khoGridControl.Margin = new System.Windows.Forms.Padding(7);
             this.khoGridControl.MenuManager = this.barManager1;
             this.khoGridControl.Name = "khoGridControl";
             this.khoGridControl.Size = new System.Drawing.Size(1882, 380);
@@ -336,6 +336,7 @@
             this.gridView1.DetailHeight = 767;
             this.gridView1.GridControl = this.khoGridControl;
             this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.Editable = false;
             // 
             // colMAKHO
             // 
@@ -389,7 +390,7 @@
             this.panelControl2.Controls.Add(this.txtMakho);
             this.panelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControl2.Location = new System.Drawing.Point(0, 470);
-            this.panelControl2.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.panelControl2.Margin = new System.Windows.Forms.Padding(7);
             this.panelControl2.Name = "panelControl2";
             this.panelControl2.Size = new System.Drawing.Size(1882, 283);
             this.panelControl2.TabIndex = 7;
@@ -398,7 +399,7 @@
             // 
             this.txtMacn.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsKho, "MACN", true));
             this.txtMacn.Location = new System.Drawing.Point(848, 64);
-            this.txtMacn.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.txtMacn.Margin = new System.Windows.Forms.Padding(7);
             this.txtMacn.MenuManager = this.barManager1;
             this.txtMacn.Name = "txtMacn";
             this.txtMacn.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -410,7 +411,7 @@
             // 
             this.txtDiachi.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsKho, "DIACHI", true));
             this.txtDiachi.Location = new System.Drawing.Point(848, 155);
-            this.txtDiachi.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.txtDiachi.Margin = new System.Windows.Forms.Padding(7);
             this.txtDiachi.MenuManager = this.barManager1;
             this.txtDiachi.Name = "txtDiachi";
             this.txtDiachi.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -422,7 +423,7 @@
             // 
             this.txtTenkho.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsKho, "TENKHO", true));
             this.txtTenkho.Location = new System.Drawing.Point(207, 155);
-            this.txtTenkho.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.txtTenkho.Margin = new System.Windows.Forms.Padding(7);
             this.txtTenkho.MenuManager = this.barManager1;
             this.txtTenkho.Name = "txtTenkho";
             this.txtTenkho.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -434,7 +435,7 @@
             // 
             this.txtMakho.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsKho, "MAKHO", true));
             this.txtMakho.Location = new System.Drawing.Point(207, 61);
-            this.txtMakho.Margin = new System.Windows.Forms.Padding(7, 7, 7, 7);
+            this.txtMakho.Margin = new System.Windows.Forms.Padding(7);
             this.txtMakho.MenuManager = this.barManager1;
             this.txtMakho.Name = "txtMakho";
             this.txtMakho.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

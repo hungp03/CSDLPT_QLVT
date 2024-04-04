@@ -55,7 +55,7 @@ namespace QLVT.SubForm
 
         private void button1_Click(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedValue.ToString() == Program.servername)
+            if (comboBox1.SelectedValue != null && comboBox1.SelectedValue.ToString() == Program.servername)
             {
                 MessageBox.Show("Hãy chọn chi nhánh khác", "Thông báo", MessageBoxButtons.OK);
                 return;
@@ -66,15 +66,28 @@ namespace QLVT.SubForm
                 return;
             }
 
-            DialogResult dialogResult = MessageBox.Show("Bạn có chắc chắn muốn chuyển nhân viên này đi ?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            Console.WriteLine(comboBox1.Text.Trim());
 
-            if (dialogResult == DialogResult.OK)
+            // Kiểm tra xem branchTransfer đã được gán chưa
+            if (branchTransfer != null)
             {
-                branchTransfer(comboBox1.SelectedValue.ToString());
+                DialogResult dialogResult = MessageBox.Show("Bạn có chắc chắn muốn chuyển nhân viên này đi ?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+
+                if (dialogResult == DialogResult.OK)
+                {
+                    Console.WriteLine("TRANSFER:" + branchTransfer);
+                    branchTransfer(comboBox1.SelectedValue.ToString());
+                }
+            }
+            else
+            {
+                MessageBox.Show("Delegate chưa được khởi tạo");
+                return;
             }
 
             this.Dispose();
         }
+
 
         private void button2_Click(object sender, EventArgs e)
         {

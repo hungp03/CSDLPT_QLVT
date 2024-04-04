@@ -263,7 +263,7 @@
             this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl1.Location = new System.Drawing.Point(0, 30);
-            this.panelControl1.Margin = new System.Windows.Forms.Padding(8, 8, 8, 8);
+            this.panelControl1.Margin = new System.Windows.Forms.Padding(8);
             this.panelControl1.Name = "panelControl1";
             this.panelControl1.Size = new System.Drawing.Size(1882, 60);
             this.panelControl1.TabIndex = 5;
@@ -274,7 +274,7 @@
             this.cbChiNhanh.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbChiNhanh.FormattingEnabled = true;
             this.cbChiNhanh.Location = new System.Drawing.Point(151, 14);
-            this.cbChiNhanh.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.cbChiNhanh.Margin = new System.Windows.Forms.Padding(6);
             this.cbChiNhanh.Name = "cbChiNhanh";
             this.cbChiNhanh.Size = new System.Drawing.Size(375, 26);
             this.cbChiNhanh.TabIndex = 1;
@@ -336,10 +336,10 @@
             // 
             this.vattuGridControl.DataSource = this.bdsVatTu;
             this.vattuGridControl.Dock = System.Windows.Forms.DockStyle.Top;
-            this.vattuGridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.vattuGridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(4);
             this.vattuGridControl.Location = new System.Drawing.Point(0, 90);
             this.vattuGridControl.MainView = this.gridView1;
-            this.vattuGridControl.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.vattuGridControl.Margin = new System.Windows.Forms.Padding(4);
             this.vattuGridControl.MenuManager = this.barManager1;
             this.vattuGridControl.Name = "vattuGridControl";
             this.vattuGridControl.Size = new System.Drawing.Size(1882, 380);
@@ -357,6 +357,7 @@
             this.gridView1.DetailHeight = 437;
             this.gridView1.GridControl = this.vattuGridControl;
             this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.Editable = false;
             // 
             // colMAVT
             // 
@@ -410,7 +411,7 @@
             this.panelControl2.Controls.Add(this.txtMaVT);
             this.panelControl2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelControl2.Location = new System.Drawing.Point(0, 470);
-            this.panelControl2.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panelControl2.Margin = new System.Windows.Forms.Padding(4);
             this.panelControl2.Name = "panelControl2";
             this.panelControl2.Size = new System.Drawing.Size(1882, 283);
             this.panelControl2.TabIndex = 12;
@@ -424,7 +425,7 @@
             0,
             0});
             this.txtSLT.Location = new System.Drawing.Point(919, 186);
-            this.txtSLT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtSLT.Margin = new System.Windows.Forms.Padding(4);
             this.txtSLT.MenuManager = this.barManager1;
             this.txtSLT.Name = "txtSLT";
             this.txtSLT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -438,7 +439,7 @@
             // 
             this.txtDVT.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsVatTu, "DVT", true));
             this.txtDVT.Location = new System.Drawing.Point(919, 89);
-            this.txtDVT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtDVT.Margin = new System.Windows.Forms.Padding(4);
             this.txtDVT.MenuManager = this.barManager1;
             this.txtDVT.Name = "txtDVT";
             this.txtDVT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -450,7 +451,7 @@
             // 
             this.txtTenVT.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsVatTu, "TENVT", true));
             this.txtTenVT.Location = new System.Drawing.Point(295, 192);
-            this.txtTenVT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtTenVT.Margin = new System.Windows.Forms.Padding(4);
             this.txtTenVT.MenuManager = this.barManager1;
             this.txtTenVT.Name = "txtTenVT";
             this.txtTenVT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -462,7 +463,7 @@
             // 
             this.txtMaVT.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsVatTu, "MAVT", true));
             this.txtMaVT.Location = new System.Drawing.Point(295, 92);
-            this.txtMaVT.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtMaVT.Margin = new System.Windows.Forms.Padding(4);
             this.txtMaVT.MenuManager = this.barManager1;
             this.txtMaVT.Name = "txtMaVT";
             this.txtMaVT.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));

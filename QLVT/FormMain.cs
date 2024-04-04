@@ -161,14 +161,14 @@ namespace QLVT
 
         private void barButtonItem1_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Form f = CheckExists(typeof(FormDSNV));
+            Form f = CheckExists(typeof(FormSupport));
             if (f != null)
             {
                 f.Activate();
             }
             else
             {
-                FormDSNV form = new FormDSNV();
+                FormSupport form = new FormSupport(1);
                 form.ShowDialog();
             }
         }

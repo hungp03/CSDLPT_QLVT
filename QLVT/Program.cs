@@ -74,7 +74,7 @@ namespace QLVT
         public static FormChuyenCN formChuyenCN;
 
         //report form
-        public static FormDSNV formDSNV;
+        public static FormSupport formSupport;
 
         /* Hàm ExecSqlDataReader thực hiện câu lệnh mà dữ liệu trả về chỉ dùng để xem
          * không thao tác, chỉnh sửa.

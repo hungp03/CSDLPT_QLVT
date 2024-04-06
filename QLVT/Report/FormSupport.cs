@@ -16,7 +16,7 @@ namespace QLVT.Report
     public partial class FormSupport : Form
     {
         private int choice;
-        private string brand = "";
+        private string brandName = "";
         public FormSupport(int choice)
         {
             InitializeComponent();
@@ -30,6 +30,7 @@ namespace QLVT.Report
                 cbChiNhanh.Enabled = false;
             }
             this.choice = choice;
+            
         }
 
         private void FormSupport_Load(object sender, EventArgs e)
@@ -39,6 +40,7 @@ namespace QLVT.Report
             cbChiNhanh.DisplayMember = "TENCN";
             cbChiNhanh.ValueMember = "TENSERVER";
             cbChiNhanh.SelectedIndex = Program.brand;
+            this.brandName = cbChiNhanh.SelectedValue.ToString().Contains("1") ? "TP.HCM" : "Cần Thơ";
         }
 
         private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)
@@ -47,18 +49,9 @@ namespace QLVT.Report
             {
                 return;
             }
-            //Program.servername = cbChiNhanh.SelectedValue.ToString();
+            Program.servername = cbChiNhanh.SelectedValue.ToString();
 
-            if (cbChiNhanh.SelectedValue.ToString().Contains('1'))
-            {
-                brand = "CN1";
-            }
-            else if (cbChiNhanh.SelectedValue.ToString().Contains('2'))
-            {
-                brand = "CN2";
-            }
-
-            /*// Nếu chọn chi nhánh khác với chi nhánh hiện tại
+            // Nếu chọn chi nhánh khác với chi nhánh hiện tại
             if (cbChiNhanh.SelectedIndex != Program.brand)
             {
                 // Dùng tài khoản HTKN để chuẩn bị cho việc login vào chi nhánh khác
@@ -73,29 +66,33 @@ namespace QLVT.Report
             }
             if (Program.connectDB() == 0)
             {
-                MessageBox.Show("Lỗi kết nối về chi nhánh", "Thông báo", MessageBoxButtons.OK);
-            }*/
+                MessageBox.Show("Lỗi kết nối tới chi nhánh", "Thông báo", MessageBoxButtons.OK);
+            }
+
+            brandName = cbChiNhanh.SelectedValue.ToString().Contains("1") ? "TP.HCM" : "Cần Thơ";
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
 
-           /* switch (choice)
+            switch (choice)
             {
                 case 1:
-                    ReportDSNV rpdsnv = new ReportDSNV(Program.mGroup, brand);
+                    ReportDSNV rpdsnv = new ReportDSNV();
+                    rpdsnv.xrLabel2.Text = brandName;
                     ReportPrintTool rpt = new ReportPrintTool(rpdsnv);
                     rpt.ShowPreviewDialog();
                     break;
-            }*/
+            }
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            /*switch (choice)
+            switch (choice)
             {
                 case 1:
-                    ReportDSNV rpDSNV = new ReportDSNV(Program.mGroup, brand);
+                    ReportDSNV rpDSNV = new ReportDSNV();
+                    rpDSNV.xrLabel2.Text = brandName;
                     try
                     {
                         if (File.Exists(@"D:\ReportQLVT\ReportDSNhanVien.pdf"))
@@ -104,7 +101,7 @@ namespace QLVT.Report
                             if (dr == DialogResult.Yes)
                             {
                                 rpDSNV.ExportToPdf(@"D:\ReportQLVT\ReportDSNhanVien.pdf");
-                                MessageBox.Show("File ReportDSNhanVien.pdf đã được ghi thành công",
+                                MessageBox.Show("File ReportDSNhanVien.pdf đã được ghi thành công D:\\ReportQLVT",
                         "Thông báo", MessageBoxButtons.OK);
 
                             }
@@ -112,7 +109,7 @@ namespace QLVT.Report
                         else
                         {
                             rpDSNV.ExportToPdf(@"D:\ReportQLVT\ReportDSNhanVien.pdf");
-                            MessageBox.Show("File ReportDSNhanVien.pdf đã được ghi thành công tại ổ D",
+                            MessageBox.Show("File ReportDSNhanVien.pdf đã được ghi thành công tại D:\\ReportQLVT",
                         "Thông báo", MessageBoxButtons.OK);
                         }
 
@@ -124,7 +121,7 @@ namespace QLVT.Report
                         return;
                     }
                     break;
-            }*/
+            }
         }
     }
 }

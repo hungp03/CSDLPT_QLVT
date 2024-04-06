@@ -169,7 +169,8 @@ namespace QLVT
             else
             {
                 FormSupport form = new FormSupport(1);
-                form.ShowDialog();
+                form.MdiParent = this;
+                form.Show();
             }
         }
 

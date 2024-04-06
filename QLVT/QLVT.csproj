@@ -116,6 +116,12 @@
     <Compile Include="Report\FormSupport.Designer.cs">
       <DependentUpon>FormSupport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Report\ReportDSNV.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\ReportDSNV.Designer.cs">
+      <DependentUpon>ReportDSNV.cs</DependentUpon>
+    </Compile>
     <Compile Include="SubForm\FormChonNV.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +168,9 @@
     </Compile>
     <EmbeddedResource Include="Report\FormSupport.resx">
       <DependentUpon>FormSupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\ReportDSNV.resx">
+      <DependentUpon>ReportDSNV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubForm\FormChonNV.resx">
       <DependentUpon>FormChonNV.cs</DependentUpon>

@@ -201,18 +201,19 @@ namespace QLVT
         {
             if (string.IsNullOrEmpty(id))
             {
-                ThongBao("CMND không được bỏ trống");
+                ThongBao("CMND/CCCD không được bỏ trống");
                 txtCMND.Focus();
                 return false;
             }
-            if (!Regex.IsMatch(id, @"^\d{12,}$"))
+            if (!Regex.IsMatch(id, @"^\d{9,12}$"))
             {
-                ThongBao("CMND phải có ít nhất 12 số");
+                ThongBao("CMND/CCCD phải có từ 9 đến 12 số");
                 txtCMND.Focus();
                 return false;
             }
             return true;
         }
+
 
 
 

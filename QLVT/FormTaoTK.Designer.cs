@@ -37,7 +37,7 @@
             this.rdUser = new System.Windows.Forms.RadioButton();
             this.rdCN = new System.Windows.Forms.RadioButton();
             this.txtMatkhau = new System.Windows.Forms.TextBox();
-            this.txtTendangnhap1 = new System.Windows.Forms.TextBox();
+            this.txtTendangnhap = new System.Windows.Forms.TextBox();
             this.txtManv = new System.Windows.Forms.TextBox();
             this.label5 = new System.Windows.Forms.Label();
             this.label4 = new System.Windows.Forms.Label();
@@ -58,7 +58,7 @@
             this.panelControl1.Controls.Add(this.rdUser);
             this.panelControl1.Controls.Add(this.rdCN);
             this.panelControl1.Controls.Add(this.txtMatkhau);
-            this.panelControl1.Controls.Add(this.txtTendangnhap1);
+            this.panelControl1.Controls.Add(this.txtTendangnhap);
             this.panelControl1.Controls.Add(this.txtManv);
             this.panelControl1.Controls.Add(this.label5);
             this.panelControl1.Controls.Add(this.label4);
@@ -157,13 +157,13 @@
             this.txtMatkhau.TabIndex = 22;
             this.txtMatkhau.UseSystemPasswordChar = true;
             // 
-            // txtTendangnhap1
+            // txtTendangnhap
             // 
-            this.txtTendangnhap1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtTendangnhap1.Location = new System.Drawing.Point(285, 125);
-            this.txtTendangnhap1.Name = "txtTendangnhap1";
-            this.txtTendangnhap1.Size = new System.Drawing.Size(221, 26);
-            this.txtTendangnhap1.TabIndex = 21;
+            this.txtTendangnhap.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtTendangnhap.Location = new System.Drawing.Point(285, 125);
+            this.txtTendangnhap.Name = "txtTendangnhap";
+            this.txtTendangnhap.Size = new System.Drawing.Size(221, 26);
+            this.txtTendangnhap.TabIndex = 21;
             // 
             // txtManv
             // 
@@ -236,7 +236,7 @@
             this.MaximizeBox = false;
             this.Name = "FormTaoTK";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FormTaoTK";
+            this.Text = "Tạo tài khoản";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormTaoTK_Load);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
@@ -255,7 +255,7 @@
         private System.Windows.Forms.RadioButton rdUser;
         private System.Windows.Forms.RadioButton rdCN;
         private System.Windows.Forms.TextBox txtMatkhau;
-        private System.Windows.Forms.TextBox txtTendangnhap1;
+        private System.Windows.Forms.TextBox txtTendangnhap;
         public System.Windows.Forms.TextBox txtManv;
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label label4;

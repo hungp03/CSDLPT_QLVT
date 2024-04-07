@@ -105,7 +105,7 @@
             this.MaximizeBox = false;
             this.Name = "FormChuyenCN";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FormChuyenCN";
+            this.Text = "Chuyển chi nhánh nhân viên";
             this.Load += new System.EventHandler(this.FormChuyenCN_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

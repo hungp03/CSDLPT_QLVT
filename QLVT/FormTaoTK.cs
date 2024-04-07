@@ -1,9 +1,11 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.Xpo.DB.Helpers;
+using DevExpress.XtraEditors;
 using QLVT.SubForm;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Data.SqlClient;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -14,10 +16,10 @@ namespace QLVT
 {
     public partial class FormTaoTK : DevExpress.XtraEditors.XtraForm
     {
-        private string taiKhoan = "";
-        private string matKhau = "";
-        private string maNhanVien = "";
-        private string vaiTro = "";
+        private string loginName = "";
+        private string password = "";
+        private string userID = "";
+        private string role = "";
 
         public FormTaoTK()
         {
@@ -32,19 +34,19 @@ namespace QLVT
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(txtTendangnhap1.Text))
+            if (string.IsNullOrWhiteSpace(txtTendangnhap.Text.Trim()))
+            {
+                MessageBox.Show("Thiếu tên đăng nhập", "Thông báo", MessageBoxButtons.OK);
+                return false;
+            }
+
+            if (string.IsNullOrWhiteSpace(txtMatkhau.Text.Trim()))
             {
                 MessageBox.Show("Thiếu mật khẩu", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }
 
-            if (string.IsNullOrWhiteSpace(txtMatkhau.Text))
-            {
-                MessageBox.Show("Thiếu mật khẩu xác nhận", "Thông báo", MessageBoxButtons.OK);
-                return false;
-            }
-
-            if (txtTendangnhap1.Text != txtMatkhau.Text)
+            if (txtXacnhanMK.Text.Trim() != txtMatkhau.Text.Trim())
             {
                 MessageBox.Show("Mật khẩu không khớp với mật khẩu xác nhận", "Thông báo", MessageBoxButtons.OK);
                 return false;
@@ -57,7 +59,7 @@ namespace QLVT
         {
             if (Program.mGroup.Equals("CONGTY"))
             {
-                vaiTro = "CONGTY";
+                role = "CONGTY";
                 rdCN.Enabled = false;
                 rdUser.Enabled = false;
             }
@@ -75,12 +77,31 @@ namespace QLVT
                 return;
             }
 
-            taiKhoan = txtXacnhanMK.Text.Trim();
-            matKhau = txtTendangnhap1.Text.Trim();
-            maNhanVien = Program.selectedEmp;
-            vaiTro = (rdCN.Checked == true) ? "CHINHANH" : "USER";
-            Console.WriteLine(taiKhoan + " - " + matKhau + " - " + maNhanVien + " - " + vaiTro);
+            loginName = txtTendangnhap.Text.Trim();
+            password = txtMatkhau.Text.Trim();
+            userID = Program.selectedEmp;
+            role = (rdCN.Checked == true) ? "CHINHANH" : "USER";
+            /*Console.WriteLine("ĐANG TẠO TK:" + loginName + " - " + password + " - " + userID + " - " + role);
+            Console.WriteLine(Program.servername);*/
 
+            string sqlQuery = "EXEC SP_TAOTK '" + loginName + "' , '" + password + "', '"+ userID + "', '" + role + "'";
+            _ = new SqlCommand(sqlQuery, Program.conn);
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(sqlQuery);
+                if (Program.myReader == null) {
+                    return;
+                }
+                MessageBox.Show("Tạo TK thành công\nNV: " + userID + " - ROLE: " + role +"\nTK: " + loginName + " - PASS: " + password , "Thông báo", MessageBoxButtons.OK);
+            }
+            catch (SqlException ex)
+            {
+                if (ex.Number == 15118)
+                    MessageBox.Show("Password bạn nhập không thỏa chính sách bảo mật của Windows Server vì còn đơn giản", "Thông báo", MessageBoxButtons.OK);
+                else
+                    MessageBox.Show("\nTài khoản bạn nhập đã có trong Server. Bạn nhập lại tài khoản khác.", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
         }
 
         private void button3_Click(object sender, EventArgs e)

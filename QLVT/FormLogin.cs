@@ -17,7 +17,7 @@ namespace QLVT
         private SqlConnection conn = new SqlConnection();
 
         //Hàm lấy danh sách phân mảnh (trừ phân mảnh tra cứu)
-        private void getDSPhanManh(String cmd)
+        private void getDSPhanManh(string cmd)
         {
             //Kiểm tra trạng thái kết nối, nếu đóng thì mở lại
             if (conn.State == ConnectionState.Closed)
@@ -85,7 +85,7 @@ namespace QLVT
 
 
             //Lấy thông tin người dùng qua SP
-            String statement = "EXEC SP_LaythongtinNV '" + Program.mlogin + "'";
+            string statement = "EXEC SP_LaythongtinNV '" + Program.mlogin + "'";
             Program.myReader = Program.ExecSqlDataReader(statement);
             if (Program.myReader == null)
                 return;

@@ -22,7 +22,7 @@ namespace QLVT
         //Undo -> dùng để hoàn tác dữ liệu nếu lỡ có thao tác không mong muốn
         Stack undoStack = new Stack();
 
-        private void ThongBao(String mess)
+        private void ThongBao(string mess)
         {
             MessageBox.Show(mess, "Thông báo", MessageBoxButtons.OK);
         }
@@ -69,6 +69,7 @@ namespace QLVT
             cbChiNhanh.ValueMember = "TENSERVER";
             //Lấy mã chi nhánh hiện tại và để cmb hiển thị mặc định
             cbChiNhanh.SelectedIndex = Program.brand;
+            //Console.WriteLine("VT-CN: " + Program.brand);
 
             // Phân quyền CONGTY chỉ xem dữ liệu
             if (Program.mGroup == "CONGTY")
@@ -204,7 +205,7 @@ namespace QLVT
 
             return true;
         }
-        private bool kiemTraVT_CNkhac(String maVT)
+        private bool kiemTraVT_CNkhac(string maVT)
         {
             string query = "DECLARE @res int\n" + "EXEC @res = [dbo].[SP_KiemtraVT_CNkhac] @MAVT = '" + maVT + "'\nSELECT @res";
             SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
@@ -301,13 +302,13 @@ namespace QLVT
             }
 
             // Lấy dữ liệu trước khi ghi để đổ vào undoStack
-            String maVT = txtMaVT.Text.Trim();
+            string maVT = txtMaVT.Text.Trim();
             DataRowView drv = (DataRowView)bdsVatTu[bdsVatTu.Position];
-            String tenVT = drv["TENVT"].ToString();
-            String dvt = drv["DVT"].ToString();
-            String slt = drv["SOLUONGTON"].ToString();
+            string tenVT = drv["TENVT"].ToString();
+            string dvt = drv["DVT"].ToString();
+            string slt = drv["SOLUONGTON"].ToString();
 
-            String query = "declare @res int\n" + "exec @res = SP_KiemtraVT '" + maVT + "'\nselect @res";
+            string query = "declare @res int\n" + "exec @res = SP_KiemtraVT '" + maVT + "'\nselect @res";
             SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
 
             try
@@ -362,7 +363,7 @@ namespace QLVT
                         vattuGridControl.Enabled = true;
 
                         // Thêm thì tạo truy vấn xóa để hoàn tác
-                        String undoQuery = "";
+                        string undoQuery = "";
                         // Nếu bấm thêm trước khi ghi
                         if (isAdding == true)
                         {
@@ -430,7 +431,7 @@ namespace QLVT
 
             // Nếu stack undo không trống thì lấy ra và khôi phục
             bdsVatTu.CancelEdit();
-            String undoQuery = undoStack.Pop().ToString();
+            string undoQuery = undoStack.Pop().ToString();
             Console.WriteLine(undoQuery);
 
             if (Program.connectDB() == 0)

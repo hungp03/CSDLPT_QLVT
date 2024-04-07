@@ -29,33 +29,33 @@ namespace QLVT
         public static string conPublisher = "Data Source=HUNG-PC;Initial Catalog=QLVT;User ID=HTKN;Password=123456;TrustServerCertificate=True";
 
         //Tên server (phân mảnh) kết nối tới
-        public static String servername = "";
-        public static String username = "";
-        public static String mlogin = "";
+        public static string servername = "";
+        public static string username = "";
+        public static string mlogin = "";
         public static String password = "";
 
         //Tên server (chi nhánh) còn lại
-        public static String otherServerName = "";
+        public static string otherServerName = "";
         //nhân viên đang được chọn cho việc tạo tài khoản
         public static string selectedEmp = "";
 
         //Remote login
-        public static String database = "QLVT";
-        public static String remotelogin = "HTKN";
-        public static String remotepassword = "123456";
-
+        public static string database = "QLVT";
+        public static string remotelogin = "HTKN";
+        public static string remotepassword = "123456";
+            
         /*Hai biến này dùng để đi từ server này sang server còn lại
          * đi từ server hiện tại sang server 2 => remoteLogin
          * đi từ server 2 về lại server hiện tại => mloginDN
         */
-        public static String mloginDN = "";
-        public static String passwordDN = "";
+        public static string mloginDN = "";
+        public static string passwordDN = "";
 
         /*mGroup: tên nhóm quyền đang đăng nhập: CONGTY - CHINHANH - USER
          * mName: tên nhân viên đang đăng nhập
          * brand: chi nhánh đang đăng nhập*/
-        public static String mGroup = "";
-        public static String mName = "";
+        public static string mGroup = "";
+        public static string mName = "";
         public static int brand = 0;
 
         //BindingSource -> liên kết dữ liệu từ bảng dữ liệu
@@ -81,7 +81,7 @@ namespace QLVT
          *
          *  SELECT * FROM view_DSPhanManh
          **********************************************/
-        public static SqlDataReader ExecSqlDataReader(String strLenh)
+        public static SqlDataReader ExecSqlDataReader(string strLenh)
         {
             SqlDataReader myreader;
             SqlCommand sqlcmd = new SqlCommand(strLenh, Program.conn);

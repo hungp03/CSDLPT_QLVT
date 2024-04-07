@@ -22,7 +22,7 @@ namespace QLVT
 
         Stack undoStack = new Stack();
 
-        private void ThongBao(String mess)
+        private void ThongBao(string mess)
         {
             MessageBox.Show(mess, "Thông báo", MessageBoxButtons.OK);
         }

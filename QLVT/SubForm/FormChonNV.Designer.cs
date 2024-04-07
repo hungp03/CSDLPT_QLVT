@@ -174,6 +174,7 @@
             this.colTrangThaiXoa});
             this.gridView1.GridControl = this.nhanVienGridControl;
             this.gridView1.Name = "gridView1";
+            this.gridView1.OptionsBehavior.Editable = false;
             // 
             // colMANV
             // 
@@ -246,7 +247,7 @@
             this.MaximizeBox = false;
             this.Name = "FormChonNV";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "FormChonNV";
+            this.Text = "Chọn nhân viên";
             this.Load += new System.EventHandler(this.FormChonNV_Load);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);

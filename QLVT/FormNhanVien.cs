@@ -20,7 +20,7 @@ namespace QLVT
     {
         int position = 0;
         bool isAdding = false;
-        String brandId = "";
+        string brandId = "";
 
         //Undo -> dùng để hoàn tác dữ liệu nếu lỡ có thao tác không mong muốn
         Stack undoStack = new Stack();
@@ -33,7 +33,7 @@ namespace QLVT
             return null;
         }
 
-        private void ThongBao(String mess)
+        private void ThongBao(string mess)
         {
             MessageBox.Show(mess, "Thông báo", MessageBoxButtons.OK);
         }
@@ -305,7 +305,7 @@ namespace QLVT
 
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            String maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
+            string maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
 
             // Không cho phép xóa tài khoảng đang đăng nhập
             if (maNV == Program.username)
@@ -345,7 +345,7 @@ namespace QLVT
             DateTime ngsinh = (DateTime)((DataRowView)bdsNhanVien[bdsNhanVien.Position])["NGAYSINH"];
 
             //Tạo truy vấn hoàn tác, đưa vào undoStack
-            String undoQuery = string.Format("INSERT INTO DBO.NHANVIEN( MANV, CMND,HO,TEN,DIACHI,NGAYSINH,LUONG,MACN)" +
+            string undoQuery = string.Format("INSERT INTO DBO.NHANVIEN( MANV, CMND,HO,TEN,DIACHI,NGAYSINH,LUONG,MACN)" +
             "VALUES({0},N'{1}',N'{2}',N'{3}',N'{4}',CAST('{5}' AS DATETIME), {6},'{7}')", txtManv.Text, txtCMND.Text, txtHo.Text, txtTen.Text, txtDiaChi.Text, ((DateTime)deNgaySinh.EditValue).ToString("yyyy-MM-dd"), txtLuong.EditValue, txtMacn.Text.Trim());
             /*Console.WriteLine(undoQuery);*/
 
@@ -384,7 +384,7 @@ namespace QLVT
 
         private int ExecuteSP_TracuuNV(string maNv)
         {
-            string cauTruyVan =
+            string query =
                     "DECLARE @result int " +
                     "EXEC @result = [dbo].[sp_TraCuuNV] '" +
                     maNv + "' " +
@@ -392,7 +392,7 @@ namespace QLVT
 
             try
             {
-                Program.myReader = Program.ExecSqlDataReader(cauTruyVan);
+                Program.myReader = Program.ExecSqlDataReader(query);
 
                 //Không có kết quả thì kết thúc
                 if (Program.myReader == null)
@@ -416,14 +416,14 @@ namespace QLVT
 
         private int ExecuteSP_TracuuCMND(string cmnd, string maNv)
         {
-            string cauTruyVan =
+            string query =
                     "DECLARE @result int " +
                     "EXEC @result = [dbo].[SP_KiemtraCMND] '"
                      + cmnd + "', " + maNv + "" +
                     "SELECT @result";
             try
             {
-                Program.myReader = Program.ExecSqlDataReader(cauTruyVan);
+                Program.myReader = Program.ExecSqlDataReader(query);
 
                 //Không có kết quả thì kết thúc
                 if (Program.myReader == null)
@@ -456,9 +456,9 @@ namespace QLVT
             string maNv = txtManv.Text.Trim();
             DataRowView drv = ((DataRowView)bdsNhanVien[bdsNhanVien.Position]);
             string cmnd = drv["CMND"].ToString();
-            String ho = drv["HO"].ToString();
-            String ten = drv["TEN"].ToString();
-            String diaChi = drv["DIACHI"].ToString();
+            string ho = drv["HO"].ToString();
+            string ten = drv["TEN"].ToString();
+            string diaChi = drv["DIACHI"].ToString();
             DateTime ngaySinh = ((DateTime)drv["NGAYSINH"]);
             // Console.WriteLine(ngaySinh);
             int luong = int.Parse(drv["LUONG"].ToString());
@@ -612,7 +612,7 @@ namespace QLVT
             //Hủy thao tác trên bds
             bdsNhanVien.CancelEdit();
             // Tạo một String để lưu truy vấn được lấy ra từ stack
-            String undoSql = undoStack.Pop().ToString();
+            string undoSql = undoStack.Pop().ToString();
             //Console.WriteLine(undoSql);
 
             //Nếu lệnh undo là lệnh chuyển chi nhánh
@@ -620,8 +620,8 @@ namespace QLVT
             {
                 try
                 {
-                    String currentBrand = Program.servername;
-                    String newBrand = Program.otherServerName;
+                    string currentBrand = Program.servername;
+                    string newBrand = Program.otherServerName;
 
                     Program.servername = newBrand;
                     Program.mlogin = Program.remotelogin;
@@ -631,7 +631,7 @@ namespace QLVT
                     {
                         return;
                     }
-                    int tmp = Program.ExecSqlNonQuery(undoSql);
+                    _ = Program.ExecSqlNonQuery(undoSql);
                     ThongBao("Chuyển nhân viên trở lại thành công");
                     Program.servername = newBrand;
                     Program.mlogin = Program.mloginDN;
@@ -649,7 +649,8 @@ namespace QLVT
                 {
                     return;
                 }
-                int tmp = Program.ExecSqlNonQuery(undoSql);
+
+                _ = Program.ExecSqlNonQuery(undoSql);
 
             }
             nhanVienTableAdapter.Fill(this.dS1.NhanVien);
@@ -687,9 +688,12 @@ namespace QLVT
             form.branchTransfer = new FormChuyenCN.MyDelegate(chuyenCN);
             btnHoanTac.Enabled = true;
         }
-        public void chuyenCN(String chiNhanh)
+        public void chuyenCN(string chiNhanh)
         {
             Console.WriteLine("Chi nhánh đang chọn: " + chiNhanh);
+            int currentPosition = bdsNhanVien.Position;
+            string maNhanVien = ((DataRowView)bdsNhanVien[currentPosition])["MANV"].ToString();
+
             /* if (Program.servername == chiNhanh)
              {
                  MessageBox.Show("Hãy chọn chi nhánh khác chi nhánh bạn đang đăng nhập", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
@@ -697,31 +701,28 @@ namespace QLVT
              }*/
 
             // Lưu chi nhánh hiện tại và chi nhánh chuyển tới, tên nhân viên được chuyển
-            string currentBrand = "";
-            string newBrand = "";
-            int currentPosition = bdsNhanVien.Position;
-            string maNhanVien = ((DataRowView)bdsNhanVien[currentPosition])["MANV"].ToString();
-
+            string currBrand;
+            string new_Brand;
             if (chiNhanh.Contains("1"))
             {
-                currentBrand = "CN2";
-                newBrand = "CN1";
+                currBrand = "CN2";
+                new_Brand = "CN1";
             }
             else if (chiNhanh.Contains("2"))
             {
-                currentBrand = "CN1";
-                newBrand = "CN2";
+                currBrand = "CN1";
+                new_Brand = "CN2";
             }
             else
             {
                 MessageBox.Show("Mã chi nhánh không hợp lệ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            Console.WriteLine("Chi nhánh hiện tại: " + currentBrand);
-            Console.WriteLine("Chi nhánh mới: " + newBrand);
+            Console.WriteLine("Chi nhánh hiện tại: " + currBrand);
+            Console.WriteLine("Chi nhánh mới: " + new_Brand);
 
             // Lưu truy vấn để hoàn tác
-            string undoQuery = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + currentBrand + "'";
+            string undoQuery = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + currBrand + "'";
             undoStack.Push(undoQuery);
 
             // Lấy tên chi nhánh chuyển tới để làm tính năng hoàn tác
@@ -729,18 +730,17 @@ namespace QLVT
             Console.WriteLine("Ten server con lai" + Program.otherServerName);
 
             // Thực hiện chức năng chuyển chi nhánh, dùng SP
-            string query = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + newBrand + "'";
-
-            SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
+            string query = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + new_Brand + "'";
+            _ = new SqlCommand(query, Program.conn);
             try
             {
                 Program.myReader = Program.ExecSqlDataReader(query);
-                ThongBao("Chuyển chi nhánh thành công");
                 // Nếu không có kết quả trả về thì kết thúc
                 if (Program.myReader == null)
                 {
                     return;
                 }
+                ThongBao("Chuyển chi nhánh thành công");
             }
             catch (Exception ex)
             {

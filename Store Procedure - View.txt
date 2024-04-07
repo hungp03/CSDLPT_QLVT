@@ -160,3 +160,36 @@ BEGIN
 END;
 END;
 
+
+*****Tạo tài khoản*****
+CREATE PROC [dbo].[SP_TAOTK]
+--4 tham số: loginname, pass, username, role
+@LOGINNAME VARCHAR(50),
+@PASS varchar(50),
+@USERNAME VARCHAR(50),
+@ROLE VARCHAR(50)    
+AS
+BEGIN
+	DECLARE @RES INT
+	EXEC @RES = sp_addlogin @LOGINNAME, @PASS, 'QLVT'
+	--Nếu @RES == 1 tức loginname đã tồn tại
+	IF (@RES = 1)
+	BEGIN
+		RAISERROR('Login name bị trùng', 16, 1)
+		RETURN
+	END
+	--sp_grantdbaccess: cấp quyền truy cập vào một cơ sở dữ liệu cụ thể cho một tài khoản đăng nhập
+	EXEC @RES = sp_grantdbaccess @LOGINNAME, @USERNAME
+	--Nếu @RES == 1 tức username đã tồn tại
+	IF (@RES = 1)
+	BEGIN
+		EXEC SP_DROPLOGIN @LOGINNAME
+		RAISERROR('NV đã có tài khoản', 16, 2)
+		RETURN
+	END
+	EXEC sp_addrolemember @ROLE, @USERNAME
+	IF @ROLE = 'CONGTY'
+	BEGIN
+		EXEC sp_addsrvrolemember @LOGINNAME, 'SecurityAdmin'
+	END
+END

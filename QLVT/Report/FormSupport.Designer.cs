@@ -111,7 +111,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "FormSupport";
-            this.Text = "FormSupport";
+            this.Text = "Hỗ trợ Report";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormSupport_Load);
             this.ResumeLayout(false);

@@ -39,7 +39,7 @@
             this.btnVatTu = new DevExpress.XtraBars.BarButtonItem();
             this.btnKho = new DevExpress.XtraBars.BarButtonItem();
             this.btnLapPhieu = new DevExpress.XtraBars.BarSubItem();
-            this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonPN = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem6 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem7 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
@@ -74,7 +74,7 @@
             this.btnVatTu,
             this.btnKho,
             this.btnLapPhieu,
-            this.barButtonItem5,
+            this.barButtonPN,
             this.barButtonItem6,
             this.barButtonItem7,
             this.barButtonItem1});
@@ -154,16 +154,17 @@
             this.btnLapPhieu.Id = 10;
             this.btnLapPhieu.ImageOptions.SvgImage = global::QLVT.Properties.Resources.bo_note;
             this.btnLapPhieu.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem5),
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonPN),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem6),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem7)});
             this.btnLapPhieu.Name = "btnLapPhieu";
             // 
-            // barButtonItem5
+            // barButtonPN
             // 
-            this.barButtonItem5.Caption = "Phiếu nhập";
-            this.barButtonItem5.Id = 11;
-            this.barButtonItem5.Name = "barButtonItem5";
+            this.barButtonPN.Caption = "Phiếu nhập";
+            this.barButtonPN.Id = 11;
+            this.barButtonPN.Name = "barButtonPN";
+            this.barButtonPN.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonPN_ItemClick);
             // 
             // barButtonItem6
             // 
@@ -305,7 +306,7 @@
         private DevExpress.XtraBars.BarButtonItem btnVatTu;
         private DevExpress.XtraBars.BarButtonItem btnKho;
         private DevExpress.XtraBars.BarSubItem btnLapPhieu;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem5;
+        private DevExpress.XtraBars.BarButtonItem barButtonPN;
         private DevExpress.XtraBars.BarButtonItem barButtonItem6;
         private DevExpress.XtraBars.BarButtonItem barButtonItem7;
         private System.Windows.Forms.StatusStrip statusStrip1;

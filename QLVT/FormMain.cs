@@ -188,5 +188,20 @@ namespace QLVT
                 form.Show();
             }
         }
+
+        private void barButtonPN_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormPhieuNhap));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormPhieuNhap form = new FormPhieuNhap();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
     }
 }

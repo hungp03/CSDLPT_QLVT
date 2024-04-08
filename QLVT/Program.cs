@@ -68,6 +68,7 @@ namespace QLVT
         public static FormVatTu formVatTu;
         public static FormKho formKho;
         public static FormTaoTK formTaoTK;
+        public static FormPhieuNhap formPhieuNhap;
 
         //subform
         public static FormChonNV formChonNV;

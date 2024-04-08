@@ -55,7 +55,6 @@ namespace QLVT
             this.Validate();
             this.bdsPhieuNhap.EndEdit();
             this.tableAdapterManager.UpdateAll(this.dS1);
-
         }
 
         private void FormPhieuNhap_Load(object sender, EventArgs e)
@@ -108,7 +107,203 @@ namespace QLVT
             }
 
         }
+        private bool validateInputPhieuNhap()
+        {
+            return validateMaPhieuNhap(txtMAPN.Text) &&
+                validateMaNhanVien(txtMANV.Text) &&
+                validateMaKho(txtMAKHO.Text) &&
+                validateMasoDDH(txtMAPN.Text,txtMasoDDH.Text);
+        }
+        private bool validateInputCTPN()
+        {
+            return validateMaVatTuCTPN(dgvCTPN.Rows[position].Cells[1].Value.ToString()) &&
+                validateSoLuongCTPN(dgvCTPN.Rows[position].Cells[2].Value.ToString()) &&
+                validateDonGiaCTPN(dgvCTPN.Rows[position].Cells[3].Value.ToString());
+        }
+        private bool validateMaPhieuNhap(string maPN)
+        {
+            if (string.IsNullOrEmpty(maPN))
+            {
+                ThongBao("Mã phiếu nhập không được bỏ trống");
+                txtMAPN.Focus();
+                return false;
+            }
+            if (!maPN.StartsWith("PN"))
+            {
+                ThongBao("Mã phiếu nhập phải bắt đầu với PN");
+                txtMAPN.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool validateMaNhanVien(string maNV)
+        {
+            if (string.IsNullOrEmpty(maNV))
+            {
+                ThongBao("Vui lòng chọn nhân viên cho phiếu nhập");
+                hOTENComboBox.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool validateMaKho(string maKho)
+        {
+            if(string.IsNullOrEmpty(maKho))
+            {
+                ThongBao("Vui lòng chọn kho cho phiếu nhập");
+                tENKHOComboBox.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool validateMasoDDH(string maPN,string masoDDH)
+        {
+            if (string.IsNullOrEmpty(masoDDH))
+            {
+                ThongBao("Vui lòng chọn đơn đặt hàng cho phiếu nhập");
+                cbxMASODDH.Focus();
+                return false;
+            }
+            int result = ExecuteSP_TracuuDDHPhieuNhap(masoDDH);
+            if (result != 1 && result != 0)
+            {
+                ThongBao("Có lỗi trong quá trình xử lý");
+                cbxMASODDH.Focus();
+                return false;
+            }
 
+            if (result == 1)
+            {
+                ThongBao("Đã có phiếu nhập cho đơn đặt hàng này!");
+                cbxMASODDH.Focus();
+                return false;
+            }
+            return true;
+        }
+        private int ExecuteSP_TracuuDDHPhieuNhap(string masoDDH)
+        {
+            string query = "DECLARE @result int \r\nEXEC @result = [dbo].[SP_KiemtraDDHPhieuNhap] N'"+masoDDH+"'\r\nSELECT @result";
+
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(query);
+
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kiểm tra phiếu nhập thất bại\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Program.myReader.Read();
+            int result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            return result;
+        }
+        private bool validateMaVatTuCTPN(string maVT)
+        {
+            if (string.IsNullOrEmpty(maVT))
+            {
+                ThongBao("Vui lòng chọn vật tư cho chi tiết phiếu nhập");
+                dgvCTPN.Focus();
+                return false;
+            }
+            return true;
+        }
+        private bool validateSoLuongCTPN(string soLuongCTPN)
+        {
+            if (string.IsNullOrEmpty(soLuongCTPN))
+            {
+                ThongBao("Không được bỏ trống số lượng");
+                dgvCTPN.Focus();
+                return false;
+            }
+            int soLuong;
+            if(!int.TryParse(soLuongCTPN,out soLuong) || soLuong <= 0)
+            {
+                ThongBao("Số lượng vật tư phải là một số nguyên dương");
+                dgvCTPN.Focus();
+                return false;
+            }
+            return true;
+
+        }
+        private bool validateDonGiaCTPN(string dongiaCTPN)
+        {
+            if (string.IsNullOrEmpty(dongiaCTPN))
+            {
+                ThongBao("Không được bỏ trống số đơn giá");
+                dgvCTPN.Focus();
+                return false;
+            }
+            float dongia;
+            if (!float.TryParse(dongiaCTPN, out dongia) || dongia <= 0)
+            {
+                ThongBao("Đơn giá vật tư phải > 0");
+                dgvCTPN.Focus();
+                return false;
+            }
+            return true;
+
+        }
+        private int ExecuteSP_TracuuPhieuNhap(String maPN)
+        {
+            String query = "declare @result int\r\nexec @result = sp_KiemTraMaPhieuNhap N'" + maPN + "'\r\nselect @result";
+
+            // Dùng SP để kiểm tra xem có nhân viên với mã nv đang tạo
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(query);
+                // Nếu không có kết quả thì quay về
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Thực thi database thất bại!\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Program.myReader.Read();
+            int result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            return result;
+        }
+        private int ExecuteSP_TracuuCTPN(string maPN, string maVT)
+        {
+            string query =
+                    "DECLARE @result int " +
+                    "EXEC @result = [dbo].[SP_KiemTraCTPN] N'"
+                     + maPN + "', N'" + maVT + "' " +
+                    "SELECT @result";
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(query);
+
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kiểm tra Chi tiết phiếu nhập thất bại\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Program.myReader.Read();
+            int result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            return result;
+        }
         private void hOTENComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (hOTENComboBox.SelectedValue == null) return;
@@ -235,147 +430,163 @@ namespace QLVT
             String maNV = dr["MANV"].ToString();
             String maKho = dr["MAKHO"].ToString();
 
-
-            String query = "declare @result int\r\nexec @result = sp_KiemTraMaPhieuNhap '"+ maPN+"'\r\nselect @result";
-            SqlCommand sqlCommand = new SqlCommand(query,Program.conn);
-
-            // Dùng SP để kiểm tra xem có nhân viên với mã nv đang tạo
-            try
+            if (cheDo.Equals("PN"))
             {
-                Program.myReader = Program.ExecSqlDataReader(query);
-                // Nếu không có kết quả thì quay về
-                if (Program.myReader == null)
+                // kiểm tra đầu vào có hợp lệ hay không
+                if (validateInputPhieuNhap() == false)
                 {
                     return;
                 }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Thực thi database thất bại!\n" + ex.Message, "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                // Console.WriteLine(ex.Message);
-                return;
-            }
-            Program.myReader.Read();
-            int result = int.Parse(Program.myReader.GetValue(0).ToString());
-            Program.myReader.Close();
-
-            //Tìm vị trí con trỏ và vị trí ma phieu nhap
-            int viTriConTro = bdsPhieuNhap.Position;
-            int viTriMaPN = bdsPhieuNhap.Find("MAPN", maPN);
-
-            if(result == 1 && viTriConTro!= viTriMaPN)
-            {
-                MessageBox.Show("Mã phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
-                txtMAPN.Focus();
-                return;
-            }
-            else
-            {
-                DialogResult dlr = MessageBox.Show("Bạn có chắc chắn muốn ghi dữ liệu vào cơ sở dữ liệu không?", "Thông báo", 
-                    MessageBoxButtons.OKCancel,MessageBoxIcon.Question);
-                if(dlr == DialogResult.OK) 
+                int pnResult = ExecuteSP_TracuuPhieuNhap(maPN);
+                //Tìm vị trí con trỏ và vị trí ma phieu nhap
+                int viTriConTro = bdsPhieuNhap.Position;
+                int viTriMaPN = bdsPhieuNhap.Find("MAPN", maPN);
+                if (pnResult != 1 && pnResult != 0)
                 {
-                    try
+                    ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
+                    return;
+                }
+                if (pnResult == 1 && viTriConTro != viTriMaPN)
+                {
+                    MessageBox.Show("Mã phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
+                    txtMAPN.Focus();
+                    return;
+                }
+
+
+            }
+
+            if (cheDo.Equals("CTPN"))
+            {
+                // kiểm tra đầu vào có hợp lệ hay không
+                if (validateInputCTPN() == false)
+                {
+                    return;
+                }
+/*                previousCTPN[maPN] = previousRowDataDict;
+                //Lấy dữ liệu để hoàn tác cho CTPN
+                String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
+                String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();*/
+                DataRowView checkDr = (DataRowView)bdsCTPN[bdsCTPN.Position];
+                int pnResult = ExecuteSP_TracuuCTPN(checkDr["MAPN"].ToString().Trim(), checkDr["MAVT"].ToString().Trim());
+                if (pnResult != 1 && pnResult != 0)
+                {
+                    ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
+                    return;
+                }
+
+                if (pnResult == 1 && isAdding == true)
+                {
+                    MessageBox.Show("Chi tiết phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
+                    txtMAPN.Focus();
+                    return;
+                }
+            }
+
+            
+            DialogResult dlr = MessageBox.Show("Bạn có chắc chắn muốn ghi dữ liệu vào cơ sở dữ liệu không?", "Thông báo", 
+                MessageBoxButtons.OKCancel,MessageBoxIcon.Question);
+            if(dlr == DialogResult.OK) 
+            {
+                try
+                {
+                    // Lưu truy vấn phục vụ hoàn tác
+                    string undoQuery = "";
+                    if (cheDo.Equals("PN"))
                     {
-                        // Lưu truy vấn phục vụ hoàn tác
-                        string undoQuery = "";
-                        if (cheDo.Equals("PN"))
+                        // Trường hợp thêm phiếu nhập
+                        if (isAdding == true)
                         {
-                            // Trường hợp thêm phiếu nhập
-                            if (isAdding == true)
-                            {
-                                undoQuery = "DELETE FROM CTPN WHERE MAPN = N'" + maPN + "'\r\nDELETE FROM PhieuNhap WHERE MAPN= N'" + maPN + "'";
-                            }
-                            // Trường hợp sửa phiếu nhập
-                            else
-                            {
-                                undoQuery = "UPDATE DBO.PhieuNhap " +
-                                "SET " +
-                                "MANV = N'" + maNV + "'," +
-                                "MAKHO = N'" + maKho + "'," +
-                                "NGAY = CAST('" + ngayLap.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
-                                "MasoDDH = N'" + maDDH + "'" +
-                                "WHERE MAPN = N'" + maPN + "'";
-                            }
-                            this.bdsPhieuNhap.EndEdit();
-                            this.phieuNhapTableAdapter.Update(this.dS1.PhieuNhap);
-                            this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
-                            this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
-
+                            undoQuery = "DELETE FROM CTPN WHERE MAPN = N'" + maPN + "'\r\nDELETE FROM PhieuNhap WHERE MAPN= N'" + maPN + "'";
                         }
-                        else if (cheDo.Equals("CTPN"))
+                        // Trường hợp sửa phiếu nhập
+                        else
                         {
-                            previousCTPN[maPN] = previousRowDataDict;
-                            //Lấy dữ liệu để hoàn tác cho CTPN
-                            String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
-                            String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();
-                            if (isAdding == true)
-                            {
-                                DataRowView drCTPN = (DataRowView)bdsCTPN[position];
-                                undoQuery = "DELETE FROM DBO.CTPN " +
-                                "WHERE MAPN = N'" + drCTPN["MAPN"].ToString() + "' " +
-                                "AND MAVT = N'" + drCTPN["MAVT"] + "'";
-
-                            }
-                            else
-                            {
-                                undoQuery = "UPDATE dbo.CTPN\r\n" +
-                                    "SET SOLUONG = CAST(" + previousRowDataDict[position]["SOLUONG"] + " AS INT), DONGIA = CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float)\r\n" +
-                                    "WHERE MAPN = N'" + maPhieuNhap + "' AND MAVT = N'" + maVT + "'";
-                                
-                            }
-                            previousRowDataDict.Remove(position);
-                            this.bdsCTPN.EndEdit();
-                            this.cTPNTableAdapter.Update(this.dS1.CTPN);
-                            this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
-                            this.phieuNhapTableAdapter.Fill(this.dS1.PhieuNhap);
+                            undoQuery = "UPDATE DBO.PhieuNhap " +
+                            "SET " +
+                            "MANV = N'" + maNV + "'," +
+                            "MAKHO = N'" + maKho + "'," +
+                            "NGAY = CAST('" + ngayLap.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
+                            "MasoDDH = N'" + maDDH + "'" +
+                            "WHERE MAPN = N'" + maPN + "'";
                         }
+                        this.bdsPhieuNhap.EndEdit();
+                        this.phieuNhapTableAdapter.Update(this.dS1.PhieuNhap);
+                        this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
 
-                        /*cập nhật lại trạng thái thêm mới cho chắc*/
-                        isAdding = false;
-                        ThongBao("Ghi thành công.");
-                        undoList.Push(undoQuery);
                     }
-                    catch (Exception ex)
+                    else if (cheDo.Equals("CTPN"))
                     {
-                        if (cheDo.Equals("PN"))
+                        previousCTPN[maPN] = previousRowDataDict;
+                        //Lấy dữ liệu để hoàn tác cho CTPN
+                        String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
+                        String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();
+                        if (isAdding == true)
                         {
-                            bdsPhieuNhap.RemoveCurrent();
-                            this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
-                            this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
+                            DataRowView drCTPN = (DataRowView)bdsCTPN[position];
+                            undoQuery = "DELETE FROM DBO.CTPN " +
+                            "WHERE MAPN = N'" + drCTPN["MAPN"].ToString() + "' " +
+                            "AND MAVT = N'" + drCTPN["MAVT"] + "'";
+
                         }
                         else
                         {
-                            bdsCTPN.RemoveCurrent();
-                            this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
-                            this.cTPNTableAdapter.Fill(this.dS1.CTPN);
-                            phieuNhapGridControl.Enabled = true;
+                            undoQuery = "UPDATE dbo.CTPN\r\n" +
+                                "SET SOLUONG = CAST(" + previousRowDataDict[position]["SOLUONG"] + " AS INT), DONGIA = CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float)\r\n" +
+                                "WHERE MAPN = N'" + maPhieuNhap + "' AND MAVT = N'" + maVT + "'";
+                                
                         }
-                        
-                        MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
-                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        previousRowDataDict.Remove(position);
+                        this.bdsCTPN.EndEdit();
+                        this.cTPNTableAdapter.Update(this.dS1.CTPN);
+                        this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.phieuNhapTableAdapter.Fill(this.dS1.PhieuNhap);
                     }
-                    finally
+
+                    /*cập nhật lại trạng thái thêm mới cho chắc*/
+                    isAdding = false;
+                    ThongBao("Ghi thành công.");
+                    undoList.Push(undoQuery);
+                }
+                catch (Exception ex)
+                {
+                    if (cheDo.Equals("PN"))
                     {
-                        txtMAPN.Enabled = false;
-                        dteNGAY.Enabled = true;
-                        // Thay đổi bật/ tắt các nút chức năng
-                        btnThem.Enabled = true;
-                        btnXoa.Enabled = true;
-                        btnGhi.Enabled = true;
-                        btnHoanTac.Enabled = true;
-                        btnLamMoi.Enabled = true;
-                        btnThoat.Enabled = true;
-                        btnChitietPN.Enabled = true;
-
-
-                        dgvCTPN.Enabled = true;
-                        contextMenuStripCTPN.Enabled = true;
-
-                        phieuNhapGridControl.Enabled = true;
-                        groupBoxPhieuNhap.Enabled = true;
+                        bdsPhieuNhap.RemoveCurrent();
+                        this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
                     }
+                    else
+                    {
+                        bdsCTPN.RemoveCurrent();
+                        this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.cTPNTableAdapter.Fill(this.dS1.CTPN);
+                        phieuNhapGridControl.Enabled = true;
+                    }
+                        
+                    MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+                    txtMAPN.Enabled = false;
+                    dteNGAY.Enabled = true;
+                    // Thay đổi bật/ tắt các nút chức năng
+                    btnThem.Enabled = true;
+                    btnXoa.Enabled = true;
+                    btnGhi.Enabled = true;
+                    btnHoanTac.Enabled = true;
+                    btnLamMoi.Enabled = true;
+                    btnThoat.Enabled = true;
+                    btnChitietPN.Enabled = true;
+
+
+                    dgvCTPN.Enabled = true;
+                    contextMenuStripCTPN.Enabled = true;
+
+                    phieuNhapGridControl.Enabled = true;
+                    groupBoxPhieuNhap.Enabled = true;
                 }
             }
         }
@@ -644,5 +855,7 @@ namespace QLVT
         {
             cheDo = "PN";
         }
+
+        
     }
 }

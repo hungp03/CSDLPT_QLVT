@@ -90,6 +90,12 @@
     <Compile Include="FormPhieuNhap.Designer.cs">
       <DependentUpon>FormPhieuNhap.cs</DependentUpon>
     </Compile>
+    <Compile Include="FormPhieuXuat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormPhieuXuat.Designer.cs">
+      <DependentUpon>FormPhieuXuat.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormVatTu.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -160,6 +166,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="FormPhieuNhap.resx">
       <DependentUpon>FormPhieuNhap.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="FormPhieuXuat.resx">
+      <DependentUpon>FormPhieuXuat.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="FormVatTu.resx">
       <DependentUpon>FormVatTu.cs</DependentUpon>

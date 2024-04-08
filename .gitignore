@@ -1,6 +1,7 @@
 [Oo]bj/
 [Bb]in/
 .vs/
+.cr/
 *.suo
 *.user
 *.sln.cache

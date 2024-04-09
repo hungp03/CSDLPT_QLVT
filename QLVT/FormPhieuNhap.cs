@@ -1,5 +1,7 @@
-﻿using DevExpress.CodeParser.Diagnostics;
+﻿using DevExpress.CodeParser;
+using DevExpress.CodeParser.Diagnostics;
 using DevExpress.XtraGrid;
+using DevExpress.XtraPrinting.Native;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -49,14 +51,12 @@ namespace QLVT
         {
             MessageBox.Show(mess, "Thông báo", MessageBoxButtons.OK);
         }
-
         private void phieuNhapBindingNavigatorSaveItem_Click(object sender, EventArgs e)
         {
             this.Validate();
             this.bdsPhieuNhap.EndEdit();
             this.tableAdapterManager.UpdateAll(this.dS1);
         }
-
         private void FormPhieuNhap_Load(object sender, EventArgs e)
         {
 
@@ -116,8 +116,13 @@ namespace QLVT
         }
         private bool validateInputCTPN()
         {
+            if (position == -1)
+            {
+                ThongBao("Vui lòng nhập đầy đủ thông tin");
+                return false;
+            }
             return validateMaVatTuCTPN(dgvCTPN.Rows[position].Cells[1].Value.ToString()) &&
-                validateSoLuongCTPN(dgvCTPN.Rows[position].Cells[2].Value.ToString()) &&
+                validateSoLuongCTPN(txtMasoDDH.Text,dgvCTPN.Rows[position].Cells[1].Value.ToString(),dgvCTPN.Rows[position].Cells[2].Value.ToString()) &&
                 validateDonGiaCTPN(dgvCTPN.Rows[position].Cells[3].Value.ToString());
         }
         private bool validateMaPhieuNhap(string maPN)
@@ -215,7 +220,7 @@ namespace QLVT
             }
             return true;
         }
-        private bool validateSoLuongCTPN(string soLuongCTPN)
+        private bool validateSoLuongCTPN(string masoDDH,string maVT, string soLuongCTPN)
         {
             if (string.IsNullOrEmpty(soLuongCTPN))
             {
@@ -228,6 +233,39 @@ namespace QLVT
             {
                 ThongBao("Số lượng vật tư phải là một số nguyên dương");
                 dgvCTPN.Focus();
+                return false;
+            }
+            soLuong = int.Parse(soLuongCTPN);
+            String query = "declare @result int\r\nexec @result = SP_KiemTraSoluongVattuDDH '"+ masoDDH+"', '" + maVT + "', " + soLuongCTPN + "\r\nselect @result";
+            int result;
+            // Dùng SP để kiểm tra xem có số lượng vật tư trong phiếu nhập có lớn hơn số lượng tồn của vật tư
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(query);
+                // Nếu không có kết quả thì quay về
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    result = -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Thực thi database thất bại!\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Program.myReader.Read();
+            result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            if (result != 1 && result != 0)
+            {
+                ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
+                return false;
+            }
+
+            if (result == 0)
+            {
+                ThongBao("Số lượng vật tư không thể lớn hơn số lượng vật tư trong chi tiết đơn hàng!");
                 return false;
             }
             return true;
@@ -304,6 +342,11 @@ namespace QLVT
             Program.myReader.Close();
             return result;
         }
+        private void ExecuteSP_CapNhatSoLuongVatTu(string maVatTu, int soLuong)
+        {
+            string query = "EXEC SP_CapNhatSoLuongVatTu 'IMPORT','" + maVatTu + "', " + soLuong;
+            int n = Program.ExecSqlNonQuery(query);
+        }
         private void hOTENComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (hOTENComboBox.SelectedValue == null) return;
@@ -313,7 +356,6 @@ namespace QLVT
             }
             catch (Exception) { }
         }
-        
         private void tENKHOComboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (tENKHOComboBox.SelectedValue == null) return;
@@ -332,7 +374,6 @@ namespace QLVT
             }
             catch (Exception) { }
         }
-
         private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbChiNhanh.SelectedValue.ToString() == "System.Data.DataRowView")
@@ -374,7 +415,6 @@ namespace QLVT
                 this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
             }
         }
-
         private void btnThem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // Lấy vị trí của con trỏ
@@ -406,7 +446,6 @@ namespace QLVT
             dgvCTPN.Enabled = false;
             contextMenuStripCTPN.Enabled = false ; 
         }
-
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
@@ -430,57 +469,25 @@ namespace QLVT
             String maNV = dr["MANV"].ToString();
             String maKho = dr["MAKHO"].ToString();
 
-            if (cheDo.Equals("PN"))
+            // kiểm tra đầu vào có hợp lệ hay không
+            if (validateInputPhieuNhap() == false)
             {
-                // kiểm tra đầu vào có hợp lệ hay không
-                if (validateInputPhieuNhap() == false)
-                {
-                    return;
-                }
-                int pnResult = ExecuteSP_TracuuPhieuNhap(maPN);
-                //Tìm vị trí con trỏ và vị trí ma phieu nhap
-                int viTriConTro = bdsPhieuNhap.Position;
-                int viTriMaPN = bdsPhieuNhap.Find("MAPN", maPN);
-                if (pnResult != 1 && pnResult != 0)
-                {
-                    ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
-                    return;
-                }
-                if (pnResult == 1 && viTriConTro != viTriMaPN)
-                {
-                    MessageBox.Show("Mã phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
-                    txtMAPN.Focus();
-                    return;
-                }
-
-
+                return;
             }
-
-            if (cheDo.Equals("CTPN"))
+            int pnResult = ExecuteSP_TracuuPhieuNhap(maPN);
+            //Tìm vị trí con trỏ và vị trí ma phieu nhap
+            int viTriConTro = bdsPhieuNhap.Position;
+            int viTriMaPN = bdsPhieuNhap.Find("MAPN", maPN);
+            if (pnResult != 1 && pnResult != 0)
             {
-                // kiểm tra đầu vào có hợp lệ hay không
-                if (validateInputCTPN() == false)
-                {
-                    return;
-                }
-/*                previousCTPN[maPN] = previousRowDataDict;
-                //Lấy dữ liệu để hoàn tác cho CTPN
-                String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
-                String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();*/
-                DataRowView checkDr = (DataRowView)bdsCTPN[bdsCTPN.Position];
-                int pnResult = ExecuteSP_TracuuCTPN(checkDr["MAPN"].ToString().Trim(), checkDr["MAVT"].ToString().Trim());
-                if (pnResult != 1 && pnResult != 0)
-                {
-                    ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
-                    return;
-                }
-
-                if (pnResult == 1 && isAdding == true)
-                {
-                    MessageBox.Show("Chi tiết phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
-                    txtMAPN.Focus();
-                    return;
-                }
+                ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
+                return;
+            }
+            if (pnResult == 1 && viTriConTro != viTriMaPN)
+            {
+                MessageBox.Show("Mã phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
+                txtMAPN.Focus();
+                return;
             }
 
             
@@ -492,57 +499,26 @@ namespace QLVT
                 {
                     // Lưu truy vấn phục vụ hoàn tác
                     string undoQuery = "";
-                    if (cheDo.Equals("PN"))
+                    // Trường hợp thêm phiếu nhập
+                    if (isAdding == true)
                     {
-                        // Trường hợp thêm phiếu nhập
-                        if (isAdding == true)
-                        {
-                            undoQuery = "DELETE FROM CTPN WHERE MAPN = N'" + maPN + "'\r\nDELETE FROM PhieuNhap WHERE MAPN= N'" + maPN + "'";
-                        }
-                        // Trường hợp sửa phiếu nhập
-                        else
-                        {
-                            undoQuery = "UPDATE DBO.PhieuNhap " +
-                            "SET " +
-                            "MANV = N'" + maNV + "'," +
-                            "MAKHO = N'" + maKho + "'," +
-                            "NGAY = CAST('" + ngayLap.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
-                            "MasoDDH = N'" + maDDH + "'" +
-                            "WHERE MAPN = N'" + maPN + "'";
-                        }
-                        this.bdsPhieuNhap.EndEdit();
-                        this.phieuNhapTableAdapter.Update(this.dS1.PhieuNhap);
-                        this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
-                        this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
-
+                        undoQuery = "DELETE FROM CTPN WHERE MAPN = N'" + maPN + "'\r\nDELETE FROM PhieuNhap WHERE MAPN= N'" + maPN + "'";
                     }
-                    else if (cheDo.Equals("CTPN"))
+                    // Trường hợp sửa phiếu nhập
+                    else
                     {
-                        previousCTPN[maPN] = previousRowDataDict;
-                        //Lấy dữ liệu để hoàn tác cho CTPN
-                        String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
-                        String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();
-                        if (isAdding == true)
-                        {
-                            DataRowView drCTPN = (DataRowView)bdsCTPN[position];
-                            undoQuery = "DELETE FROM DBO.CTPN " +
-                            "WHERE MAPN = N'" + drCTPN["MAPN"].ToString() + "' " +
-                            "AND MAVT = N'" + drCTPN["MAVT"] + "'";
-
-                        }
-                        else
-                        {
-                            undoQuery = "UPDATE dbo.CTPN\r\n" +
-                                "SET SOLUONG = CAST(" + previousRowDataDict[position]["SOLUONG"] + " AS INT), DONGIA = CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float)\r\n" +
-                                "WHERE MAPN = N'" + maPhieuNhap + "' AND MAVT = N'" + maVT + "'";
-                                
-                        }
-                        previousRowDataDict.Remove(position);
-                        this.bdsCTPN.EndEdit();
-                        this.cTPNTableAdapter.Update(this.dS1.CTPN);
-                        this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
-                        this.phieuNhapTableAdapter.Fill(this.dS1.PhieuNhap);
+                        undoQuery = "UPDATE DBO.PhieuNhap " +
+                        "SET " +
+                        "MANV = N'" + maNV + "'," +
+                        "MAKHO = N'" + maKho + "'," +
+                        "NGAY = CAST('" + ngayLap.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
+                        "MasoDDH = N'" + maDDH + "'" +
+                        "WHERE MAPN = N'" + maPN + "'";
                     }
+                    this.bdsPhieuNhap.EndEdit();
+                    this.phieuNhapTableAdapter.Update(this.dS1.PhieuNhap);
+                    this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
+                    this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
 
                     /*cập nhật lại trạng thái thêm mới cho chắc*/
                     isAdding = false;
@@ -551,20 +527,10 @@ namespace QLVT
                 }
                 catch (Exception ex)
                 {
-                    if (cheDo.Equals("PN"))
-                    {
-                        bdsPhieuNhap.RemoveCurrent();
-                        this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
-                        this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
-                    }
-                    else
-                    {
-                        bdsCTPN.RemoveCurrent();
-                        this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
-                        this.cTPNTableAdapter.Fill(this.dS1.CTPN);
-                        phieuNhapGridControl.Enabled = true;
-                    }
-                        
+                    bdsPhieuNhap.RemoveCurrent();
+                    this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
+                    this.phieuNhapTableAdapter.FillBy(this.dS1.PhieuNhap);
+
                     MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
                         MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
@@ -590,12 +556,10 @@ namespace QLVT
                 }
             }
         }
-
         private void btnThoat_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             this.Close();
         }
-
         private void btnLamMoi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             try
@@ -608,7 +572,6 @@ namespace QLVT
                 return;
             }
         }
-
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             DataRowView dr = ((DataRowView)bdsPhieuNhap[bdsPhieuNhap.Position]);
@@ -678,13 +641,10 @@ namespace QLVT
             }
 
         }
-
         private void btnHoanTac_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // Thay đổi bật/ tắt các nút chức năng
-            btnThem.Enabled = true;
             btnXoa.Enabled = true;
-
             btnLamMoi.Enabled = true;
             btnThoat.Enabled = true;
             btnChitietPN.Enabled = true;
@@ -715,13 +675,16 @@ namespace QLVT
                 thêmToolStripMenuItem.Enabled = true;
                 xóaToolStripMenuItem.Enabled = true;
                 bdsCTPN.CancelEdit();
-                bdsCTPN.RemoveCurrent();
+                if (bdsCTPN.Count != 0)
+                {
+                    bdsCTPN.RemoveCurrent();
+                }
                 bdsCTPN.Position = position;
                 this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
                 this.cTPNTableAdapter.Fill(this.dS1.CTPN);
                 return;
             }
-
+            btnThem.Enabled = true;
             // Kiểm tra undoStack trống hay không
             // Trường hợp stack trống thì không thực hiện
             if (undoList.Count == 0)
@@ -743,13 +706,46 @@ namespace QLVT
             }
             else
             {
+                DataRowView dr = (DataRowView)bdsCTPN[bdsCTPN.Position];
+                if (undoSql.Contains("DELETE") && !undoSql.Contains("INSERT"))
+                {
+                    ExecuteSP_CapNhatSoLuongVatTu(dr["MAVT"].ToString().Trim(), int.Parse(dr["SOLUONG"].ToString().Trim()) * (-1));
+                }
+                else if (undoSql.Contains("UPDATE"))
+                {
+                    string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
+                    int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
+                    int currSoluong = int.Parse(dr["SOLUONG"].ToString().Trim());
+                    string currMAVT = dr["MAVT"].ToString().Trim();
+                    ExecuteSP_CapNhatSoLuongVatTu(currMAVT, preSoluong - currSoluong);
+                }
+                else if(!undoSql.Contains("DELETE") && undoSql.Contains("INSERT"))
+                {
+                    string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
+                    string[] tempMAVT = undoSql.Split(new string[] { "MAVT" }, StringSplitOptions.None)[1].Split('\'');
+                    int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
+                    string preMAVT = tempMAVT[3];
+
+                    ExecuteSP_CapNhatSoLuongVatTu(preMAVT.Trim(), preSoluong);
+                }
+                else
+                {
+                    string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
+                    string[] tempMAVT = undoSql.Split(new string[] { "MAVT" }, StringSplitOptions.None)[2].Split('\'');
+                    int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
+                    string preMAVT = tempMAVT[3];
+                    int currSoluong = int.Parse(dr["SOLUONG"].ToString().Trim());
+                    string currMAVT = dr["MAVT"].ToString().Trim();
+
+                    ExecuteSP_CapNhatSoLuongVatTu(currMAVT, currSoluong * (-1));
+                    ExecuteSP_CapNhatSoLuongVatTu(preMAVT, preSoluong);
+                }
                 bdsCTPN.CancelEdit();
                 this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
                 this.cTPNTableAdapter.Fill(this.dS1.CTPN);
                 bdsCTPN.Position = position;
             }
         }
-
         private void thêmToolStripMenuItem_Click(object sender, EventArgs e)
         {
             // Lấy vị trí của con trỏ
@@ -763,16 +759,18 @@ namespace QLVT
             // Thay đổi bật/ tắt các nút chức năng
             btnThem.Enabled = false;
             btnXoa.Enabled = false;
-
             btnLamMoi.Enabled = false;
             btnChitietPN.Enabled = false;
             btnThoat.Enabled = true;
-            
+            btnHoanTac.Enabled = true;
+            btnGhi.Enabled = false;
+
 
             phieuNhapGridControl.Enabled = false;
             groupBoxPhieuNhap.Enabled = false;
             dgvCTPN.Enabled = true;
-            contextMenuStripCTPN.Enabled = false;
+            thêmToolStripMenuItem.Enabled = false;
+            xóaToolStripMenuItem.Enabled = false;
         }
         private void dgvCTPN_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
@@ -808,7 +806,6 @@ namespace QLVT
             position = bdsCTPN.Position;
 
         }
-
         private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
         {
             DataRowView dr = (DataRowView)bdsCTPN[bdsCTPN.Position];
@@ -825,7 +822,7 @@ namespace QLVT
                 {
                     position = bdsCTPN.Position;
                     bdsCTPN.RemoveCurrent();
-
+                    ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
                     this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.cTPNTableAdapter.Update(this.dS1.CTPN);
                     this.cTPNTableAdapter.Fill(this.dS1.CTPN);
@@ -850,12 +847,118 @@ namespace QLVT
                 undoList.Pop();
             }
         }
-
         private void groupBoxPhieuNhap_Enter(object sender, EventArgs e)
         {
             cheDo = "PN";
         }
+        private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
+        {
 
-        
+            // kiểm tra đầu vào có hợp lệ hay không
+            if (validateInputCTPN() == false)
+            {
+                return;
+            }
+            String maPN = txtMAPN.Text.Trim();
+            DataRowView checkDr = (DataRowView)bdsCTPN[bdsCTPN.Position];
+            int pnResult = ExecuteSP_TracuuCTPN(checkDr["MAPN"].ToString().Trim(), checkDr["MAVT"].ToString().Trim());
+            if (pnResult != 1 && pnResult != 0)
+            {
+                ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
+                return;
+            }
+
+            if (pnResult == 1 && isAdding == true)
+            {
+                MessageBox.Show("Chi tiết phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
+                txtMAPN.Focus();
+                return;
+            }
+            DialogResult dlr = MessageBox.Show("Bạn có chắc chắn muốn ghi dữ liệu vào cơ sở dữ liệu không?", "Thông báo",
+                MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+            if (dlr == DialogResult.OK)
+            {
+                try
+                {
+                    //Lưu truy vấn phục vụ hoàn tác
+                    string undoQuery = "";
+                    previousCTPN[maPN] = previousRowDataDict;
+                    if (isAdding == true)
+                    {
+                        DataRowView drCTPN = (DataRowView)bdsCTPN[position];
+                        undoQuery = "DELETE FROM DBO.CTPN " +
+                        "WHERE MAPN = N'" + drCTPN["MAPN"].ToString() + "' " +
+                        "AND MAVT = N'" + drCTPN["MAVT"] + "'";
+                        ExecuteSP_CapNhatSoLuongVatTu(drCTPN["MAVT"].ToString().Trim(), int.Parse(drCTPN["SOLUONG"].ToString().Trim()));
+                    }
+                    else
+                    {
+                        //Lưu dữ liệu để hoàn tác
+                        String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
+                        String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();
+                        int soLuong = int.Parse(previousCTPN[maPN][position]["SOLUONG"].ToString().Trim());
+
+
+                        DataRowView drCTPN = (DataRowView)bdsCTPN[position];
+                        String currMaVT = drCTPN["MAVT"].ToString().Trim();
+                        if (maVT.Equals(currMaVT))
+                        {
+                            undoQuery = "UPDATE dbo.CTPN\r\n" +
+                            "SET SOLUONG = CAST(" + previousRowDataDict[position]["SOLUONG"] + " AS INT), DONGIA = CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float)\r\n" +
+                            "WHERE MAPN = N'" + maPhieuNhap + "' AND MAVT = N'" + maVT + "'";
+                            ExecuteSP_CapNhatSoLuongVatTu(maVT, int.Parse(drCTPN["SOLUONG"].ToString().Trim()) - soLuong);
+                        }
+                        else
+                        {
+                            undoQuery = "DELETE FROM [dbo].[CTPN] \r\n" +
+                                "WHERE MAPN = '" + drCTPN["MAPN"].ToString().Trim() + "' AND MAVT = '" + drCTPN["MAVT"].ToString().Trim() + "'\r\n" +
+                                "INSERT INTO [dbo].[CTPN] ([MAPN],[MAVT],[SOLUONG],[DONGIA])\r\n" +
+                                "VALUES('" + maPhieuNhap + "','" + maVT +
+                                "',CAST(" + soLuong +
+                                " AS INT),CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float))";
+                            ExecuteSP_CapNhatSoLuongVatTu(drCTPN["MAVT"].ToString().Trim(), int.Parse(drCTPN["SOLUONG"].ToString().Trim()));
+                            ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
+                        }
+                    }
+                    previousRowDataDict.Remove(position);
+                    this.bdsCTPN.EndEdit();
+                    this.cTPNTableAdapter.Update(this.dS1.CTPN);
+                    this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
+                    this.phieuNhapTableAdapter.Fill(this.dS1.PhieuNhap);
+
+                    /*cập nhật lại trạng thái thêm mới cho chắc*/
+                    isAdding = false;
+                    ThongBao("Ghi thành công.");
+                    undoList.Push(undoQuery);
+                }
+                catch(Exception ex)
+                {
+                    bdsCTPN.RemoveCurrent();
+                    this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
+                    this.cTPNTableAdapter.Fill(this.dS1.CTPN);
+                    phieuNhapGridControl.Enabled = true;
+                    MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+                finally
+                {
+
+                    // Thay đổi bật/ tắt các nút chức năng
+                    btnThem.Enabled = true;
+                    btnXoa.Enabled = true;
+                    btnGhi.Enabled = true;
+                    btnHoanTac.Enabled = true;
+                    btnLamMoi.Enabled = true;
+                    btnChitietPN.Enabled = true;
+
+                    dgvCTPN.Enabled = true;
+                    phieuNhapGridControl.Enabled = true;
+                    groupBoxPhieuNhap.Enabled = true;
+
+                    thêmToolStripMenuItem.Enabled = true;
+                    xóaToolStripMenuItem.Enabled = true;
+                }
+            }
+        }
     }
 }

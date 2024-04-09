@@ -100,6 +100,7 @@
             this.colMAPN1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.datHangTableAdapter = new QLVT.DS1TableAdapters.DatHangTableAdapter();
             this.dSKHOTableAdapter = new QLVT.DS1TableAdapters.DSKHOTableAdapter();
+            this.ghiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             mAPNLabel1 = new System.Windows.Forms.Label();
             nGAYLabel = new System.Windows.Forms.Label();
             masoDDHLabel = new System.Windows.Forms.Label();
@@ -414,21 +415,22 @@
             this.contextMenuStripCTPN.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripCTPN.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.thêmToolStripMenuItem,
-            this.xóaToolStripMenuItem});
+            this.xóaToolStripMenuItem,
+            this.ghiToolStripMenuItem});
             this.contextMenuStripCTPN.Name = "contextMenuStrip1";
-            this.contextMenuStripCTPN.Size = new System.Drawing.Size(158, 52);
+            this.contextMenuStripCTPN.Size = new System.Drawing.Size(211, 104);
             // 
             // thêmToolStripMenuItem
             // 
             this.thêmToolStripMenuItem.Name = "thêmToolStripMenuItem";
-            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.thêmToolStripMenuItem.Text = "Thêm vật tư";
             this.thêmToolStripMenuItem.Click += new System.EventHandler(this.thêmToolStripMenuItem_Click);
             // 
             // xóaToolStripMenuItem
             // 
             this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.xóaToolStripMenuItem.Text = "Xóa vật tư";
             this.xóaToolStripMenuItem.Click += new System.EventHandler(this.xóaToolStripMenuItem_Click);
             // 
@@ -778,6 +780,13 @@
             // 
             this.dSKHOTableAdapter.ClearBeforeFill = true;
             // 
+            // ghiToolStripMenuItem
+            // 
+            this.ghiToolStripMenuItem.Name = "ghiToolStripMenuItem";
+            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.ghiToolStripMenuItem.Text = "Ghi vật tư";
+            this.ghiToolStripMenuItem.Click += new System.EventHandler(this.ghiToolStripMenuItem_Click);
+            // 
             // FormPhieuNhap
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
@@ -892,5 +901,6 @@
         private DS1TableAdapters.DSKHOTableAdapter dSKHOTableAdapter;
         private System.Windows.Forms.ComboBox tENKHOComboBox;
         private DevExpress.XtraGrid.Columns.GridColumn HOTEN;
+        private System.Windows.Forms.ToolStripMenuItem ghiToolStripMenuItem;
     }
 }

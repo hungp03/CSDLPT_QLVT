@@ -64,8 +64,9 @@
             this.colHOTEN = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colTENKHO = new DevExpress.XtraGrid.Columns.GridColumn();
             this.groupBoxPhieuXuat = new System.Windows.Forms.GroupBox();
-            this.tbxHOTENKH = new DevExpress.XtraEditors.TextEdit();
+            this.txtHOTENKH = new DevExpress.XtraEditors.TextEdit();
             this.tENKHOComboBox = new System.Windows.Forms.ComboBox();
+            this.dSKHOBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.hOTENComboBox = new System.Windows.Forms.ComboBox();
             this.dSNVBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.txtMAKHO = new DevExpress.XtraEditors.TextEdit();
@@ -81,12 +82,12 @@
             this.dataGridViewTextBoxColumn3 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dataGridViewTextBoxColumn4 = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.vattuTableAdapter = new QLVT.DS1TableAdapters.VattuTableAdapter();
-            this.dSKHOBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dSKHOTableAdapter = new QLVT.DS1TableAdapters.DSKHOTableAdapter();
             this.dSNVTableAdapter = new QLVT.DS1TableAdapters.DSNVTableAdapter();
             this.contextMenuStripCTPX = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.thêmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ghiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             tENKHOLabel = new System.Windows.Forms.Label();
             hOTENLabel = new System.Windows.Forms.Label();
             mAKHOLabel = new System.Windows.Forms.Label();
@@ -101,7 +102,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.phieuXuatGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             this.groupBoxPhieuXuat.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbxHOTENKH.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtHOTENKH.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dSKHOBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dSNVBindingSource)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMAKHO.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMANV.Properties)).BeginInit();
@@ -111,7 +113,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.bdsCTPX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCTPX)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.vattuBindingSource)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dSKHOBindingSource)).BeginInit();
             this.contextMenuStripCTPX.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -449,7 +450,7 @@
             // groupBoxPhieuXuat
             // 
             this.groupBoxPhieuXuat.Controls.Add(hOTENKHLabel);
-            this.groupBoxPhieuXuat.Controls.Add(this.tbxHOTENKH);
+            this.groupBoxPhieuXuat.Controls.Add(this.txtHOTENKH);
             this.groupBoxPhieuXuat.Controls.Add(tENKHOLabel);
             this.groupBoxPhieuXuat.Controls.Add(this.tENKHOComboBox);
             this.groupBoxPhieuXuat.Controls.Add(hOTENLabel);
@@ -473,14 +474,14 @@
             this.groupBoxPhieuXuat.Text = "Thông Tin";
             this.groupBoxPhieuXuat.Enter += new System.EventHandler(this.groupBoxPhieuXuat_Enter);
             // 
-            // tbxHOTENKH
+            // txtHOTENKH
             // 
-            this.tbxHOTENKH.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsPhieuXuat, "HOTENKH", true));
-            this.tbxHOTENKH.Location = new System.Drawing.Point(159, 83);
-            this.tbxHOTENKH.MenuManager = this.barManager1;
-            this.tbxHOTENKH.Name = "tbxHOTENKH";
-            this.tbxHOTENKH.Size = new System.Drawing.Size(171, 22);
-            this.tbxHOTENKH.TabIndex = 42;
+            this.txtHOTENKH.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsPhieuXuat, "HOTENKH", true));
+            this.txtHOTENKH.Location = new System.Drawing.Point(159, 83);
+            this.txtHOTENKH.MenuManager = this.barManager1;
+            this.txtHOTENKH.Name = "txtHOTENKH";
+            this.txtHOTENKH.Size = new System.Drawing.Size(171, 22);
+            this.txtHOTENKH.TabIndex = 42;
             // 
             // tENKHOComboBox
             // 
@@ -494,6 +495,11 @@
             this.tENKHOComboBox.TabIndex = 41;
             this.tENKHOComboBox.ValueMember = "MAKHO";
             this.tENKHOComboBox.SelectedIndexChanged += new System.EventHandler(this.tENKHOComboBox_SelectedIndexChanged);
+            // 
+            // dSKHOBindingSource
+            // 
+            this.dSKHOBindingSource.DataMember = "DSKHO";
+            this.dSKHOBindingSource.DataSource = this.dS1;
             // 
             // hOTENComboBox
             // 
@@ -634,11 +640,6 @@
             // 
             this.vattuTableAdapter.ClearBeforeFill = true;
             // 
-            // dSKHOBindingSource
-            // 
-            this.dSKHOBindingSource.DataMember = "DSKHO";
-            this.dSKHOBindingSource.DataSource = this.dS1;
-            // 
             // dSKHOTableAdapter
             // 
             this.dSKHOTableAdapter.ClearBeforeFill = true;
@@ -652,23 +653,31 @@
             this.contextMenuStripCTPX.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripCTPX.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.thêmToolStripMenuItem,
-            this.xóaToolStripMenuItem});
+            this.xóaToolStripMenuItem,
+            this.ghiToolStripMenuItem});
             this.contextMenuStripCTPX.Name = "contextMenuStrip1";
-            this.contextMenuStripCTPX.Size = new System.Drawing.Size(158, 52);
+            this.contextMenuStripCTPX.Size = new System.Drawing.Size(211, 104);
             // 
             // thêmToolStripMenuItem
             // 
             this.thêmToolStripMenuItem.Name = "thêmToolStripMenuItem";
-            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.thêmToolStripMenuItem.Text = "Thêm vật tư";
             this.thêmToolStripMenuItem.Click += new System.EventHandler(this.thêmToolStripMenuItem_Click);
             // 
             // xóaToolStripMenuItem
             // 
             this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
             this.xóaToolStripMenuItem.Text = "Xóa vật tư";
             this.xóaToolStripMenuItem.Click += new System.EventHandler(this.xóaToolStripMenuItem_Click);
+            // 
+            // ghiToolStripMenuItem
+            // 
+            this.ghiToolStripMenuItem.Name = "ghiToolStripMenuItem";
+            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.ghiToolStripMenuItem.Text = "Ghi vật tư";
+            this.ghiToolStripMenuItem.Click += new System.EventHandler(this.ghiToolStripMenuItem_Click);
             // 
             // FormPhieuXuat
             // 
@@ -697,7 +706,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
             this.groupBoxPhieuXuat.ResumeLayout(false);
             this.groupBoxPhieuXuat.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.tbxHOTENKH.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtHOTENKH.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.dSKHOBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dSNVBindingSource)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMAKHO.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMANV.Properties)).EndInit();
@@ -707,7 +717,6 @@
             ((System.ComponentModel.ISupportInitialize)(this.bdsCTPX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCTPX)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.vattuBindingSource)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.dSKHOBindingSource)).EndInit();
             this.contextMenuStripCTPX.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -764,9 +773,10 @@
         private System.Windows.Forms.BindingSource dSNVBindingSource;
         private DS1TableAdapters.DSNVTableAdapter dSNVTableAdapter;
         private System.Windows.Forms.Label mAPNLabel1;
-        private DevExpress.XtraEditors.TextEdit tbxHOTENKH;
+        private DevExpress.XtraEditors.TextEdit txtHOTENKH;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripCTPX;
         private System.Windows.Forms.ToolStripMenuItem thêmToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem ghiToolStripMenuItem;
     }
 }

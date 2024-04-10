@@ -122,11 +122,23 @@
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Report\FormDanhMucVatTu.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\FormDanhMucVatTu.Designer.cs">
+      <DependentUpon>FormDanhMucVatTu.cs</DependentUpon>
+    </Compile>
     <Compile Include="Report\FormSupport.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Report\FormSupport.Designer.cs">
       <DependentUpon>FormSupport.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\ReportDMVattu.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\ReportDMVattu.Designer.cs">
+      <DependentUpon>ReportDMVattu.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\ReportDSNV.cs">
       <SubType>Component</SubType>
@@ -184,8 +196,14 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Report\FormDanhMucVatTu.resx">
+      <DependentUpon>FormDanhMucVatTu.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Report\FormSupport.resx">
       <DependentUpon>FormSupport.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\ReportDMVattu.resx">
+      <DependentUpon>ReportDMVattu.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\ReportDSNV.resx">
       <DependentUpon>ReportDSNV.cs</DependentUpon>

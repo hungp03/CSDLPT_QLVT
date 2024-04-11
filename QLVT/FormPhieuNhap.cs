@@ -27,6 +27,7 @@ namespace QLVT
 
         //Undo -> dùng để hoàn tác dữ liệu nếu lỡ có thao tác không mong muốn
         Stack undoList = new Stack();
+        Stack undoIndex = new Stack();
 
         BindingSource bds = null;
         GridControl gc = null;
@@ -97,6 +98,8 @@ namespace QLVT
                 btnXoa.Enabled = false;
                 btnHoanTac.Enabled = false;
                 groupBoxPhieuNhap.Enabled = false;
+                dgvCTPN.Enabled = false;
+                contextMenuStripCTPN.Enabled = false;
             }
 
             //Phân quyền nhóm CHINHANH-USER có thể thao tác với dữ liệu
@@ -669,7 +672,7 @@ namespace QLVT
                 bdsPhieuNhap.Position = position;
                 return;
             }
-            else if(isAdding == true && contextMenuStripCTPN.Enabled == false && cheDo.Equals("CTPN"))
+            else if(isAdding == true && thêmToolStripMenuItem.Enabled == false && cheDo.Equals("CTPN"))
             {
                 contextMenuStripCTPN.Enabled = true;
                 thêmToolStripMenuItem.Enabled = true;
@@ -696,6 +699,7 @@ namespace QLVT
             
             // Tạo một String để lưu truy vấn được lấy ra từ stack
             String undoSql = undoList.Pop().ToString();
+            int undoPosition =int.Parse(undoIndex.Pop().ToString());
             int n = Program.ExecSqlNonQuery(undoSql);
             if (cheDo.Equals("PN"))
             {
@@ -706,44 +710,62 @@ namespace QLVT
             }
             else
             {
-                DataRowView dr = (DataRowView)bdsCTPN[bdsCTPN.Position];
-                if (undoSql.Contains("DELETE") && !undoSql.Contains("INSERT"))
+                using (SqlConnection connection = new SqlConnection(Program.conStr))
                 {
-                    ExecuteSP_CapNhatSoLuongVatTu(dr["MAVT"].ToString().Trim(), int.Parse(dr["SOLUONG"].ToString().Trim()) * (-1));
-                }
-                else if (undoSql.Contains("UPDATE"))
-                {
-                    string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
-                    int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
-                    int currSoluong = int.Parse(dr["SOLUONG"].ToString().Trim());
-                    string currMAVT = dr["MAVT"].ToString().Trim();
-                    ExecuteSP_CapNhatSoLuongVatTu(currMAVT, preSoluong - currSoluong);
-                }
-                else if(!undoSql.Contains("DELETE") && undoSql.Contains("INSERT"))
-                {
-                    string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
-                    string[] tempMAVT = undoSql.Split(new string[] { "MAVT" }, StringSplitOptions.None)[1].Split('\'');
-                    int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
-                    string preMAVT = tempMAVT[3];
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+                    try
+                    {
+                        DataRowView dr = (DataRowView)bdsCTPN[undoPosition];
+                        if (undoSql.Contains("DELETE") && !undoSql.Contains("INSERT"))
+                        {
+                            ExecuteSP_CapNhatSoLuongVatTu(dr["MAVT"].ToString().Trim(), int.Parse(dr["SOLUONG"].ToString().Trim()) * (-1));
+                        }
+                        else if (undoSql.Contains("UPDATE"))
+                        {
+                            string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
+                            int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
+                            int currSoluong = int.Parse(dr["SOLUONG"].ToString().Trim());
+                            string currMAVT = dr["MAVT"].ToString().Trim();
+                            ExecuteSP_CapNhatSoLuongVatTu(currMAVT, preSoluong - currSoluong);
+                        }
+                        else if (!undoSql.Contains("DELETE") && undoSql.Contains("INSERT"))
+                        {
+                            string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
+                            string[] tempMAVT = undoSql.Split(new string[] { "MAVT" }, StringSplitOptions.None)[1].Split('\'');
+                            int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
+                            string preMAVT = tempMAVT[3];
 
-                    ExecuteSP_CapNhatSoLuongVatTu(preMAVT.Trim(), preSoluong);
-                }
-                else
-                {
-                    string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
-                    string[] tempMAVT = undoSql.Split(new string[] { "MAVT" }, StringSplitOptions.None)[2].Split('\'');
-                    int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
-                    string preMAVT = tempMAVT[3];
-                    int currSoluong = int.Parse(dr["SOLUONG"].ToString().Trim());
-                    string currMAVT = dr["MAVT"].ToString().Trim();
+                            ExecuteSP_CapNhatSoLuongVatTu(preMAVT.Trim(), preSoluong);
+                        }
+                        else
+                        {
+                            string[] tempSoLuong = undoSql.Split(new string[] { "CAST" }, StringSplitOptions.None)[1].Split(new string[] { "AS" }, StringSplitOptions.None);
+                            string[] tempMAVT = undoSql.Split(new string[] { "MAVT" }, StringSplitOptions.None)[2].Split('\'');
+                            int preSoluong = int.Parse(tempSoLuong[0].Replace("(", "").Trim());
+                            string preMAVT = tempMAVT[3];
+                            int currSoluong = int.Parse(dr["SOLUONG"].ToString().Trim());
+                            string currMAVT = dr["MAVT"].ToString().Trim();
 
-                    ExecuteSP_CapNhatSoLuongVatTu(currMAVT, currSoluong * (-1));
-                    ExecuteSP_CapNhatSoLuongVatTu(preMAVT, preSoluong);
+                            ExecuteSP_CapNhatSoLuongVatTu(currMAVT, currSoluong * (-1));
+                            ExecuteSP_CapNhatSoLuongVatTu(preMAVT, preSoluong);
+                        }
+                        bdsCTPN.CancelEdit();
+                        this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.cTPNTableAdapter.Fill(this.dS1.CTPN);
+                        bdsCTPN.Position = position;
+                        transaction.Commit();
+                    }
+                    catch (Exception)
+                    {
+                        if(transaction != null)
+                        {
+                            transaction.Rollback();
+                        }
+                        ThongBao("Có lỗi xảy ra trong quá trình thực hiện không thể hoàn tất việc hoàn tác");
+                    }
+                    
                 }
-                bdsCTPN.CancelEdit();
-                this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
-                this.cTPNTableAdapter.Fill(this.dS1.CTPN);
-                bdsCTPN.Position = position;
             }
         }
         private void thêmToolStripMenuItem_Click(object sender, EventArgs e)
@@ -816,35 +838,50 @@ namespace QLVT
             String undoQuery = "INSERT INTO dbo.CTPN(MAPN,MAVT,SOLUONG,DONGIA)\r\n" +
                 "VALUES(N'"+maPN+"',N'"+maVT+"',CAST("+soLuong+" AS INT),CAST("+donGia+" AS float))";
             undoList.Push(undoQuery);
+            undoIndex.Push(bdsCTPN.Position);
             if (MessageBox.Show("Bạn có muốn xóa chi tiết phiếu nhập này không","Thông báo",MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
-                try
+                using (SqlConnection connection = new SqlConnection(Program.conStr))
                 {
-                    position = bdsCTPN.Position;
-                    bdsCTPN.RemoveCurrent();
-                    ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
-                    this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
-                    this.cTPNTableAdapter.Update(this.dS1.CTPN);
-                    this.cTPNTableAdapter.Fill(this.dS1.CTPN);
-                    /*Cap nhat lai do ben tren can tao cau truy van nen da dat dangThemMoi = true*/
-                    isAdding = false;
-                    ThongBao("Xóa chi tiết phiếu nhập thành công");
-                    btnHoanTac.Enabled = true;
+                    connection.Open();
+                    SqlTransaction transaction = connection.BeginTransaction();
+                    try
+                    {
+                        position = bdsCTPN.Position;
+                        bdsCTPN.RemoveCurrent();
+                        ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
+                        this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.cTPNTableAdapter.Update(this.dS1.CTPN);
+                        this.cTPNTableAdapter.Fill(this.dS1.CTPN);
+                  
+                        transaction.Commit();
+
+                        /*Cap nhat lai do ben tren can tao cau truy van nen da dat dangThemMoi = true*/
+                        isAdding = false;
+                        btnHoanTac.Enabled = true;
+                        ThongBao("Xóa chi tiết phiếu nhập thành công");
+                    }
+                    catch (Exception ex)
+                    {
+                        if(transaction != null)
+                        {
+                            transaction.Rollback();
+                        }
+                        ThongBao("Lỗi xóa chi tiết phiếu nhập! " + ex.Message);
+                        this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.cTPNTableAdapter.Update(this.dS1.CTPN);
+                        this.cTPNTableAdapter.Fill(this.dS1.CTPN);
+                        // Trả lại vị trí cũ của nhân viên xóa bị lỗi
+                        bdsCTPN.Position = position;
+                        return;
+                    }
                 }
-                catch(Exception ex)
-                {
-                    ThongBao("Lỗi xóa chi tiết phiếu nhập! " + ex.Message);
-                    this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
-                    this.cTPNTableAdapter.Update(this.dS1.CTPN);
-                    this.cTPNTableAdapter.Fill(this.dS1.CTPN);
-                    // Trả lại vị trí cũ của nhân viên xóa bị lỗi
-                    bdsCTPN.Position = position;
-                    return;
-                }
+                    
             }
             else
             {
                 undoList.Pop();
+                undoIndex.Pop();
             }
         }
         private void groupBoxPhieuNhap_Enter(object sender, EventArgs e)
@@ -878,85 +915,102 @@ namespace QLVT
                 MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
             if (dlr == DialogResult.OK)
             {
-                try
+                using (SqlConnection connection = new SqlConnection(Program.conStr))
                 {
-                    //Lưu truy vấn phục vụ hoàn tác
-                    string undoQuery = "";
-                    previousCTPN[maPN] = previousRowDataDict;
-                    if (isAdding == true)
+                    connection.Open();
+                    // Bắt đầu transaction
+                    SqlTransaction transaction = connection.BeginTransaction();
+                    
+                    try
                     {
-                        DataRowView drCTPN = (DataRowView)bdsCTPN[position];
-                        undoQuery = "DELETE FROM DBO.CTPN " +
-                        "WHERE MAPN = N'" + drCTPN["MAPN"].ToString() + "' " +
-                        "AND MAVT = N'" + drCTPN["MAVT"] + "'";
-                        ExecuteSP_CapNhatSoLuongVatTu(drCTPN["MAVT"].ToString().Trim(), int.Parse(drCTPN["SOLUONG"].ToString().Trim()));
-                    }
-                    else
-                    {
-                        //Lưu dữ liệu để hoàn tác
-                        String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
-                        String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();
-                        int soLuong = int.Parse(previousCTPN[maPN][position]["SOLUONG"].ToString().Trim());
+                        //Lưu truy vấn phục vụ hoàn tác
 
-
-                        DataRowView drCTPN = (DataRowView)bdsCTPN[position];
-                        String currMaVT = drCTPN["MAVT"].ToString().Trim();
-                        if (maVT.Equals(currMaVT))
+                        string undoQuery = "";
+                        previousCTPN[maPN] = previousRowDataDict;
+                        if (isAdding == true)
                         {
-                            undoQuery = "UPDATE dbo.CTPN\r\n" +
-                            "SET SOLUONG = CAST(" + previousRowDataDict[position]["SOLUONG"] + " AS INT), DONGIA = CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float)\r\n" +
-                            "WHERE MAPN = N'" + maPhieuNhap + "' AND MAVT = N'" + maVT + "'";
-                            ExecuteSP_CapNhatSoLuongVatTu(maVT, int.Parse(drCTPN["SOLUONG"].ToString().Trim()) - soLuong);
+                            DataRowView drCTPN = (DataRowView)bdsCTPN[position];
+                            undoQuery = "DELETE FROM DBO.CTPN " +
+                            "WHERE MAPN = N'" + drCTPN["MAPN"].ToString() + "' " +
+                            "AND MAVT = N'" + drCTPN["MAVT"] + "'";
+                            ExecuteSP_CapNhatSoLuongVatTu(drCTPN["MAVT"].ToString().Trim(), int.Parse(drCTPN["SOLUONG"].ToString().Trim()));
                         }
                         else
                         {
-                            undoQuery = "DELETE FROM [dbo].[CTPN] \r\n" +
-                                "WHERE MAPN = '" + drCTPN["MAPN"].ToString().Trim() + "' AND MAVT = '" + drCTPN["MAVT"].ToString().Trim() + "'\r\n" +
-                                "INSERT INTO [dbo].[CTPN] ([MAPN],[MAVT],[SOLUONG],[DONGIA])\r\n" +
-                                "VALUES('" + maPhieuNhap + "','" + maVT +
-                                "',CAST(" + soLuong +
-                                " AS INT),CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float))";
-                            ExecuteSP_CapNhatSoLuongVatTu(drCTPN["MAVT"].ToString().Trim(), int.Parse(drCTPN["SOLUONG"].ToString().Trim()));
-                            ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
+                            //Lưu dữ liệu để hoàn tác
+                            String maPhieuNhap = previousCTPN[maPN][position]["MAPN"].ToString().Trim();
+                            String maVT = previousCTPN[maPN][position]["MAVT"].ToString().Trim();
+                            int soLuong = int.Parse(previousCTPN[maPN][position]["SOLUONG"].ToString().Trim());
+
+
+                            DataRowView drCTPN = (DataRowView)bdsCTPN[position];
+                            String currMaVT = drCTPN["MAVT"].ToString().Trim();
+                            if (maVT.Equals(currMaVT))
+                            {
+                                undoQuery = "UPDATE dbo.CTPN\r\n" +
+                                "SET SOLUONG = CAST(" + previousRowDataDict[position]["SOLUONG"] + " AS INT), DONGIA = CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float)\r\n" +
+                                "WHERE MAPN = N'" + maPhieuNhap + "' AND MAVT = N'" + maVT + "'";
+                                ExecuteSP_CapNhatSoLuongVatTu(maVT, int.Parse(drCTPN["SOLUONG"].ToString().Trim()) - soLuong);
+                            }
+                            else
+                            {
+                                undoQuery = "DELETE FROM [dbo].[CTPN] \r\n" +
+                                    "WHERE MAPN = '" + drCTPN["MAPN"].ToString().Trim() + "' AND MAVT = '" + drCTPN["MAVT"].ToString().Trim() + "'\r\n" +
+                                    "INSERT INTO [dbo].[CTPN] ([MAPN],[MAVT],[SOLUONG],[DONGIA])\r\n" +
+                                    "VALUES('" + maPhieuNhap + "','" + maVT +
+                                    "',CAST(" + soLuong +
+                                    " AS INT),CAST(" + previousRowDataDict[position]["DONGIA"] + " AS float))";
+                                ExecuteSP_CapNhatSoLuongVatTu(drCTPN["MAVT"].ToString().Trim(), int.Parse(drCTPN["SOLUONG"].ToString().Trim()));
+                                ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
+                            }
                         }
+                        previousRowDataDict.Remove(position);
+                        this.bdsCTPN.EndEdit();
+                        this.cTPNTableAdapter.Update(this.dS1.CTPN);
+
+
+                        //Hoàn tất thao tác
+                        transaction.Commit();
+
+                        /*cập nhật lại trạng thái thêm mới cho chắc*/
+                        isAdding = false;
+                        ThongBao("Ghi thành công.");
+                        undoList.Push(undoQuery);
+                        undoIndex.Push(position);
                     }
-                    previousRowDataDict.Remove(position);
-                    this.bdsCTPN.EndEdit();
-                    this.cTPNTableAdapter.Update(this.dS1.CTPN);
-                    this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
-                    this.phieuNhapTableAdapter.Fill(this.dS1.PhieuNhap);
+                    catch (Exception ex)
+                    {
+                        // Nếu có lỗi, rollback
+                        if (transaction != null)
+                        {
+                            transaction.Rollback();
+                        }
 
-                    /*cập nhật lại trạng thái thêm mới cho chắc*/
-                    isAdding = false;
-                    ThongBao("Ghi thành công.");
-                    undoList.Push(undoQuery);
-                }
-                catch(Exception ex)
-                {
-                    bdsCTPN.RemoveCurrent();
-                    this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
-                    this.cTPNTableAdapter.Fill(this.dS1.CTPN);
-                    phieuNhapGridControl.Enabled = true;
-                    MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-                finally
-                {
+                        bdsCTPN.RemoveCurrent();
+                        this.cTPNTableAdapter.Connection.ConnectionString = Program.conStr;
+                        this.cTPNTableAdapter.Fill(this.dS1.CTPN);
+                        phieuNhapGridControl.Enabled = true;
+                        MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
+                    finally
+                    {
 
-                    // Thay đổi bật/ tắt các nút chức năng
-                    btnThem.Enabled = true;
-                    btnXoa.Enabled = true;
-                    btnGhi.Enabled = true;
-                    btnHoanTac.Enabled = true;
-                    btnLamMoi.Enabled = true;
-                    btnChitietPN.Enabled = true;
+                        // Thay đổi bật/ tắt các nút chức năng
+                        btnThem.Enabled = true;
+                        btnXoa.Enabled = true;
+                        btnGhi.Enabled = true;
+                        btnHoanTac.Enabled = true;
+                        btnLamMoi.Enabled = true;
+                        btnChitietPN.Enabled = true;
 
-                    dgvCTPN.Enabled = true;
-                    phieuNhapGridControl.Enabled = true;
-                    groupBoxPhieuNhap.Enabled = true;
+                        dgvCTPN.Enabled = true;
+                        phieuNhapGridControl.Enabled = true;
+                        groupBoxPhieuNhap.Enabled = true;
 
-                    thêmToolStripMenuItem.Enabled = true;
-                    xóaToolStripMenuItem.Enabled = true;
+                        thêmToolStripMenuItem.Enabled = true;
+                        xóaToolStripMenuItem.Enabled = true;
+                    }
                 }
             }
         }

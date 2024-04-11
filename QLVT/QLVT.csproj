@@ -122,11 +122,23 @@
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Report\FormChiTietSoLuongTriGiaHangHoa.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\FormChiTietSoLuongTriGiaHangHoa.Designer.cs">
+      <DependentUpon>FormChiTietSoLuongTriGiaHangHoa.cs</DependentUpon>
+    </Compile>
     <Compile Include="Report\FormDanhMucVatTu.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Report\FormDanhMucVatTu.Designer.cs">
       <DependentUpon>FormDanhMucVatTu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\FormDonHangKhongPhieuNhap.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\FormDonHangKhongPhieuNhap.Designer.cs">
+      <DependentUpon>FormDonHangKhongPhieuNhap.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\FormSupport.cs">
       <SubType>Form</SubType>
@@ -134,11 +146,23 @@
     <Compile Include="Report\FormSupport.Designer.cs">
       <DependentUpon>FormSupport.cs</DependentUpon>
     </Compile>
+    <Compile Include="Report\ReportChiTietSoLuongTriGiaHangHoa.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\ReportChiTietSoLuongTriGiaHangHoa.Designer.cs">
+      <DependentUpon>ReportChiTietSoLuongTriGiaHangHoa.cs</DependentUpon>
+    </Compile>
     <Compile Include="Report\ReportDMVattu.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Report\ReportDMVattu.Designer.cs">
       <DependentUpon>ReportDMVattu.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\ReportDonHangKhongPhieuNhap.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\ReportDonHangKhongPhieuNhap.Designer.cs">
+      <DependentUpon>ReportDonHangKhongPhieuNhap.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\ReportDSNV.cs">
       <SubType>Component</SubType>
@@ -196,14 +220,26 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
+    <EmbeddedResource Include="Report\FormChiTietSoLuongTriGiaHangHoa.resx">
+      <DependentUpon>FormChiTietSoLuongTriGiaHangHoa.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Report\FormDanhMucVatTu.resx">
       <DependentUpon>FormDanhMucVatTu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\FormDonHangKhongPhieuNhap.resx">
+      <DependentUpon>FormDonHangKhongPhieuNhap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\FormSupport.resx">
       <DependentUpon>FormSupport.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Report\ReportChiTietSoLuongTriGiaHangHoa.resx">
+      <DependentUpon>ReportChiTietSoLuongTriGiaHangHoa.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Report\ReportDMVattu.resx">
       <DependentUpon>ReportDMVattu.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\ReportDonHangKhongPhieuNhap.resx">
+      <DependentUpon>ReportDonHangKhongPhieuNhap.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\ReportDSNV.resx">
       <DependentUpon>ReportDSNV.cs</DependentUpon>

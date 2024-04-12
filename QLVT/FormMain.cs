@@ -203,5 +203,80 @@ namespace QLVT
                 form.Show();
             }
         }
+
+        private void barButtonPX_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormPhieuXuat));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormPhieuXuat form = new FormPhieuXuat();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
+
+        private void barButtonItem2_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormDanhMucVatTu));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormDanhMucVatTu form = new FormDanhMucVatTu();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
+
+        private void barButtonItem3_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormChiTietSoLuongTriGiaHangHoa));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormChiTietSoLuongTriGiaHangHoa form = new FormChiTietSoLuongTriGiaHangHoa();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
+
+        private void barButtonItem4_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormDonHangKhongPhieuNhap));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormDonHangKhongPhieuNhap form = new FormDonHangKhongPhieuNhap();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
+
+        private void barButtonItem5_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormDonHangKhongPhieuNhap));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormDonHangKhongPhieuNhap form = new FormDonHangKhongPhieuNhap();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
     }
 }

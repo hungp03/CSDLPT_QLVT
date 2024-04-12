@@ -135,7 +135,7 @@ namespace QLVT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Có lỗi xảy ra, thử lại sau");
+                MessageBox.Show("Có lỗi xảy ra, thử lại sau"+ ex.Message);
                 return;
             }
         }

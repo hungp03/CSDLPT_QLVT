@@ -44,12 +44,12 @@
             this.btnGhi = new DevExpress.XtraBars.BarButtonItem();
             this.btnHoanTac = new DevExpress.XtraBars.BarButtonItem();
             this.btnLamMoi = new DevExpress.XtraBars.BarButtonItem();
-            this.btnChitietPN = new DevExpress.XtraBars.BarButtonItem();
             this.btnThoat = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.btnChitietPN = new DevExpress.XtraBars.BarButtonItem();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.cbChiNhanh = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -65,6 +65,7 @@
             this.contextMenuStripCTPN = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.thêmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.ghiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vattuTableAdapter = new QLVT.DS1TableAdapters.VattuTableAdapter();
             this.dSNVTableAdapter = new QLVT.DS1TableAdapters.DSNVTableAdapter();
             this.groupBoxPhieuNhap = new System.Windows.Forms.GroupBox();
@@ -236,7 +237,6 @@
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnGhi, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnHoanTac, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnLamMoi, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
-            new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnChitietPN, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph),
             new DevExpress.XtraBars.LinkPersistInfo(DevExpress.XtraBars.BarLinkUserDefines.PaintStyle, this.btnThoat, DevExpress.XtraBars.BarItemPaintStyle.CaptionGlyph)});
             this.bar1.Text = "Tools";
             // 
@@ -280,13 +280,6 @@
             this.btnLamMoi.Name = "btnLamMoi";
             this.btnLamMoi.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnLamMoi_ItemClick);
             // 
-            // btnChitietPN
-            // 
-            this.btnChitietPN.Caption = "Chi tiết phiếu";
-            this.btnChitietPN.Id = 5;
-            this.btnChitietPN.ImageOptions.SvgImage = global::QLVT.Properties.Resources.bo_note;
-            this.btnChitietPN.Name = "btnChitietPN";
-            // 
             // btnThoat
             // 
             this.btnThoat.Caption = "Thoát";
@@ -326,6 +319,13 @@
             this.barDockControlRight.Location = new System.Drawing.Point(1924, 30);
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 1011);
+            // 
+            // btnChitietPN
+            // 
+            this.btnChitietPN.Caption = "Chi tiết phiếu";
+            this.btnChitietPN.Id = 5;
+            this.btnChitietPN.ImageOptions.SvgImage = global::QLVT.Properties.Resources.bo_note;
+            this.btnChitietPN.Name = "btnChitietPN";
             // 
             // panelControl1
             // 
@@ -414,9 +414,10 @@
             this.contextMenuStripCTPN.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.contextMenuStripCTPN.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.thêmToolStripMenuItem,
-            this.xóaToolStripMenuItem});
+            this.xóaToolStripMenuItem,
+            this.ghiToolStripMenuItem});
             this.contextMenuStripCTPN.Name = "contextMenuStrip1";
-            this.contextMenuStripCTPN.Size = new System.Drawing.Size(158, 52);
+            this.contextMenuStripCTPN.Size = new System.Drawing.Size(158, 76);
             // 
             // thêmToolStripMenuItem
             // 
@@ -431,6 +432,13 @@
             this.xóaToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
             this.xóaToolStripMenuItem.Text = "Xóa vật tư";
             this.xóaToolStripMenuItem.Click += new System.EventHandler(this.xóaToolStripMenuItem_Click);
+            // 
+            // ghiToolStripMenuItem
+            // 
+            this.ghiToolStripMenuItem.Name = "ghiToolStripMenuItem";
+            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.ghiToolStripMenuItem.Text = "Ghi vật tư";
+            this.ghiToolStripMenuItem.Click += new System.EventHandler(this.ghiToolStripMenuItem_Click);
             // 
             // vattuTableAdapter
             // 
@@ -595,7 +603,6 @@
             this.dgvCTPN.Size = new System.Drawing.Size(945, 703);
             this.dgvCTPN.TabIndex = 33;
             this.dgvCTPN.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCTPN_CellContentClick);
-            this.dgvCTPN.CellDoubleClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCTPN_CellContentClick);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -893,5 +900,6 @@
         private DS1TableAdapters.DSKHOTableAdapter dSKHOTableAdapter;
         private System.Windows.Forms.ComboBox tENKHOComboBox;
         private DevExpress.XtraGrid.Columns.GridColumn HOTEN;
+        private System.Windows.Forms.ToolStripMenuItem ghiToolStripMenuItem;
     }
 }

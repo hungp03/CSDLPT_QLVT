@@ -193,3 +193,93 @@ BEGIN
 		EXEC sp_addsrvrolemember @LOGINNAME, 'SecurityAdmin'
 	END
 END
+--*****Kiểm tra mã phiếu nhập dùng chưa*****
+GO
+CREATE PROC [dbo].[SP_KiemTraMaPhieuNhap]
+@MAPN nchar(8)
+AS
+BEGIN
+	DECLARE @result INT
+
+	IF(EXISTS (SELECT * FROM PhieuNhap WHERE MAPN = @MAPN))
+		SET @result = 1 --TON TAI MA PHIEU NHAP
+	ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuNhap WHERE MAPN = @MAPN))
+		SET @result = 1--TON TAI MA PHIEU NHAP
+	ELSE
+		SET @result = 0
+	RETURN @result;
+END;
+--*****Kiểm tra chi tiết phiếu nhập dùng chưa*****
+GO
+CREATE PROC [dbo].[SP_KiemTraCTPN]
+@MAPN NVARCHAR(8), @MAVT NVARCHAR(10)
+AS
+BEGIN
+
+	IF(EXISTS (SELECT * FROM CTPN WHERE MAPN=@MAPN AND MAVT=@MAVT))
+		RETURN 1;
+	IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPN WHERE MAPN=@MAPN AND MAVT=@MAVT))
+		RETURN 1;
+	RETURN 0;
+END;
+--*****Kiểm tra mã phiếu xuất dùng chưa*****
+GO
+CREATE PROC [dbo].[SP_KiemTraMaPhieuXuat]
+@MAPX nchar(8)
+AS
+BEGIN
+	DECLARE @result INT
+
+	IF(EXISTS (SELECT * FROM PhieuXuat WHERE MAPX = @MAPX))
+		SET @result = 1 --TON TAI MA PHIEU XUAT
+	ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuXuat WHERE MAPX = @MAPX))
+		SET @result = 1--TON TAI MA PHIEU XUAT
+	ELSE
+		SET @result = 0
+	RETURN @result;
+END;
+--*****Kiểm tra chi tiết phiếu xuất dùng chưa*****
+GO
+CREATE PROC [dbo].[SP_KiemTraCTPX]
+@MAPX NVARCHAR(8), @MAVT NVARCHAR(10)
+AS
+BEGIN
+
+	IF(EXISTS (SELECT * FROM CTPX WHERE MAPX=@MAPX AND MAVT=@MAVT))
+		RETURN 1;
+	IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPX WHERE MAPX=@MAPX AND MAVT=@MAVT))
+		RETURN 1;
+	RETURN 0;
+END;
+--*****Kiểm tra số lượng vật tư tồn*****
+CREATE PROC SP_KiemTraSoluongVattu
+@MAVT NCHAR(4),@SOLUONG INT
+AS
+BEGIN
+	DECLARE @soLuongTon INT = (SELECT SOLUONGTON FROM Vattu WHERE MAVT=@MAVT)
+	IF @SOLUONG > @soLuongTon
+		RETURN 0
+	RETURN 1
+END;
+
+--*****Một đơn đặt hàng chỉ có 1 phiếu nhập*****
+CREATE PROC [dbo].[SP_KiemtraDDHPhieuNhap]
+@MasoDDH NCHAR(8)
+AS
+BEGIN
+	IF EXISTS (SELECT 1 FROM PhieuNhap WHERE MasoDDH=@MasoDDH)
+		RETURN 1;
+	IF EXISTS (SELECT 1 FROM LINK1.QLVT.DBO.PhieuNhap WHERE MasoDDH=@MasoDDH)
+		RETURN 1;
+	RETURN 0;
+END;
+--*****Số lượng vật tư trong phiếu nhập không được vượt quá số lượng vật tư trong đơn đặt hàng*****
+CREATE PROC [dbo].[SP_KiemTraSoluongVattuDDH]
+@MasoDDH nchar(8),@MAVT nchar(4),@SOLUONG INT
+AS
+BEGIN
+	DECLARE @soLuongMaDDH INT = (SELECT SOLUONG FROM CTDDH WHERE MasoDDH=@MasoDDH AND MAVT=@MAVT)
+	IF @SOLUONG > @soLuongMaDDH
+		RETURN 0
+	RETURN 1
+END;

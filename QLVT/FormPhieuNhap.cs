@@ -20,8 +20,8 @@ namespace QLVT
     {
         public string makho = "";
         string maChiNhanh = "";
-        string brandId = "";
-        string cheDo = "PN";
+        String brandId = "";
+        String cheDo = "PN";
         int position = 0;
         bool isAdding = false;
 
@@ -152,6 +152,12 @@ namespace QLVT
                 hOTENComboBox.Focus();
                 return false;
             }
+            if(maNV != Program.username)
+            {
+                ThongBao("Bạn không thể tạo phiếu nhập cho người khác");
+                hOTENComboBox.Focus();
+                return false;
+            }
             return true;
         }
         private bool validateMaKho(string maKho)
@@ -179,8 +185,9 @@ namespace QLVT
                 cbxMASODDH.Focus();
                 return false;
             }
-
-            if (result == 1)
+            int viTriConTro = bdsPhieuNhap.Position;
+            int viTriMaPN = bdsPhieuNhap.Find("MAPN", maPN);
+            if (result == 1 && viTriConTro != viTriMaPN)
             {
                 ThongBao("Đã có phiếu nhập cho đơn đặt hàng này!");
                 cbxMASODDH.Focus();
@@ -191,6 +198,31 @@ namespace QLVT
         private int ExecuteSP_TracuuDDHPhieuNhap(string masoDDH)
         {
             string query = "DECLARE @result int \r\nEXEC @result = [dbo].[SP_KiemtraDDHPhieuNhap] N'"+masoDDH+"'\r\nSELECT @result";
+
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(query);
+
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kiểm tra phiếu nhập thất bại\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Program.myReader.Read();
+            int result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            return result;
+        }
+        private int ExecuteSP_TracuuVatTuCTPN(string maVT, string masoDDH)
+        {
+            string query = "DECLARE @result int \r\nEXEC @result = [dbo].[SP_KiemTraVattuCTPN] N'" + masoDDH + "',N'" + maVT + "'\r\nSELECT @result";
 
             try
             {
@@ -471,6 +503,7 @@ namespace QLVT
             String maDDH = dr["MasoDDH"].ToString();
             String maNV = dr["MANV"].ToString();
             String maKho = dr["MAKHO"].ToString();
+            
 
             // kiểm tra đầu vào có hợp lệ hay không
             if (validateInputPhieuNhap() == false)
@@ -650,7 +683,6 @@ namespace QLVT
             btnXoa.Enabled = true;
             btnLamMoi.Enabled = true;
             btnThoat.Enabled = true;
-            btnChitietPN.Enabled = true;
 
             phieuNhapGridControl.Enabled = true;
             dgvCTPN.Enabled = true;
@@ -699,7 +731,7 @@ namespace QLVT
             
             // Tạo một String để lưu truy vấn được lấy ra từ stack
             String undoSql = undoList.Pop().ToString();
-            int undoPosition =int.Parse(undoIndex.Pop().ToString());
+
             int n = Program.ExecSqlNonQuery(undoSql);
             if (cheDo.Equals("PN"))
             {
@@ -716,6 +748,7 @@ namespace QLVT
                     SqlTransaction transaction = connection.BeginTransaction();
                     try
                     {
+                        int undoPosition = int.Parse(undoIndex.Pop().ToString());
                         DataRowView dr = (DataRowView)bdsCTPN[undoPosition];
                         if (undoSql.Contains("DELETE") && !undoSql.Contains("INSERT"))
                         {
@@ -901,13 +934,40 @@ namespace QLVT
             int pnResult = ExecuteSP_TracuuCTPN(checkDr["MAPN"].ToString().Trim(), checkDr["MAVT"].ToString().Trim());
             if (pnResult != 1 && pnResult != 0)
             {
-                ThongBao("Có lỗi trong quá trình xử lý mã phiếu nhập");
+                ThongBao("Có lỗi trong quá trình xử lý ghi chi tiết phiếu nhập");
                 return;
             }
 
-            if (pnResult == 1 && isAdding == true)
+            if (pnResult == 1)
             {
-                MessageBox.Show("Chi tiết phiếu nhập đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
+                if (isAdding)
+                {
+                    MessageBox.Show("Chi tiết phiếu nhập này đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
+                    return;
+                }
+                else
+                {
+                    string maVTPre = previousRowDataDict[position]["MAVT"].ToString().Trim();
+                    string maVTNext = checkDr["MAVT"].ToString().Trim();
+                    if (maVTPre != maVTNext)
+                    {
+                        MessageBox.Show("Chi tiết phiếu nhập này đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
+                        return;
+                    }
+                }
+            }
+
+            String masoDDH = ((DataRowView)bdsPhieuNhap[bdsPhieuNhap.Position])["MasoDDH"].ToString().Trim();
+            pnResult = ExecuteSP_TracuuVatTuCTPN(checkDr["MAVT"].ToString().Trim(), masoDDH);
+            if (pnResult != 1 && pnResult != 0)
+            {
+                ThongBao("Có lỗi trong quá trình xử lý ghi chi tiết phiếu nhập");
+                return;
+            }
+
+            if (pnResult == 0)
+            {
+                MessageBox.Show("Vui lòng chọn vật tư đã dặt hàng trong chi tiết đơn đặt hàng!", "Thông báo", MessageBoxButtons.OK);
                 txtMAPN.Focus();
                 return;
             }

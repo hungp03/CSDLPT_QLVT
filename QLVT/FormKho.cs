@@ -136,6 +136,7 @@ namespace QLVT
             txtMacn.Text = maCN;
             txtMakho.Enabled = true;
 
+            btnHoantac.Enabled = true;
             btnThoat.Enabled = btnLammoi.Enabled = btnXoa.Enabled = btnThem.Enabled = false;
             khoGridControl.Enabled = false;
             panelControl2.Enabled = true;
@@ -345,7 +346,7 @@ namespace QLVT
 
         private void btnHoantac_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (isAdding == true && btnThem.Enabled == true)
+            if (isAdding == true && btnThem.Enabled == false)
             {
                 isAdding = false;
                 txtMakho.Enabled = false;
@@ -359,7 +360,6 @@ namespace QLVT
                 panelControl2.Enabled = true;
 
                 bdsKho.CancelEdit();
-                bdsKho.RemoveCurrent();
 
                 bdsKho.Position = position;
                 return;

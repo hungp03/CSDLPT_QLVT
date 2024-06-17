@@ -117,35 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <assembly alias="System.Windows.Forms" name="System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089" />
-  <data name="bo_note" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\bo_note.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="movepivottable" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\movepivottable.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="actions_addcircled" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\actions_addcircled.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="save" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\save.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="actions_refresh" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\actions_refresh.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="undo" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\undo.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="actions_trash" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\actions_trash.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="clearheaderandfooter" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\clearheaderandfooter.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="reviewers" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\reviewers.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
-  </data>
-  <data name="actions_label" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\actions_label.svg;DevExpress.Utils.Svg.SvgImage, DevExpress.Data.v22.1, Version=22.1.3.0, Culture=neutral, PublicKeyToken=b88d1754d700e49a</value>
+  <data name="sqlDataSource1.ResultSchemaSerializable" xml:space="preserve">
+    <value>PERhdGFTZXQgTmFtZT0ic3FsRGF0YVNvdXJjZTEiPjxWaWV3IE5hbWU9InNwX0hvYXREb25nTmhhblZpZW4iPjxGaWVsZCBOYW1lPSJUSEFOR05BTSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJOR0FZIiBUeXBlPSJEYXRlVGltZSIgLz48RmllbGQgTmFtZT0iTUFQSElFVSIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJMT0FJUEhJRVUiIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iSE9URU5LSCIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJURU5WVCIgVHlwZT0iU3RyaW5nIiAvPjxGaWVsZCBOYW1lPSJURU5LSE8iIFR5cGU9IlN0cmluZyIgLz48RmllbGQgTmFtZT0iU09MVU9ORyIgVHlwZT0iSW50MzIiIC8+PEZpZWxkIE5hbWU9IkRPTkdJQSIgVHlwZT0iRG91YmxlIiAvPjxGaWVsZCBOYW1lPSJUSEFOSFRJRU4iIFR5cGU9IkRvdWJsZSIgLz48L1ZpZXc+PC9EYXRhU2V0Pg==</value>
   </data>
 </root>

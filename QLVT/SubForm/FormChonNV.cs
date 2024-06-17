@@ -49,8 +49,10 @@ namespace QLVT.SubForm
         {
             DataRowView drv = ((DataRowView)(bdsNhanVien.Current));
             string maNhanVien = drv["MANV"].ToString().Trim();
+            string tenNV = drv["HO"].ToString().Trim() + " " + drv["TEN"].ToString().Trim();
             //Console.WriteLine(maNhanVien);
             Program.selectedEmp = maNhanVien;
+            Program.empName = tenNV;
             this.Close();
         }
 

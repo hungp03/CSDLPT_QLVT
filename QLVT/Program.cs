@@ -1,16 +1,11 @@
-﻿using DevExpress.Skins;
-using DevExpress.UserSkins;
-using QLVT.Report;
+﻿using QLVT.Report;
 using QLVT.SubForm;
 
 //using QLVT.SubForm;
 using System;
-using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
-using System.Linq;
 using System.Windows.Forms;
-using static DevExpress.XtraEditors.Mask.MaskSettings;
 
 namespace QLVT
 {
@@ -26,7 +21,7 @@ namespace QLVT
 
         //Chuỗi kết nối về server
         public static string conStr = "";
-        public static string conPublisher = "Data Source=LAPTOP-IG8QK02F;Initial Catalog=QLVT;User ID=HTKN;Password=123456;TrustServerCertificate=True";
+        public static string conPublisher = "Data Source=HUNG-PC;Initial Catalog=QLVT;User ID=HTKN;Password=123456;TrustServerCertificate=True";
 
         //Tên server (phân mảnh) kết nối tới
         public static string servername = "";
@@ -38,6 +33,7 @@ namespace QLVT
         public static string otherServerName = "";
         //nhân viên đang được chọn cho việc tạo tài khoản
         public static string selectedEmp = "";
+        public static string empName = "";
 
         //Remote login
         public static string database = "QLVT";
@@ -75,14 +71,12 @@ namespace QLVT
         public static FormChuyenCN formChuyenCN;
 
         //report form
-        public static FormSupport formSupport;
+        public static FormSupportDSNV formSupport;
         public static FormDanhMucVatTu formDanhMucVatTu;
 
         /* Hàm ExecSqlDataReader thực hiện câu lệnh mà dữ liệu trả về chỉ dùng để xem
-         * không thao tác, chỉnh sửa.
-         *
-         *  SELECT * FROM view_DSPhanManh
-         **********************************************/
+         * không thao tác, chỉnh sửa
+         */
         public static SqlDataReader ExecSqlDataReader(string strLenh)
         {
             SqlDataReader myreader;

@@ -383,4 +383,60 @@ BEGIN
 	ORDER BY DH.NGAY
 END;
 
+******SP_HOẠT ĐỘNG NHÂN VIÊN******
+CREATE PROCEDURE [dbo].[sp_HoatDongNhanVien]
+@MANV INT, 
+@FROM DATE, 
+@TO DATE
+AS
+BEGIN
+    -- phiếu nhập
+    SELECT 
+        FORMAT(PN.NGAY, 'MM-yyyy') AS THANGNAM,
+        PN.NGAY, 
+        PN.MAPN AS MAPHIEU,
+		N'Nhập' AS LOAIPHIEU,
+        N'Không' AS HOTENKH, 
+        VT.TENVT, 
+        KHO.TENKHO, 
+        CTPN.SOLUONG, 
+        CTPN.DONGIA, 
+        CTPN.SOLUONG * CTPN.DONGIA AS THANHTIEN
+    FROM 
+        (SELECT MAPN, NGAY, MAKHO FROM dbo.PhieuNhap WHERE MANV = @MANV AND NGAY BETWEEN @FROM AND @TO) PN,
+        CTPN,
+        (SELECT TENVT, MAVT FROM Vattu) VT,
+        (SELECT TENKHO, MAKHO FROM Kho) KHO
+    WHERE 
+        VT.MAVT = CTPN.MAVT 
+        AND CTPN.MAPN = PN.MAPN 
+        AND PN.MAKHO = KHO.MAKHO
 
+    UNION ALL
+
+    -- phiếu xuất
+    SELECT 
+        FORMAT(PX.NGAY, 'MM-yyyy') AS THANGNAM,
+        PX.NGAY, 
+        PX.MAPX AS MAPHIEU, 
+		N'Xuất' AS LOAIPHIEU,
+        PX.HOTENKH, 
+        VT.TENVT, 
+        KHO.TENKHO, 
+        CTPX.SOLUONG, 
+        CTPX.DONGIA, 
+        CTPX.SOLUONG * CTPX.DONGIA AS THANHTIEN
+    FROM 
+        (SELECT MAPX, NGAY, HOTENKH, MAKHO FROM dbo.PhieuXuat WHERE MANV = @MANV AND NGAY BETWEEN @FROM AND @TO) PX,
+        CTPX,
+        (SELECT TENVT, MAVT FROM Vattu) VT,
+        (SELECT TENKHO, MAKHO FROM Kho) KHO
+    WHERE 
+        VT.MAVT = CTPX.MAVT 
+        AND CTPX.MAPX = PX.MAPX 
+        AND PX.MAKHO = KHO.MAKHO
+
+    ORDER BY NGAY, MAPHIEU, TENVT
+END
+
+GO

@@ -20,8 +20,8 @@ namespace QLVT
     {
         public string makho = "";
         string maChiNhanh = "";
-        String brandId = "";
-        String cheDo = "PN";
+        string brandId = "";
+        string cheDo = "PN";
         int position = 0;
         bool isAdding = false;
 

@@ -13,11 +13,11 @@ using System.Windows.Forms;
 
 namespace QLVT.Report
 {
-    public partial class FormSupport : Form
+    public partial class FormSupportDSNV : Form
     {
         private int choice;
         private string brandName = "";
-        public FormSupport(int choice)
+        public FormSupportDSNV(int choice)
         {
             InitializeComponent();
             //Phân quyền nhóm CONGTY được đổi chi nhánh report
@@ -122,6 +122,11 @@ namespace QLVT.Report
                     }
                     break;
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

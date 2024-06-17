@@ -590,7 +590,7 @@
             // deNgaySinh
             // 
             this.deNgaySinh.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsNhanVien, "NGAYSINH", true));
-            this.deNgaySinh.EditValue = null;
+            this.deNgaySinh.EditValue = new System.DateTime(2024, 6, 17, 17, 58, 54, 166);
             this.deNgaySinh.Location = new System.Drawing.Point(225, 116);
             this.deNgaySinh.Margin = new System.Windows.Forms.Padding(5);
             this.deNgaySinh.MenuManager = this.barManager1;
@@ -601,6 +601,7 @@
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.deNgaySinh.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.deNgaySinh.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.deNgaySinh.Size = new System.Drawing.Size(178, 24);
             this.deNgaySinh.TabIndex = 9;
             // 

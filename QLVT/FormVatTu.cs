@@ -264,7 +264,7 @@ namespace QLVT
             }
 
             // Lưu truy vẫn hoàn tác và đẩy vào undoStack
-            string undoQuery = "INSERT INTO DBO.Vattu (MAVT, TENVT, DVT, SOLUONGTON) VALUES('" + maVT + "', '" + txtTenVT.Text + "', '" + txtDVT.Text + "', " + txtSLT.Value + ")";
+            string undoQuery = "INSERT INTO DBO.Vattu (MAVT, TENVT, DVT, SOLUONGTON) VALUES('" + maVT + "', N'" + txtTenVT.Text + "', N'" + txtDVT.Text + "', " + txtSLT.Value + ")";
             undoStack.Push(undoQuery);
             if (MessageBox.Show("Bạn có muốn xóa vật tư này không?", "Thông báo", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
@@ -327,7 +327,7 @@ namespace QLVT
             }
             Program.myReader.Read();
             int result = int.Parse(Program.myReader.GetValue(0).ToString());
-            Console.WriteLine("VT - My readaer[0] result: " + result);
+            //Console.WriteLine("VT - My readaer[0] result: " + result);
             Program.myReader.Close();
 
             //Sử dụng kết quả bước trên và vị trí của txtMavt => các trường hợp xảy ra
@@ -372,9 +372,9 @@ namespace QLVT
                         // Ngược lại, nếu sửa thì tạo câu truy vẫn update lại như cũ
                         else
                         {
-                            undoQuery = "SET " +
-                                "TENVT = '" + tenVT + "'," +
-                                "DVT = '" + dvt + "'," +
+                            undoQuery = "UPDATE DBO.Vattu SET " +
+                                "TENVT = N'" + tenVT + "'," +
+                                "DVT = N'" + dvt + "'," +
                                 "SOLUONGTON = " + slt + " " +
                                 "WHERE MAVT = '" + maVT + "'";
                         }
@@ -414,8 +414,7 @@ namespace QLVT
 
                 // Hủy thao tác thêm trên bds
                 bdsVatTu.CancelEdit();
-                // Xóa dòng được thêm
-                bdsVatTu.RemoveCurrent();
+
                 // Trở về lúc đầu contro đang đứng
                 bdsVatTu.Position = position;
                 return;

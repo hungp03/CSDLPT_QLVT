@@ -110,10 +110,10 @@ namespace QLVT
             return validateEmployeeCode(txtManv.Text) &&
                    validateEmployeeName(txtHo.Text, txtTen.Text) &&
                    validateEmployeeAddress(txtDiaChi.Text) &&
+                   validateEmptyBirthDate() &&
                    validateEmployeeBirthDate(deNgaySinh.DateTime) &&
                    validateEmployeeSalary(txtLuong.EditValue.ToString())
-            &&
-           validateEmployeeID(txtCMND.Text);
+            && validateEmployeeID(txtCMND.Text); 
         }
 
         private bool validateEmployeeCode(string code)
@@ -132,7 +132,7 @@ namespace QLVT
             }
             return true;
         }
-
+        
         private bool validateEmployeeName(string lastName, string firstName)
         {
             if (string.IsNullOrEmpty(lastName) || !Regex.IsMatch(lastName, @"^[\p{L}\p{N}, ]+$") || lastName.Length > 40)
@@ -166,6 +166,16 @@ namespace QLVT
                 return false;
             }
 
+            return true;
+        }
+        private bool validateEmptyBirthDate()
+        {
+            if (deNgaySinh.DateTime == DateTime.MinValue)
+            {
+                ThongBao("Chưa nhập ngày sinh");
+                deNgaySinh.Focus();
+                return false;
+            }
             return true;
         }
 
@@ -288,17 +298,15 @@ namespace QLVT
             //Thêm dòng mới bằng hàm AddNew
             bdsNhanVien.AddNew();
             txtMacn.Text = brandId;
-
             // Thay đổi bật/ tắt các nút chức năng
             txtManv.Enabled = true;
             btnThem.Enabled = false;
             btnXoa.Enabled = false;
-
             btnLamMoi.Enabled = false;
             btnChuyenCN.Enabled = false;
             btnThoat.Enabled = false;
             checkboxTHXoa.Checked = false;
-
+            btnHoanTac.Enabled = true;
             nhanVienGridControl.Enabled = false;
             panelNhapLieu.Enabled = true;
         }
@@ -338,6 +346,11 @@ namespace QLVT
             if (bdsDatHang.Count > 0)
             {
                 ThongBao("Không thế xóa tài khoản đã lập đơn đặt hàng");
+                return;
+            }
+            if (checkboxTHXoa.Checked == true)
+            {
+                ThongBao("Nhân viên đã bị xóa, đang ở chi nhánh khác");
                 return;
             }
 
@@ -459,8 +472,9 @@ namespace QLVT
             string ho = drv["HO"].ToString();
             string ten = drv["TEN"].ToString();
             string diaChi = drv["DIACHI"].ToString();
+            Console.WriteLine(drv["NGAYSINH"]);
             DateTime ngaySinh = ((DateTime)drv["NGAYSINH"]);
-            // Console.WriteLine(ngaySinh);
+            
             int luong = int.Parse(drv["LUONG"].ToString());
             string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
@@ -586,12 +600,8 @@ namespace QLVT
                 nhanVienGridControl.Enabled = true;
                 panelNhapLieu.Enabled = true;
 
-                // Hủy bỏ thao tác trên bds
+                //Hủy thao tác thêm
                 bdsNhanVien.CancelEdit();
-
-                //Xóa dòng hiện tại đang được thêm bởi nút thêm
-                bdsNhanVien.RemoveCurrent();
-
                 // Quay lại vị trí cũ
                 bdsNhanVien.Position = position;
                 return;

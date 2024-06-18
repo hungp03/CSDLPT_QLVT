@@ -103,6 +103,11 @@ namespace QLVT
             {
                 cbChiNhanh.Enabled = false;
             }
+            if(bdsCTPX.Position < 0)
+            {
+                ghiToolStripMenuItem.Enabled = false;
+                xoaToolStripMenuItem.Enabled = false;
+            }
         }
         private bool validateInputPhieuXuat()
         {
@@ -248,7 +253,7 @@ namespace QLVT
 
             if (result == 0)
             {
-                ThongBao("Số lượng vật tư trong chi tiết vật tư không thể lớn hơn số lượng vật tư tồn");
+                ThongBao("Số lượng vật tư trong chi tiết đơn xuất không thể lớn hơn số lượng vật tư tồn kho");
                 return false;
             }
             return true;
@@ -273,7 +278,7 @@ namespace QLVT
         }
         private int ExecuteSP_TracuuPhieuXuat(String maPX)
         {
-            String query = "declare @result int\r\nexec @result = SP_KiemTraMaPhieuXuat N'" + maPX + "'\r\nselect @result";
+            String query = "declare @result int\r\nexec @result = [SP_KiemTraMaPhieuNhapXuat] 'XUAT', N'" + maPX + "'\r\nselect @result";
 
             // Dùng SP để kiểm tra xem có nhân viên với mã nv đang tạo
             try
@@ -300,7 +305,7 @@ namespace QLVT
         {
             string query =
                     "DECLARE @result int " +
-                    "EXEC @result = [dbo].[SP_KiemTraCTPX] N'"
+                    "EXEC @result = [dbo].[SP_KiemTraVattuCTPNhapXuat] 'XUAT', N'"
                      + maPX + "', N'" + maVT + "' " +
                     "SELECT @result";
             try
@@ -386,6 +391,19 @@ namespace QLVT
                 this.phieuXuatTableAdapter.FillBy(this.dS1.PhieuXuat);
             }
         }
+        private void phieuXuatGridControl_Click(object sender, EventArgs e)
+        {
+            if (bdsCTPX.Position < 0)
+            {
+                ghiToolStripMenuItem.Enabled = false;
+                xoaToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                ghiToolStripMenuItem.Enabled = true;
+                xoaToolStripMenuItem.Enabled = true;
+            }
+        }
         private void btnThem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // Lấy vị trí của con trỏ
@@ -436,12 +454,17 @@ namespace QLVT
             String maNV = dr["MANV"].ToString();
             String maKho = dr["MAKHO"].ToString();
             String hotenKH = dr["HOTENKH"].ToString();
-
+            if (maNV != Program.username)
+            {
+                ThongBao("Không thể chỉnh sửa phiếu xuất do người khác tạo ra");
+                return;
+            }
             // kiểm tra đầu vào có hợp lệ hay không
             if (validateInputPhieuXuat() == false)
             {
                 return;
             }
+            
             int pnResult = ExecuteSP_TracuuPhieuXuat(maPX);
             //Tìm vị trí con trỏ và vị trí ma phieu nhap
             int viTriConTro = bdsPhieuXuat.Position;
@@ -533,6 +556,7 @@ namespace QLVT
             {
                 phieuXuatTableAdapter.FillBy(this.dS1.PhieuXuat);
                 phieuXuatGridControl.Enabled = true;
+                cTPXTableAdapter.Fill(this.dS1.CTPX);
             }
             catch (Exception ex)
             {
@@ -644,22 +668,6 @@ namespace QLVT
                 this.phieuXuatTableAdapter.FillBy(this.dS1.PhieuXuat);
                 return;
             }
-            else if (isAdding == true && thêmToolStripMenuItem.Enabled == false && cheDo.Equals("CTPX"))
-            {
-                contextMenuStripCTPX.Enabled = true;
-                thêmToolStripMenuItem.Enabled = true;
-                xóaToolStripMenuItem.Enabled = true;
-                bdsCTPX.CancelEdit();
-                if (bdsCTPX.Count != 0)
-                {
-                    bdsCTPX.RemoveCurrent();
-                }
-
-                bdsCTPX.Position = position;
-                this.cTPXTableAdapter.Connection.ConnectionString = Program.conStr;
-                this.cTPXTableAdapter.Fill(this.dS1.CTPX);
-                return;
-            }
             btnThem.Enabled = true;
             // Kiểm tra undoStack trống hay không
             // Trường hợp stack trống thì không thực hiện
@@ -740,6 +748,19 @@ namespace QLVT
             position = bdsCTPX.Position;
             isAdding = true;
             cheDo = "CTPX";
+            string maPX = txtMAPX.Text;
+
+            if (maPX.Equals(""))
+            {
+                ThongBao("Vui lòng chọn hoặc tạo phiếu xuất để thực hiện thêm chi tiết phiếu xuất");
+                return;
+            }
+            string maNV = txtMANV.Text;
+            if (maNV != Program.username)
+            {
+                ThongBao("Không thể thêm chi tiết phiếu xuất do người khác tạo ra");
+                return;
+            }
 
             bdsCTPX.AddNew();
 
@@ -757,11 +778,13 @@ namespace QLVT
             groupBoxPhieuXuat.Enabled = false;
             dgvCTPX.Enabled = true;
             thêmToolStripMenuItem.Enabled = false;
-            xóaToolStripMenuItem.Enabled = false;
+            xoaToolStripMenuItem.Enabled = false;
+            huyThemVatTuToolStripMenuItem.Enabled = true;
         }
         private void dgvCTPX_CellContentClick(object sender, DataGridViewCellEventArgs e)
         {
             cheDo = "CTPX";
+            if (e.RowIndex < 0) return;
             DataGridViewRow selectedRow = dgvCTPX.Rows[e.RowIndex];
             Dictionary<string, object> previousRowData = new Dictionary<string, object>();
             foreach (DataGridViewCell cell in selectedRow.Cells)
@@ -795,6 +818,12 @@ namespace QLVT
         }
         private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            string maNV = txtMANV.Text;
+            if (maNV != Program.username)
+            {
+                ThongBao("Không thể xóa chi tiết phiếu xuất do người khác tạo ra");
+                return;
+            }
             DataRowView dr = (DataRowView)bdsCTPX[bdsCTPX.Position];
             String MAPX = dr["MAPX"].ToString().Trim();
             String maVT = dr["MAVT"].ToString().Trim();
@@ -852,7 +881,12 @@ namespace QLVT
         }
         private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
+            string maNV = txtMANV.Text;
+            if (maNV != Program.username)
+            {
+                ThongBao("Không thể chỉnh sửa chi tiết phiếu xuất do người khác tạo ra");
+                return;
+            }
             // kiểm tra đầu vào có hợp lệ hay không
             if (validateInputCTPX() == false)
             {
@@ -867,11 +901,23 @@ namespace QLVT
                 return;
             }
 
-            if (pnResult == 1 && isAdding == true)
+            if (pnResult == 1)
             {
-                MessageBox.Show("Chi tiết phiếu xuất đã tồn tại!", "Thông báo", MessageBoxButtons.OK);
-                txtMAPX.Focus();
-                return;
+                if (isAdding)
+                {
+                    ThongBao("Chi tiết phiếu nhập này đã tồn tại!");
+                    return;
+                }
+                else
+                {
+                    string maVTPre = previousRowDataDict[position]["MAVT"].ToString().Trim();
+                    string maVTNext = checkDr["MAVT"].ToString().Trim();
+                    if (maVTPre != maVTNext)
+                    {
+                        ThongBao("Chi tiết phiếu nhập này đã tồn tại!");
+                        return;
+                    }
+                }
             }
 
             DialogResult dlr = MessageBox.Show("Bạn có chắc chắn muốn ghi dữ liệu vào cơ sở dữ liệu không?", "Thông báo",
@@ -972,10 +1018,41 @@ namespace QLVT
                         groupBoxPhieuXuat.Enabled = true;
 
                         thêmToolStripMenuItem.Enabled = true;
-                        xóaToolStripMenuItem.Enabled = true;
+                        xoaToolStripMenuItem.Enabled = true;
+                        huyThemVatTuToolStripMenuItem.Enabled = false;
                     }
                 }
             }
-        }  
+        }
+        private void huyThemVatTuToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            btnXoa.Enabled = true;
+            btnGhi.Enabled = true;
+            btnLamMoi.Enabled = true;
+            btnThoat.Enabled = true;
+            btnHoanTac.Enabled = true;
+
+            phieuXuatGridControl.Enabled = true;
+            groupBoxPhieuXuat.Enabled = true;
+            dgvCTPX.Enabled = true;
+            if (isAdding == true && thêmToolStripMenuItem.Enabled == false)
+            {
+                isAdding = false;
+                btnThem.Enabled = true;
+                contextMenuStripCTPX.Enabled = true;
+                thêmToolStripMenuItem.Enabled = true;
+                xoaToolStripMenuItem.Enabled = true;
+                huyThemVatTuToolStripMenuItem.Enabled = false;
+                bdsCTPX.CancelEdit();
+                if (bdsCTPX.Count != 0)
+                {
+                    bdsCTPX.RemoveCurrent();
+                }
+                bdsCTPX.Position = position;
+                this.cTPXTableAdapter.Connection.ConnectionString = Program.conStr;
+                this.cTPXTableAdapter.Fill(this.dS1.CTPX);
+                return;
+            }
+        }
     }
 }

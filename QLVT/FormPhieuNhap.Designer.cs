@@ -66,6 +66,7 @@
             this.thêmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ghiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.huyThemVatTuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vattuTableAdapter = new QLVT.DS1TableAdapters.VattuTableAdapter();
             this.dSNVTableAdapter = new QLVT.DS1TableAdapters.DSNVTableAdapter();
             this.groupBoxPhieuNhap = new System.Windows.Forms.GroupBox();
@@ -137,7 +138,7 @@
             // mAPNLabel1
             // 
             mAPNLabel1.AutoSize = true;
-            mAPNLabel1.Location = new System.Drawing.Point(13, 37);
+            mAPNLabel1.Location = new System.Drawing.Point(13, 46);
             mAPNLabel1.Name = "mAPNLabel1";
             mAPNLabel1.Size = new System.Drawing.Size(113, 18);
             mAPNLabel1.TabIndex = 27;
@@ -146,7 +147,7 @@
             // nGAYLabel
             // 
             nGAYLabel.AutoSize = true;
-            nGAYLabel.Location = new System.Drawing.Point(382, 37);
+            nGAYLabel.Location = new System.Drawing.Point(382, 46);
             nGAYLabel.Name = "nGAYLabel";
             nGAYLabel.Size = new System.Drawing.Size(53, 18);
             nGAYLabel.TabIndex = 28;
@@ -415,30 +416,39 @@
             this.contextMenuStripCTPN.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.thêmToolStripMenuItem,
             this.xóaToolStripMenuItem,
-            this.ghiToolStripMenuItem});
+            this.ghiToolStripMenuItem,
+            this.huyThemVatTuToolStripMenuItem});
             this.contextMenuStripCTPN.Name = "contextMenuStrip1";
-            this.contextMenuStripCTPN.Size = new System.Drawing.Size(158, 76);
+            this.contextMenuStripCTPN.Size = new System.Drawing.Size(185, 100);
             // 
             // thêmToolStripMenuItem
             // 
             this.thêmToolStripMenuItem.Name = "thêmToolStripMenuItem";
-            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.thêmToolStripMenuItem.Text = "Thêm vật tư";
             this.thêmToolStripMenuItem.Click += new System.EventHandler(this.thêmToolStripMenuItem_Click);
             // 
             // xóaToolStripMenuItem
             // 
             this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.xóaToolStripMenuItem.Text = "Xóa vật tư";
             this.xóaToolStripMenuItem.Click += new System.EventHandler(this.xóaToolStripMenuItem_Click);
             // 
             // ghiToolStripMenuItem
             // 
             this.ghiToolStripMenuItem.Name = "ghiToolStripMenuItem";
-            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.ghiToolStripMenuItem.Text = "Ghi vật tư";
             this.ghiToolStripMenuItem.Click += new System.EventHandler(this.ghiToolStripMenuItem_Click);
+            // 
+            // huyThemVatTuToolStripMenuItem
+            // 
+            this.huyThemVatTuToolStripMenuItem.Enabled = false;
+            this.huyThemVatTuToolStripMenuItem.Name = "huyThemVatTuToolStripMenuItem";
+            this.huyThemVatTuToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
+            this.huyThemVatTuToolStripMenuItem.Text = "Hủy thêm vật tư";
+            this.huyThemVatTuToolStripMenuItem.Click += new System.EventHandler(this.huyThemVatTuToolStripMenuItem_Click);
             // 
             // vattuTableAdapter
             // 
@@ -563,7 +573,7 @@
             // 
             this.dteNGAY.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsPhieuNhap, "NGAY", true));
             this.dteNGAY.EditValue = null;
-            this.dteNGAY.Location = new System.Drawing.Point(473, 36);
+            this.dteNGAY.Location = new System.Drawing.Point(473, 45);
             this.dteNGAY.MenuManager = this.barManager1;
             this.dteNGAY.Name = "dteNGAY";
             this.dteNGAY.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
@@ -577,7 +587,7 @@
             // 
             this.txtMAPN.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsPhieuNhap, "MAPN", true));
             this.txtMAPN.Enabled = false;
-            this.txtMAPN.Location = new System.Drawing.Point(140, 33);
+            this.txtMAPN.Location = new System.Drawing.Point(140, 42);
             this.txtMAPN.MenuManager = this.barManager1;
             this.txtMAPN.Name = "txtMAPN";
             this.txtMAPN.Size = new System.Drawing.Size(171, 22);
@@ -594,6 +604,7 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.dataGridViewTextBoxColumn4});
+            this.dgvCTPN.ContextMenuStrip = this.contextMenuStripCTPN;
             this.dgvCTPN.DataSource = this.bdsCTPN;
             this.dgvCTPN.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvCTPN.Location = new System.Drawing.Point(979, 338);
@@ -607,7 +618,7 @@
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "MAPN";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Số PN";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Phiếu";
             this.dataGridViewTextBoxColumn1.MinimumWidth = 6;
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             this.dataGridViewTextBoxColumn1.ReadOnly = true;
@@ -660,6 +671,7 @@
             this.phieuNhapGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1,
             this.gridView2});
+            this.phieuNhapGridControl.Click += new System.EventHandler(this.phieuNhapGridControl_Click);
             // 
             // gridView1
             // 
@@ -791,7 +803,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 1041);
-            this.ContextMenuStrip = this.contextMenuStripCTPN;
             this.Controls.Add(this.dgvCTPN);
             this.Controls.Add(this.groupBoxPhieuNhap);
             this.Controls.Add(this.phieuNhapGridControl);
@@ -871,10 +882,6 @@
         private System.Windows.Forms.DataGridView dgvCTPN;
         private DevExpress.XtraEditors.TextEdit txtMAPN;
         private DevExpress.XtraEditors.DateEdit dteNGAY;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private DevExpress.XtraGrid.GridControl phieuNhapGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
@@ -901,5 +908,10 @@
         private System.Windows.Forms.ComboBox tENKHOComboBox;
         private DevExpress.XtraGrid.Columns.GridColumn HOTEN;
         private System.Windows.Forms.ToolStripMenuItem ghiToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.ToolStripMenuItem huyThemVatTuToolStripMenuItem;
     }
 }

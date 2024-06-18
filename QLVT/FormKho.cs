@@ -146,7 +146,7 @@ namespace QLVT
         {
             if (bdsKho.Count <= 0)
             {
-                btnXoa.Enabled = true;
+                btnXoa.Enabled = false;
             }
 
             if (bdsDatHang.Count > 0)
@@ -168,9 +168,9 @@ namespace QLVT
             }
 
             string undoQuery = "INSERT INTO DBO.KHO( MAKHO,TENKHO,DIACHI,MACN) " +
-                " VALUES( '" + txtMakho.Text + "','" +
-                        txtTenkho.Text + "','" +
-                        txtDiachi.Text + "', '" +
+                " VALUES( N'" + txtMakho.Text + "',N'" +
+                        txtTenkho.Text + "',N'" +
+                        txtDiachi.Text + "', N'" +
                         txtMacn.Text.Trim() + "' ) ";
 
             undoStack.Push(undoQuery);
@@ -219,7 +219,7 @@ namespace QLVT
             string diaChi = drv["DIACHI"].ToString();
 
             string query = "DECLARE  @res int\n" +
-            "EXEC @res = [dbo].[SP_KiemtraMaKho] @MAKHO = N'" + maKho + "'\n" +
+            "EXEC @res = [dbo].[SP_KiemtraMaKho] @MAKHO = '" + maKho + "'\n" +
             "SELECT @res";
 
             SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
@@ -279,7 +279,7 @@ namespace QLVT
                         }
                         else
                         {
-                            undoQuery = "UPDATE DBO.KHO set TENKHO = '" + tenKhoHang + "', DIACHI = '" + diaChi + "' WHERE MAKHO = '" + maKho + "'";
+                            undoQuery = "UPDATE DBO.KHO set TENKHO = N'" + tenKhoHang + "', DIACHI = N'" + diaChi + "' WHERE MAKHO = '" + maKho + "'";
                         }
                         undoStack.Push(undoQuery);
                         bdsKho.EndEdit();

@@ -62,6 +62,15 @@ namespace QLVT.Report
                 ThongBao("Ngày bắt đầu phải nhỏ hơn ngày kết thúc");
                 return false;
             }
+
+            if (dateEdit1.DateTime > DateTime.Today)
+            {
+                ThongBao("Ngày bắt đầu không được sau ngày hôm nay");
+                return false;
+            }
+
+
+
             return true;
             
         }

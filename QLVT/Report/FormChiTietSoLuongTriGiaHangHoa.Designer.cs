@@ -199,7 +199,7 @@
             this.Controls.Add(this.panel3);
             this.Controls.Add(this.panel1);
             this.Name = "FormChiTietSoLuongTriGiaHangHoa";
-            this.Text = "FormChiTietSoLuongTriGiaHangHoa";
+            this.Text = "Chi tiết hàng hóa";
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel3.ResumeLayout(false);

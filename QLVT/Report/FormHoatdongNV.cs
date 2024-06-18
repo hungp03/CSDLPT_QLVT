@@ -69,7 +69,11 @@ namespace QLVT.Report
                 return false;
             }
 
-
+            if (dateEdit2.DateTime > DateTime.Today)
+            {
+                ThongBao("Ngày kết thúc không được sau ngày hôm nay");
+                return false;
+            }
 
             return true;
             
@@ -135,7 +139,7 @@ namespace QLVT.Report
                 "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
-            catch (IOException ex)
+            catch (IOException)
             {
                 MessageBox.Show("Vui lòng đóng file report cũ",
                     "Xác nhận", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);

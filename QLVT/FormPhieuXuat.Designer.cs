@@ -48,7 +48,6 @@
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
-            this.btnChitietPX = new DevExpress.XtraBars.BarButtonItem();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.cbChiNhanh = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -297,13 +296,6 @@
             this.barDockControlRight.Location = new System.Drawing.Point(1924, 30);
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 1011);
-            // 
-            // btnChitietPX
-            // 
-            this.btnChitietPX.Caption = "Chi tiết phiếu";
-            this.btnChitietPX.Id = 5;
-            this.btnChitietPX.ImageOptions.SvgImage = global::QLVT.Properties.Resources.bo_note;
-            this.btnChitietPX.Name = "btnChitietPX";
             // 
             // panelControl1
             // 
@@ -592,7 +584,6 @@
             this.dgvCTPX.RowTemplate.Height = 24;
             this.dgvCTPX.Size = new System.Drawing.Size(945, 703);
             this.dgvCTPX.TabIndex = 29;
-            this.dgvCTPX.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCTPX_CellContentClick);
             // 
             // dataGridViewTextBoxColumn1
             // 
@@ -704,7 +695,7 @@
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
             this.Name = "FormPhieuXuat";
-            this.Text = "Phiếu xuất";
+            this.Text = "FormPhieuXuat";
             this.Load += new System.EventHandler(this.FormPhieuXuat_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();

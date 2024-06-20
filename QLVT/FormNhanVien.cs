@@ -1,5 +1,6 @@
 ﻿using DevExpress.CodeParser;
 using DevExpress.DataProcessing.InMemoryDataProcessor;
+using DevExpress.XtraEditors;
 using QLVT.SubForm;
 using System;
 using System.Collections;
@@ -319,6 +320,7 @@ namespace QLVT
             nhanVienGridControl.Enabled = false;
             panelNhapLieu.Enabled = true;
             txtLuong.Value = 4000000;
+            deNgaySinh.DateTime = new DateTime(2001, 1, 1);
         }
 
         private int checkTHXoaNV(string manv)
@@ -349,7 +351,7 @@ namespace QLVT
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Kiểm tra MANV thất bại\n" + ex.Message, "Thông báo",
+                MessageBox.Show("Kiểm tra trạng thái xóa thất bại\n" + ex.Message, "Thông báo",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally

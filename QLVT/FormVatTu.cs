@@ -144,9 +144,10 @@ namespace QLVT
 
             // Tự động nhảy xuống dưới 1 hang trong bds
             bdsVatTu.AddNew();
+            txtMaVT.Enabled = true;
             // Gắn giá trị mặc định cho số lượng tồn là 1
             txtSLT.Value = 1;
-
+           
             // Thay đổi bật/tắt các nút
             btnThem.Enabled = false;
             btnXoa.Enabled = false;
@@ -309,8 +310,7 @@ namespace QLVT
             string slt = drv["SOLUONGTON"].ToString();
 
             string query = "declare @res int\n" + "exec @res = SP_KiemtraVT '" + maVT + "'\nselect @res";
-            SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
-
+            _ = new SqlCommand(query, Program.conn);
             try
             {
                 Program.myReader = Program.ExecSqlDataReader(query);
@@ -327,7 +327,6 @@ namespace QLVT
             }
             Program.myReader.Read();
             int result = int.Parse(Program.myReader.GetValue(0).ToString());
-            //Console.WriteLine("VT - My readaer[0] result: " + result);
             Program.myReader.Close();
 
             //Sử dụng kết quả bước trên và vị trí của txtMavt => các trường hợp xảy ra
@@ -358,8 +357,6 @@ namespace QLVT
                         btnHoantac.Enabled = true;
                         btnLammoi.Enabled = true;
                         btnThoat.Enabled = true;
-
-                        txtMaVT.Enabled = false;
                         vattuGridControl.Enabled = true;
 
                         // Thêm thì tạo truy vấn xóa để hoàn tác
@@ -382,6 +379,7 @@ namespace QLVT
                         this.bdsVatTu.EndEdit();
                         this.vattuTableAdapter.Update(this.dS1.Vattu);
                         isAdding = false;
+                        txtMaVT.Enabled = false;
                         ThongBao("Đã ghi dữ liệu thành công");
                     }
                     catch (Exception ex)
@@ -401,13 +399,12 @@ namespace QLVT
             if (isAdding == true && btnThem.Enabled == false)
             {
                 isAdding = false; btnThem.Enabled = true;
-                txtMaVT.Enabled = false;
                 btnXoa.Enabled = true;
 
                 btnHoantac.Enabled = false;
                 btnLammoi.Enabled = true;
                 btnThoat.Enabled = true;
-
+                txtMaVT.Enabled = false;
                 // Mở lại GC
                 vattuGridControl.Enabled = true;
                 panelControl2.Enabled = true;
@@ -431,13 +428,14 @@ namespace QLVT
             // Nếu stack undo không trống thì lấy ra và khôi phục
             bdsVatTu.CancelEdit();
             string undoQuery = undoStack.Pop().ToString();
-            Console.WriteLine(undoQuery);
+            //Console.WriteLine(undoQuery);
 
             if (Program.connectDB() == 0)
             {
                 return;
             }
-            int tmp = Program.ExecSqlNonQuery(undoQuery);
+
+            _ = Program.ExecSqlNonQuery(undoQuery);
             this.vattuTableAdapter.Fill(this.dS1.Vattu);
         }
 

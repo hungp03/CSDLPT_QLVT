@@ -198,7 +198,6 @@
             this.btnGhi,
             this.btnHoanTac,
             this.btnLamMoi,
-            this.btnChitietPX,
             this.btnThoat});
             this.barManager1.MaxItemId = 7;
             // 
@@ -695,7 +694,7 @@
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControlTop);
             this.Name = "FormPhieuXuat";
-            this.Text = "FormPhieuXuat";
+            this.Text = "Phiếu Xuất";
             this.Load += new System.EventHandler(this.FormPhieuXuat_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
@@ -733,7 +732,6 @@
         private DevExpress.XtraBars.BarButtonItem btnGhi;
         private DevExpress.XtraBars.BarButtonItem btnHoanTac;
         private DevExpress.XtraBars.BarButtonItem btnLamMoi;
-        private DevExpress.XtraBars.BarButtonItem btnChitietPX;
         private DevExpress.XtraBars.BarButtonItem btnThoat;
         private DevExpress.XtraBars.BarDockControl barDockControlTop;
         private DevExpress.XtraBars.BarDockControl barDockControlBottom;

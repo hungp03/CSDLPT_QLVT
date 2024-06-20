@@ -520,7 +520,6 @@ namespace QLVT
             btnXoa.Enabled = false;
 
             btnLamMoi.Enabled = false;
-            btnChitietPX.Enabled = false;
             btnThoat.Enabled = true;
             btnHoanTac.Enabled = true;
 
@@ -570,6 +569,11 @@ namespace QLVT
                 if (checkMaNV != Program.username)
                 {
                     ThongBao("Không thể chỉnh sửa phiếu xuất do người khác tạo ra");
+                    return;
+                }
+                else if (checkMaNV == Program.username && maNV != Program.username)
+                {
+                    ThongBao("Không thể tạo phiếu nhập cho người khác");
                     return;
                 }
             }
@@ -645,7 +649,6 @@ namespace QLVT
                     btnHoanTac.Enabled = true;
                     btnLamMoi.Enabled = true;
                     btnThoat.Enabled = true;
-                    btnChitietPX.Enabled = true;
 
 
                     dgvCTPX.Enabled = true;
@@ -753,7 +756,6 @@ namespace QLVT
             btnXoa.Enabled = true;
             btnLamMoi.Enabled = true;
             btnThoat.Enabled = true;
-            btnChitietPX.Enabled = true;
 
             phieuXuatGridControl.Enabled = true;
             dgvCTPX.Enabled = true;
@@ -827,7 +829,6 @@ namespace QLVT
             btnThem.Enabled = false;
             btnXoa.Enabled = false;
             btnLamMoi.Enabled = false;
-            btnChitietPX.Enabled = false;
             btnThoat.Enabled = true;
             btnHoanTac.Enabled = true;
             btnGhi.Enabled = false;
@@ -848,14 +849,9 @@ namespace QLVT
                 return;
             }
             DataRowView dr = (DataRowView)bdsCTPX[bdsCTPX.Position];
-            String MAPX = dr["MAPX"].ToString().Trim();
-            String maVT = dr["MAVT"].ToString().Trim();
-            int soLuong = Int32.Parse(dr["SOLUONG"].ToString());
-            float donGia = float.Parse(dr["DONGIA"].ToString());
-            String undoQuery = "INSERT INTO dbo.CTPX(MAPX,MAVT,SOLUONG,DONGIA)\r\n" +
-                "VALUES(N'" + MAPX + "',N'" + maVT + "',CAST(" + soLuong + " AS INT),CAST(" + donGia + " AS float))";
-            undoList.Push(undoQuery);
-            undoIndex.Push(bdsCTPX.Position);
+            string maPX = dr["MAPX"].ToString().Trim();
+            string maVT = traCuuMAVTCTPX(bdsCTPX.Position);
+            int soLuong = traCuuSoLuongVattuCTPX(maPX,maVT);
             if (MessageBox.Show("Bạn có muốn xóa chi tiết phiếu xuất này không", "Thông báo", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 using (SqlConnection connection = new SqlConnection(Program.conStr))
@@ -891,11 +887,6 @@ namespace QLVT
                         return;
                     }
                 }
-            }
-            else
-            {
-                undoList.Pop();
-                undoIndex.Pop();
             }
         }
         private void groupBoxPhieuXuat_Enter(object sender, EventArgs e)
@@ -1013,7 +1004,6 @@ namespace QLVT
                         btnGhi.Enabled = true;
                         btnHoanTac.Enabled = true;
                         btnLamMoi.Enabled = true;
-                        btnChitietPX.Enabled = true;
 
 
                         dgvCTPX.Enabled = true;

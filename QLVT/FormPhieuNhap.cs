@@ -21,13 +21,12 @@ namespace QLVT
         public string makho = "";
         string maChiNhanh = "";
         String brandId = "";
-        String cheDo = "PN";
         int position = 0;
         bool isAdding = false;
 
         //Undo -> dùng để hoàn tác dữ liệu nếu lỡ có thao tác không mong muốn
         Stack undoList = new Stack();
-        Stack undoIndex = new Stack();
+
 
         BindingSource bds = null;
         GridControl gc = null;
@@ -381,6 +380,35 @@ namespace QLVT
             string query = "EXEC SP_CapNhatSoLuongVatTu 'IMPORT','" + maVatTu + "', " + soLuong;
             int n = Program.ExecSqlNonQuery(query);
         }
+        //Kiểm tra ràng buộc số lượng tồn của vật tư > 0 
+        // param soluongThayDoi biểu thị lượng thay đổi số lượng vật tư khi thao tác CTPN (xóa, chỉnh sửa) 
+        private int ExecuteSP_KiemtraSoluongtonVattu(string maVT, int soluongThayDoi)
+        {
+            string query =
+                    "DECLARE @result int " +
+                    "EXEC @result = [dbo].[SP_KiemTraSoluongVattu] '" + maVT + "', " + soluongThayDoi +
+                    " SELECT @result";
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(query);
+
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kiểm tra Chi tiết phiếu nhập thất bại\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            Program.myReader.Read();
+            int result = int.Parse(Program.myReader.GetValue(0).ToString());
+            Program.myReader.Close();
+            return result;
+        }
         /*
         Định nghĩa: Phương thức được sử dụng để lấy mã nhân viên của phiếu nhập trong DB
         Mục đích: Kiểm tra MANV để thực hiện so sánh với người dùng (Program.username) cho phép thêm, xóa, sửa phiếu nhập, CTPN
@@ -480,6 +508,37 @@ namespace QLVT
             if (Program.myReader.Read())
             {
                 soluong = int.Parse(Program.myReader.GetValue(0).ToString().Trim());
+            }
+            Program.myReader.Close();
+            return soluong;
+        }
+        /*
+         Định nghĩa: Phương thức được sử dụng để lấy đơn giá của vật tư trong chi tiết phiếu nhập ở vị trí cụ thể
+         Mục đích: so sánh đơn giá trước và sau khi thay đổi để cập số lượng vật tự
+         */
+        private float traCuuDongiaVattuCTPN(string maPN, string maVT)
+        {
+            string traCuuDGVT = " SELECT DONGIA FROM DBO.CTPN " +
+                                "WHERE MAPN = '" + maPN + "' " +
+                                "AND MAVT = '" + maVT + "' ";
+            try
+            {
+                Program.myReader = Program.ExecSqlDataReader(traCuuDGVT);
+                //Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return -1;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Thực thi database thất bại!\n\n" + ex.Message, "Thông báo",
+                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            float soluong = 0;
+            if (Program.myReader.Read())
+            {
+                soluong = float.Parse(Program.myReader.GetValue(0).ToString().Trim());
             }
             Program.myReader.Close();
             return soluong;
@@ -638,6 +697,11 @@ namespace QLVT
                 if (checkMaNV != Program.username)
                 {
                     ThongBao("Không thể chỉnh sửa phiếu nhập do người khác tạo ra");
+                    return;
+                }
+                else if(checkMaNV == Program.username && maNV != Program.username)
+                {
+                    ThongBao("Không thể tạo phiếu nhập cho người khác");
                     return;
                 }
             }
@@ -898,16 +962,15 @@ namespace QLVT
             // Lấy vị trí của con trỏ
             position = bdsCTPN.Position;
             isAdding = true;
-            cheDo = "CTPN";
             string maPN = txtMAPN.Text;
-            string checkMaNV = traCuuMANVPhieuNhap();
 
             if (maPN.Equals(""))
             {
                 ThongBao("Vui lòng chọn hoặc tạo phiếu nhập để thực hiện thêm chi tiết phiếu nhập");
                 return;
             }
-            if(checkMaNV != Program.username)
+            string checkMaNV = traCuuMANVPhieuNhap();
+            if (checkMaNV != Program.username)
             {
                 ThongBao("Không thể thêm chi tiết phiếu nhập do người khác tạo ra");
                 return;
@@ -941,14 +1004,10 @@ namespace QLVT
                 return;
             }
             DataRowView dr = (DataRowView)bdsCTPN[bdsCTPN.Position];
-            String maPN = dr["MAPN"].ToString().Trim();
-            String maVT = dr["MAVT"].ToString().Trim();
-            int soLuong = Int32.Parse(dr["SOLUONG"].ToString());
-            float donGia = float.Parse(dr["DONGIA"].ToString());
-            String undoQuery = "INSERT INTO dbo.CTPN(MAPN,MAVT,SOLUONG,DONGIA)\r\n" +
-                "VALUES(N'" + maPN + "',N'" + maVT + "',CAST(" + soLuong + " AS INT),CAST(" + donGia + " AS float))";
-            undoList.Push(undoQuery);
-            undoIndex.Push(bdsCTPN.Position);
+            string maPN = dr["MAPN"].ToString().Trim();
+            String maVT = traCuuMAVTCTPN(bdsCTPN.Position);
+            int soLuong = traCuuSoLuongVattuCTPN(maPN,maVT);
+            
             if (MessageBox.Show("Bạn có muốn xóa chi tiết phiếu nhập này không", "Thông báo", MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 using (SqlConnection connection = new SqlConnection(Program.conStr))
@@ -957,6 +1016,13 @@ namespace QLVT
                     SqlTransaction transaction = connection.BeginTransaction();
                     try
                     {
+                        //Xử lý lỗi ràng buộc SOLUONGTON Vật tư > 0
+                        int pnresult = ExecuteSP_KiemtraSoluongtonVattu(maVT, soLuong);
+                        if (pnresult == 0)
+                        {
+                            ThongBao("Không thể xóa chi tiết phiếu nhập này vì vật tư không đủ số lượng tồn");
+                            return;
+                        }
                         position = bdsCTPN.Position;
                         bdsCTPN.RemoveCurrent();
                         ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
@@ -988,15 +1054,6 @@ namespace QLVT
                 }
 
             }
-            else
-            {
-                undoList.Pop();
-                undoIndex.Pop();
-            }
-        }
-        private void groupBoxPhieuNhap_Enter(object sender, EventArgs e)
-        {
-            cheDo = "PN";
         }
         private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1078,7 +1135,6 @@ namespace QLVT
                             }
                             else
                             {
-                                //Lưu dữ liệu để hoàn tác
                                 string maPhieuNhap = drCTPN["MAPN"].ToString().Trim();
                                 //Mã vật tư trước khi thay đổi
                                 string maVT = traCuuMAVTCTPN(bdsCTPN.Position);
@@ -1093,11 +1149,28 @@ namespace QLVT
                                 String currMaVT = drCTPN["MAVT"].ToString().Trim();
                                 if (maVT.Equals(currMaVT))
                                 {
+                                    int soluongThayDoi = Math.Abs(int.Parse(drCTPN["SOLUONG"].ToString().Trim()) - soLuong);
+
+                                    //Xử lý lỗi ràng buộc SOLUONGTON Vật tư > 0
+                                    pnResult = ExecuteSP_KiemtraSoluongtonVattu(maVT, soluongThayDoi);
+                                    if (pnResult == 0)
+                                    {
+                                        ThongBao("Không thể chỉnh sửa chi tiết phiếu nhập này vì vật tư không đủ số lượng tồn");
+                                        return;
+                                    }
                                     ExecuteSP_CapNhatSoLuongVatTu(maVT, int.Parse(drCTPN["SOLUONG"].ToString().Trim()) - soLuong);
                                 }
                                 else
                                 {
                                     ExecuteSP_CapNhatSoLuongVatTu(currMaVT, int.Parse(drCTPN["SOLUONG"].ToString().Trim()));
+
+                                    //Xử lý lỗi ràng buộc SOLUONGTON Vật tư > 0
+                                    int pnresult = ExecuteSP_KiemtraSoluongtonVattu(maVT, soLuong);
+                                    if (pnresult == 0)
+                                    {
+                                        ThongBao("Không thể chỉnh sửa chi tiết phiếu nhập này vì vật tư không đủ số lượng tồn");
+                                        return;
+                                    }
                                     ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
                                 }
                             }

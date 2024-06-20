@@ -418,26 +418,26 @@
             this.ghiToolStripMenuItem,
             this.huyThemVatTuToolStripMenuItem});
             this.contextMenuStripCTPN.Name = "contextMenuStrip1";
-            this.contextMenuStripCTPN.Size = new System.Drawing.Size(158, 76);
+            this.contextMenuStripCTPN.Size = new System.Drawing.Size(185, 100);
             // 
             // thêmToolStripMenuItem
             // 
             this.thêmToolStripMenuItem.Name = "thêmToolStripMenuItem";
-            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.thêmToolStripMenuItem.Text = "Thêm vật tư";
             this.thêmToolStripMenuItem.Click += new System.EventHandler(this.thêmToolStripMenuItem_Click);
             // 
             // xóaToolStripMenuItem
             // 
             this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.xóaToolStripMenuItem.Text = "Xóa vật tư";
             this.xóaToolStripMenuItem.Click += new System.EventHandler(this.xóaToolStripMenuItem_Click);
             // 
             // ghiToolStripMenuItem
             // 
             this.ghiToolStripMenuItem.Name = "ghiToolStripMenuItem";
-            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.ghiToolStripMenuItem.Text = "Ghi vật tư";
             this.ghiToolStripMenuItem.Click += new System.EventHandler(this.ghiToolStripMenuItem_Click);
             // 
@@ -484,7 +484,6 @@
             this.groupBoxPhieuNhap.TabIndex = 28;
             this.groupBoxPhieuNhap.TabStop = false;
             this.groupBoxPhieuNhap.Text = "Thông Tin";
-            this.groupBoxPhieuNhap.Enter += new System.EventHandler(this.groupBoxPhieuNhap_Enter);
             // 
             // tENKHOComboBox
             // 
@@ -492,6 +491,7 @@
             this.tENKHOComboBox.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.bdsPhieuNhap, "MAKHO", true));
             this.tENKHOComboBox.DataSource = this.dSKHOBindingSource;
             this.tENKHOComboBox.DisplayMember = "TENKHO";
+            this.tENKHOComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tENKHOComboBox.FormattingEnabled = true;
             this.tENKHOComboBox.Location = new System.Drawing.Point(140, 150);
             this.tENKHOComboBox.Name = "tENKHOComboBox";
@@ -511,6 +511,7 @@
             this.hOTENComboBox.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.bdsPhieuNhap, "MANV", true));
             this.hOTENComboBox.DataSource = this.dSNVBindingSource;
             this.hOTENComboBox.DisplayMember = "HOTEN";
+            this.hOTENComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.hOTENComboBox.FormattingEnabled = true;
             this.hOTENComboBox.Location = new System.Drawing.Point(140, 95);
             this.hOTENComboBox.Name = "hOTENComboBox";
@@ -555,6 +556,7 @@
             this.cbxMASODDH.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.bdsPhieuNhap, "MasoDDH", true));
             this.cbxMASODDH.DataSource = this.datHangBindingSource;
             this.cbxMASODDH.DisplayMember = "MasoDDH";
+            this.cbxMASODDH.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxMASODDH.FormattingEnabled = true;
             this.cbxMASODDH.Location = new System.Drawing.Point(140, 200);
             this.cbxMASODDH.Name = "cbxMASODDH";
@@ -803,7 +805,7 @@
             this.Controls.Add(this.barDockControlTop);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "FormPhieuNhap";
-            this.Text = "frmPhieuNhap";
+            this.Text = "Phiếu Nhập";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormPhieuNhap_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();

@@ -236,9 +236,6 @@ namespace QLVT
             return true;
         }
 
-
-
-
         private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (cbChiNhanh.SelectedValue.ToString() == "System.Data.DataRowView" || cbChiNhanh.SelectedValue == null)
@@ -321,8 +318,50 @@ namespace QLVT
             btnHoanTac.Enabled = true;
             nhanVienGridControl.Enabled = false;
             panelNhapLieu.Enabled = true;
+            txtLuong.Value = 4000000;
         }
 
+        private int checkTHXoaNV(string manv)
+        {
+            string query = "select TrangThaiXoa from NhanVien where MANV = " + manv;
+
+            int result = -1;
+
+            try
+            {
+                if (Program.myReader != null && !Program.myReader.IsClosed)
+                {
+                    Program.myReader.Close();
+                }
+
+                Program.myReader = Program.ExecSqlDataReader(query);
+
+                // Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return result;
+                }
+
+                if (Program.myReader.Read())
+                {
+                    result = int.Parse(Program.myReader.GetValue(0).ToString());
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Kiểm tra MANV thất bại\n" + ex.Message, "Thông báo",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                if (Program.myReader != null && !Program.myReader.IsClosed)
+                {
+                    Program.myReader.Close();
+                }
+            }
+
+            return result;
+        }
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             string maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
@@ -360,7 +399,7 @@ namespace QLVT
                 ThongBao("Không thế xóa tài khoản đã lập đơn đặt hàng");
                 return;
             }
-            if (status == 1)
+            if (checkTHXoaNV(maNV) == 1)
             {
                 ThongBao("Nhân viên đã bị xóa, đang ở chi nhánh khác");
                 return;
@@ -516,9 +555,14 @@ namespace QLVT
             string diaChi = drv["DIACHI"].ToString();
             //Console.WriteLine(drv["NGAYSINH"]);
             DateTime ngaySinh = ((DateTime)drv["NGAYSINH"]);
-            string luongstr = drv["LUONG"].ToString();
-            Console.WriteLine(luongstr);
-            int luong = int.Parse(luongstr);
+            string luongstr = drv["LUONG"]?.ToString();
+            if (String.IsNullOrEmpty(drv["LUONG"].ToString()))
+            {
+                luongstr = txtLuong.Text;
+            }
+            string luongcleanedString = luongstr.Replace(",", "");
+            //Console.WriteLine(luongstr);
+            int luong = int.Parse(luongcleanedString);
             //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
 
@@ -595,7 +639,7 @@ namespace QLVT
                     {
                         undoQuery = "UPDATE DBO.NhanVien " +
                         "SET " +
-                        "CMND = N'" + cmnd + "'," +
+                        "CMND = '" + cmnd + "'," +
                         "HO = N'" + ho + "'," +
                         "TEN = N'" + ten + "'," +
                         "DIACHI = N'" + diaChi + "'," +
@@ -674,12 +718,7 @@ namespace QLVT
                 try
                 {
                     string currentBrand = Program.servername;
-                    ThongBao(currentBrand);
                     string newBrand = Program.otherServerName;
-                    if (string.IsNullOrEmpty(newBrand)) {
-                        ThongBao("Ko co");
-                        return;
-                    }
                     Program.servername = newBrand;
                     Program.mlogin = Program.remotelogin;
                     Program.password = Program.remotepassword;
@@ -688,12 +727,19 @@ namespace QLVT
                     {
                         return;
                     }
-                    Console.WriteLine(Program.conStr);
                     _ = Program.ExecSqlNonQuery(undoSql);
                     ThongBao("Chuyển nhân viên trở lại thành công");
+
                     Program.servername = currentBrand;
                     Program.mlogin = Program.mloginDN;
                     Program.password = Program.passwordDN;
+
+                    //Kết nối lại với server đang sử dụng
+                    if (Program.connectDB() == 0)
+                    {
+                        ThongBao("Kết nối lại với server không thành công");
+                        return;
+                    }
                 }
                 catch (Exception ex)
                 {
@@ -717,7 +763,6 @@ namespace QLVT
         private void btnChuyenCN_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             int currentPosition = bdsNhanVien.Position;
-            int deleteStatus = int.Parse(((DataRowView)(bdsNhanVien[currentPosition]))["TrangThaiXoa"].ToString());
             string maNv = ((DataRowView)(bdsNhanVien[currentPosition]))["MANV"].ToString();
 
             //Không cho chuyển chi nhánh của người đang đăng nhập
@@ -727,7 +772,7 @@ namespace QLVT
                 return;
             }
             // Kiểm tra trạng thái xóa, nếu đã xóa thì không chuyển nữa
-            if (deleteStatus == 1)
+            if (checkTHXoaNV(maNv) == 1)
             {
                 MessageBox.Show("NV này không còn ở CN này", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
@@ -749,6 +794,8 @@ namespace QLVT
        
         public void chuyenCN(string chiNhanh)
         {
+            Console.WriteLine("Chi nhánh đang chọn: " + chiNhanh);
+            Console.WriteLine(Program.conStr);
             int currentPosition = bdsNhanVien.Position;
             string maNhanVien = ((DataRowView)bdsNhanVien[currentPosition])["MANV"].ToString();
 

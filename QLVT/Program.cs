@@ -141,7 +141,6 @@ namespace QLVT
                 Program.conn.Close();
             try
             {
-                //Console.WriteLine(Program.mlogin);
                 Program.conStr = "Data Source=" + Program.servername + ";Initial Catalog=" +
                       Program.database + ";User ID=" +
                       Program.mlogin + ";password=" + Program.password;

@@ -187,6 +187,12 @@ namespace QLVT
                 deNgaySinh.Focus();
                 return false;
             }
+            if (CalculateAge(birthDate) > 65)
+            {
+                ThongBao("Nhân viên đã quá tuổi lao động");
+                deNgaySinh.Focus();
+                return false;
+            }
             return true;
         }
 
@@ -511,7 +517,7 @@ namespace QLVT
             //Console.WriteLine(drv["NGAYSINH"]);
             DateTime ngaySinh = ((DateTime)drv["NGAYSINH"]);
             string luongstr = drv["LUONG"].ToString();
-            //Console.WriteLine(luongstr);
+            Console.WriteLine(luongstr);
             int luong = int.Parse(luongstr);
             //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
@@ -660,7 +666,7 @@ namespace QLVT
             bdsNhanVien.CancelEdit();
             // Tạo một String để lưu truy vấn được lấy ra từ stack
             string undoSql = undoStack.Pop().ToString();
-            //Console.WriteLine(undoSql);
+            Console.WriteLine(undoSql);
 
             //Nếu lệnh undo là lệnh chuyển chi nhánh
             if (undoSql.Contains("SP_ChuyenCN"))
@@ -668,8 +674,12 @@ namespace QLVT
                 try
                 {
                     string currentBrand = Program.servername;
+                    ThongBao(currentBrand);
                     string newBrand = Program.otherServerName;
-
+                    if (string.IsNullOrEmpty(newBrand)) {
+                        ThongBao("Ko co");
+                        return;
+                    }
                     Program.servername = newBrand;
                     Program.mlogin = Program.remotelogin;
                     Program.password = Program.remotepassword;
@@ -678,9 +688,10 @@ namespace QLVT
                     {
                         return;
                     }
+                    Console.WriteLine(Program.conStr);
                     _ = Program.ExecSqlNonQuery(undoSql);
                     ThongBao("Chuyển nhân viên trở lại thành công");
-                    Program.servername = newBrand;
+                    Program.servername = currentBrand;
                     Program.mlogin = Program.mloginDN;
                     Program.password = Program.passwordDN;
                 }
@@ -735,19 +746,12 @@ namespace QLVT
             form.branchTransfer = new FormChuyenCN.MyDelegate(chuyenCN);
             btnHoanTac.Enabled = true;
         }
+       
         public void chuyenCN(string chiNhanh)
         {
-            Console.WriteLine("Chi nhánh đang chọn: " + chiNhanh);
             int currentPosition = bdsNhanVien.Position;
             string maNhanVien = ((DataRowView)bdsNhanVien[currentPosition])["MANV"].ToString();
 
-            /* if (Program.servername == chiNhanh)
-             {
-                 MessageBox.Show("Hãy chọn chi nhánh khác chi nhánh bạn đang đăng nhập", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                 return;
-             }*/
-
-            // Lưu chi nhánh hiện tại và chi nhánh chuyển tới, tên nhân viên được chuyển
             string currBrand;
             string new_Brand;
             if (chiNhanh.Contains("1"))
@@ -765,38 +769,62 @@ namespace QLVT
                 MessageBox.Show("Mã chi nhánh không hợp lệ", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            Console.WriteLine("Chi nhánh hiện tại: " + currBrand);
-            Console.WriteLine("Chi nhánh mới: " + new_Brand);
-
-            // Lưu truy vấn để hoàn tác
-            string undoQuery = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + currBrand + "'";
-            undoStack.Push(undoQuery);
-
-            // Lấy tên chi nhánh chuyển tới để làm tính năng hoàn tác
             Program.otherServerName = chiNhanh;
 
             // Thực hiện chức năng chuyển chi nhánh, dùng SP
-            string query = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + new_Brand + "'";
-            _ = new SqlCommand(query, Program.conn);
+            string query = $"EXEC SP_ChuyenCN {maNhanVien}, '{new_Brand}'";
+            SqlCommand command = new SqlCommand(query, Program.conn);
+
             try
             {
-                Program.myReader = Program.ExecSqlDataReader(query);
-                // Nếu không có kết quả trả về thì kết thúc
-                if (Program.myReader == null)
+                if (Program.conn.State == ConnectionState.Closed)
+                   Program.conn.Open();
+                SqlDataReader reader = command.ExecuteReader();
+
+                // Lấy mã nhân viên mới được tạo ra
+                string maNhanVienMoi = null;
+                if (reader.Read())
                 {
+                    maNhanVienMoi = reader["MANV"].ToString();
+                    Console.WriteLine("Ma nhan vien moi:"+maNhanVienMoi);
+                }
+                reader.Close();
+
+                // Kiểm tra nếu mã nhân viên mới được lấy ra thành công
+                if (string.IsNullOrEmpty(maNhanVienMoi))
+                {
+                    MessageBox.Show("Không thể lấy mã nhân viên mới.", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.conn.Close();
                     return;
                 }
+
+                // Lưu truy vấn để hoàn tác với mã nhân viên mới
+                string undoQuery = $"EXEC SP_ChuyenCN {maNhanVienMoi}, '{currBrand}'";
+                undoStack.Push(undoQuery);
+
                 ThongBao("Chuyển chi nhánh thành công");
             }
-            catch (Exception ex)
+            catch (SqlException ex)
             {
-                MessageBox.Show("Có lỗi xảy ra trong quá trình thực thi!\n\n" + ex.Message, "thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Console.WriteLine(ex.Message);
-                return;
+                MessageBox.Show($"Có lỗi xảy ra trong quá trình thực thi!\n\n{ex.Message}", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
+            finally
+            {
+                if (Program.conn.State == ConnectionState.Open)
+                {
+                    Program.conn.Close();
+                }
+            }
+
             this.nhanVienTableAdapter.Fill(this.dS1.NhanVien);
         }
 
+
+
+
+        private void nhanVienGridControl_Click(object sender, EventArgs e)
+        {
+
+        }
     }
-}
+}   

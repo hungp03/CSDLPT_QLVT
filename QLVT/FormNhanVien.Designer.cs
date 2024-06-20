@@ -404,6 +404,7 @@
             this.nhanVienGridControl.TabIndex = 10;
             this.nhanVienGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
+            this.nhanVienGridControl.Click += new System.EventHandler(this.nhanVienGridControl_Click);
             // 
             // gridView1
             // 
@@ -475,7 +476,9 @@
             // colLUONG
             // 
             this.colLUONG.Caption = "Lương";
+            this.colLUONG.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colLUONG.FieldName = "LUONG";
+            this.colLUONG.GroupFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colLUONG.MinWidth = 25;
             this.colLUONG.Name = "colLUONG";
             this.colLUONG.Visible = true;

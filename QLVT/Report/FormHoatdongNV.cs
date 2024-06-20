@@ -147,6 +147,7 @@ namespace QLVT.Report
             }
 
         }
+        
 
         private void FormHoatdongNV_Load(object sender, EventArgs e)
         {

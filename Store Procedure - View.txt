@@ -193,64 +193,60 @@ BEGIN
 		EXEC sp_addsrvrolemember @LOGINNAME, 'SecurityAdmin'
 	END
 END
---*****Kiểm tra mã phiếu nhập dùng chưa*****
+--*****Kiểm tra mã phiếu nhập xuất đã tồn tại chưa*****
 GO
-CREATE PROC [dbo].[SP_KiemTraMaPhieuNhap]
-@MAPN nchar(8)
+CREATE PROC [dbo].[SP_KiemTraMaPhieuNhapXuat]
+@CHEDO NVARCHAR(8), @MaPhieu nchar(8)
 AS
 BEGIN
 	DECLARE @result INT
-
-	IF(EXISTS (SELECT * FROM PhieuNhap WHERE MAPN = @MAPN))
-		SET @result = 1 --TON TAI MA PHIEU NHAP
-	ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuNhap WHERE MAPN = @MAPN))
-		SET @result = 1--TON TAI MA PHIEU NHAP
-	ELSE
-		SET @result = 0
+	IF(@CHEDO = 'NHAP')
+	BEGIN
+		IF(EXISTS (SELECT * FROM PhieuNhap WHERE MAPN = @MaPhieu))
+			SET @result = 1 --TON TAI MA PHIEU NHAP
+		ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuNhap WHERE MAPN = @MaPhieu))
+			SET @result = 1--TON TAI MA PHIEU NHAP
+		ELSE
+			SET @result = 0
+	END;
+	IF(@CHEDO = 'XUAT')
+	BEGIN
+		IF(EXISTS (SELECT * FROM PhieuXuat WHERE MAPX = @MaPhieu))
+			SET @result = 1 --TON TAI MA PHIEU XUAT
+		ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuXuat WHERE MAPX = @MaPhieu))
+			SET @result = 1--TON TAI MA PHIEU XUAT
+		ELSE
+			SET @result = 0
+	END;
 	RETURN @result;
 END;
---*****Kiểm tra chi tiết phiếu nhập dùng chưa*****
+
+END;
+--*****Kiểm tra chi tiết phiếu nhập xuất đã tồn tại chưa chưa*****
 GO
-CREATE PROC [dbo].[SP_KiemTraCTPN]
-@MAPN NVARCHAR(8), @MAVT NVARCHAR(10)
+CREATE PROC [dbo].[SP_KiemTraVattuCTPNhapXuat]
+@CHEDO NVARCHAR(8),@MAPhieu NVARCHAR(8), @MAVT NVARCHAR(10)
 AS
 BEGIN
-
-	IF(EXISTS (SELECT * FROM CTPN WHERE MAPN=@MAPN AND MAVT=@MAVT))
-		RETURN 1;
-	IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPN WHERE MAPN=@MAPN AND MAVT=@MAVT))
-		RETURN 1;
-	RETURN 0;
+	IF(@CHEDO = 'NHAP')
+	BEGIN
+		IF(EXISTS (SELECT * FROM CTPN WHERE MAPN=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPN WHERE MAPN=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		RETURN 0;
+	END
+	IF(@CHEDO = 'XUAT')
+	BEGIN
+		IF(EXISTS (SELECT * FROM CTPX WHERE MAPX=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPX WHERE MAPX=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		RETURN 0;
+	END;
 END;
---*****Kiểm tra mã phiếu xuất dùng chưa*****
-GO
-CREATE PROC [dbo].[SP_KiemTraMaPhieuXuat]
-@MAPX nchar(8)
-AS
-BEGIN
-	DECLARE @result INT
+END
 
-	IF(EXISTS (SELECT * FROM PhieuXuat WHERE MAPX = @MAPX))
-		SET @result = 1 --TON TAI MA PHIEU XUAT
-	ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuXuat WHERE MAPX = @MAPX))
-		SET @result = 1--TON TAI MA PHIEU XUAT
-	ELSE
-		SET @result = 0
-	RETURN @result;
-END;
---*****Kiểm tra chi tiết phiếu xuất dùng chưa*****
-GO
-CREATE PROC [dbo].[SP_KiemTraCTPX]
-@MAPX NVARCHAR(8), @MAVT NVARCHAR(10)
-AS
-BEGIN
-
-	IF(EXISTS (SELECT * FROM CTPX WHERE MAPX=@MAPX AND MAVT=@MAVT))
-		RETURN 1;
-	IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPX WHERE MAPX=@MAPX AND MAVT=@MAVT))
-		RETURN 1;
-	RETURN 0;
-END;
 --*****Kiểm tra số lượng vật tư tồn*****
 CREATE PROC SP_KiemTraSoluongVattu
 @MAVT NCHAR(4),@SOLUONG INT
@@ -299,7 +295,7 @@ BEGIN
 			WHERE MAVT=@MAVT
 		END;
 	END;
-	-- NEU NHAP VAT TU RA
+	-- NEU NHAP VAT TU VAO
 	IF(@CHEDO = 'IMPORT')
 	BEGIN
 		IF EXISTS (SELECT * FROM Vattu WHERE MAVT=@MAVT)
@@ -383,4 +379,60 @@ BEGIN
 	ORDER BY DH.NGAY
 END;
 
+******SP_HOẠT ĐỘNG NHÂN VIÊN******
+CREATE PROCEDURE [dbo].[sp_HoatDongNhanVien]
+@MANV INT, 
+@FROM DATE, 
+@TO DATE
+AS
+BEGIN
+    -- phiếu nhập
+    SELECT 
+        FORMAT(PN.NGAY, 'MM-yyyy') AS THANGNAM,
+        PN.NGAY, 
+        PN.MAPN AS MAPHIEU,
+		N'Nhập' AS LOAIPHIEU,
+        N'Không' AS HOTENKH, 
+        VT.TENVT, 
+        KHO.TENKHO, 
+        CTPN.SOLUONG, 
+        CTPN.DONGIA, 
+        CTPN.SOLUONG * CTPN.DONGIA AS THANHTIEN
+    FROM 
+        (SELECT MAPN, NGAY, MAKHO FROM dbo.PhieuNhap WHERE MANV = @MANV AND NGAY BETWEEN @FROM AND @TO) PN,
+        CTPN,
+        (SELECT TENVT, MAVT FROM Vattu) VT,
+        (SELECT TENKHO, MAKHO FROM Kho) KHO
+    WHERE 
+        VT.MAVT = CTPN.MAVT 
+        AND CTPN.MAPN = PN.MAPN 
+        AND PN.MAKHO = KHO.MAKHO
 
+    UNION ALL
+
+    -- phiếu xuất
+    SELECT 
+        FORMAT(PX.NGAY, 'MM-yyyy') AS THANGNAM,
+        PX.NGAY, 
+        PX.MAPX AS MAPHIEU, 
+		N'Xuất' AS LOAIPHIEU,
+        PX.HOTENKH, 
+        VT.TENVT, 
+        KHO.TENKHO, 
+        CTPX.SOLUONG, 
+        CTPX.DONGIA, 
+        CTPX.SOLUONG * CTPX.DONGIA AS THANHTIEN
+    FROM 
+        (SELECT MAPX, NGAY, HOTENKH, MAKHO FROM dbo.PhieuXuat WHERE MANV = @MANV AND NGAY BETWEEN @FROM AND @TO) PX,
+        CTPX,
+        (SELECT TENVT, MAVT FROM Vattu) VT,
+        (SELECT TENKHO, MAKHO FROM Kho) KHO
+    WHERE 
+        VT.MAVT = CTPX.MAVT 
+        AND CTPX.MAPX = PX.MAPX 
+        AND PX.MAKHO = KHO.MAKHO
+
+    ORDER BY NGAY, MAPHIEU, TENVT
+END
+
+GO

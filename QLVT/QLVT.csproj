@@ -128,6 +128,12 @@
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
     </Compile>
+    <Compile Include="Report\FormHoatdongNV.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\FormHoatdongNV.Designer.cs">
+      <DependentUpon>FormHoatdongNV.cs</DependentUpon>
+    </Compile>
     <Compile Include="Report\FormChiTietSoLuongTriGiaHangHoa.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -146,11 +152,11 @@
     <Compile Include="Report\FormDonHangKhongPhieuNhap.Designer.cs">
       <DependentUpon>FormDonHangKhongPhieuNhap.cs</DependentUpon>
     </Compile>
-    <Compile Include="Report\FormSupport.cs">
+    <Compile Include="Report\FormSupportDSNV.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="Report\FormSupport.Designer.cs">
-      <DependentUpon>FormSupport.cs</DependentUpon>
+    <Compile Include="Report\FormSupportDSNV.Designer.cs">
+      <DependentUpon>FormSupportDSNV.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\ReportChiTietSoLuongTriGiaHangHoa.cs">
       <SubType>Component</SubType>
@@ -175,6 +181,12 @@
     </Compile>
     <Compile Include="Report\ReportDSNV.Designer.cs">
       <DependentUpon>ReportDSNV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\RP_HoatdongNV.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\RP_HoatdongNV.Designer.cs">
+      <DependentUpon>RP_HoatdongNV.cs</DependentUpon>
     </Compile>
     <Compile Include="SubForm\FormChonNV.cs">
       <SubType>Form</SubType>
@@ -238,8 +250,11 @@
     <EmbeddedResource Include="Report\FormDonHangKhongPhieuNhap.resx">
       <DependentUpon>FormDonHangKhongPhieuNhap.cs</DependentUpon>
     </EmbeddedResource>
-    <EmbeddedResource Include="Report\FormSupport.resx">
-      <DependentUpon>FormSupport.cs</DependentUpon>
+    <EmbeddedResource Include="Report\FormHoatdongNV.resx">
+      <DependentUpon>FormHoatdongNV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\FormSupportDSNV.resx">
+      <DependentUpon>FormSupportDSNV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Report\ReportChiTietSoLuongTriGiaHangHoa.resx">
       <DependentUpon>ReportChiTietSoLuongTriGiaHangHoa.cs</DependentUpon>
@@ -252,6 +267,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Report\ReportDSNV.resx">
       <DependentUpon>ReportDSNV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\RP_HoatdongNV.resx">
+      <DependentUpon>RP_HoatdongNV.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubForm\FormChonNV.resx">
       <DependentUpon>FormChonNV.cs</DependentUpon>
@@ -290,7 +308,9 @@
   <ItemGroup>
     <None Include="Resources\bo_note.svg" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\actions_label.svg" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -110,10 +110,10 @@ namespace QLVT
             return validateEmployeeCode(txtManv.Text) &&
                    validateEmployeeName(txtHo.Text, txtTen.Text) &&
                    validateEmployeeAddress(txtDiaChi.Text) &&
+                   validateEmptyBirthDate() &&
                    validateEmployeeBirthDate(deNgaySinh.DateTime) &&
                    validateEmployeeSalary(txtLuong.EditValue.ToString())
-            &&
-           validateEmployeeID(txtCMND.Text);
+            && validateEmployeeID(txtCMND.Text); 
         }
 
         private bool validateEmployeeCode(string code)
@@ -132,7 +132,7 @@ namespace QLVT
             }
             return true;
         }
-
+        
         private bool validateEmployeeName(string lastName, string firstName)
         {
             if (string.IsNullOrEmpty(lastName) || !Regex.IsMatch(lastName, @"^[\p{L}\p{N}, ]+$") || lastName.Length > 40)
@@ -168,6 +168,16 @@ namespace QLVT
 
             return true;
         }
+        private bool validateEmptyBirthDate()
+        {
+            if (deNgaySinh.DateTime == DateTime.MinValue)
+            {
+                ThongBao("Chưa nhập ngày sinh");
+                deNgaySinh.Focus();
+                return false;
+            }
+            return true;
+        }
 
         private bool validateEmployeeBirthDate(DateTime birthDate)
         {
@@ -191,6 +201,12 @@ namespace QLVT
             else if (salary <= 0 || salary < 4000000) // Kiểm tra mức lương có phải là số dương và lớn hơn hoặc bằng 4.000.000 không
             {
                 ThongBao("Mức lương phải là số dương và tối thiểu là 4.000.000 đồng.");
+                txtLuong.Focus();
+                return false;
+            }
+            else if (salary > int.MaxValue)
+            {
+                ThongBao("Mức lương quá lớn, không phù hợp.");
                 txtLuong.Focus();
                 return false;
             }
@@ -288,17 +304,15 @@ namespace QLVT
             //Thêm dòng mới bằng hàm AddNew
             bdsNhanVien.AddNew();
             txtMacn.Text = brandId;
-
             // Thay đổi bật/ tắt các nút chức năng
             txtManv.Enabled = true;
             btnThem.Enabled = false;
             btnXoa.Enabled = false;
-
             btnLamMoi.Enabled = false;
             btnChuyenCN.Enabled = false;
             btnThoat.Enabled = false;
             checkboxTHXoa.Checked = false;
-
+            btnHoanTac.Enabled = true;
             nhanVienGridControl.Enabled = false;
             panelNhapLieu.Enabled = true;
         }
@@ -306,7 +320,7 @@ namespace QLVT
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             string maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
-
+            int status = int.Parse(((DataRowView)bdsNhanVien[bdsNhanVien.Position])["TrangThaiXoa"].ToString());
             // Không cho phép xóa tài khoảng đang đăng nhập
             if (maNV == Program.username)
             {
@@ -340,8 +354,12 @@ namespace QLVT
                 ThongBao("Không thế xóa tài khoản đã lập đơn đặt hàng");
                 return;
             }
+            if (status == 1)
+            {
+                ThongBao("Nhân viên đã bị xóa, đang ở chi nhánh khác");
+                return;
+            }
 
-            int status = checkboxTHXoa.Checked ? 1 : 0;
             DateTime ngsinh = (DateTime)((DataRowView)bdsNhanVien[bdsNhanVien.Position])["NGAYSINH"];
 
             //Tạo truy vấn hoàn tác, đưa vào undoStack
@@ -385,64 +403,95 @@ namespace QLVT
         private int ExecuteSP_TracuuNV(string maNv)
         {
             string query =
-                    "DECLARE @result int " +
-                    "EXEC @result = [dbo].[sp_TraCuuNV] '" +
-                    maNv + "' " +
-                    "SELECT @result";
+                "DECLARE @result int " +
+                "EXEC @result = [dbo].[sp_TraCuuNV] '" +
+                maNv + "' " +
+                "SELECT @result";
+
+            int result = -1;
 
             try
             {
-                Program.myReader = Program.ExecSqlDataReader(query);
-
-                //Không có kết quả thì kết thúc
-                if (Program.myReader == null)
+                if (Program.myReader != null && !Program.myReader.IsClosed)
                 {
-                    return -1;
+                    Program.myReader.Close();
                 }
 
-                
+                Program.myReader = Program.ExecSqlDataReader(query);
+
+                // Không có kết quả thì kết thúc
+                if (Program.myReader == null)
+                {
+                    return result;
+                }
+
+                if (Program.myReader.Read())
+                {
+                    result = int.Parse(Program.myReader.GetValue(0).ToString());
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Kiểm tra MANV thất bại\n" + ex.Message, "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //Console.WriteLine("Check manv" + ex.Message);
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            Program.myReader.Read();
-            int result = int.Parse(Program.myReader.GetValue(0).ToString());
-            Program.myReader.Close();
+            finally
+            {
+                if (Program.myReader != null && !Program.myReader.IsClosed)
+                {
+                    Program.myReader.Close();
+                }
+            }
+
             return result;
         }
+
 
         private int ExecuteSP_TracuuCMND(string cmnd, string maNv)
         {
             string query =
-                    "DECLARE @result int " +
-                    "EXEC @result = [dbo].[SP_KiemtraCMND] '"
-                     + cmnd + "', " + maNv + "" +
-                    "SELECT @result";
+                "DECLARE @result int " +
+                "EXEC @result = [dbo].[SP_KiemtraCMND] '" +
+                cmnd + "', '" + maNv + "' " +
+                "SELECT @result";
+
+            int result = -1;
+
             try
             {
-                Program.myReader = Program.ExecSqlDataReader(query);
-
-                //Không có kết quả thì kết thúc
-                if (Program.myReader == null)
+                if (Program.myReader != null && !Program.myReader.IsClosed)
                 {
-                    return -1;
+                    Program.myReader.Close();
                 }
 
+                Program.myReader = Program.ExecSqlDataReader(query);
+
+                if (Program.myReader == null)
+                {
+                    return result;
+                }
+
+                if (Program.myReader.Read())
+                {
+                    result = int.Parse(Program.myReader.GetValue(0).ToString());
+                }
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Kiểm tra CMND thất bại\n" + ex.Message, "Thông báo",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
-                //Console.WriteLine("Check cmnd"+ex.Message);
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
-            Program.myReader.Read();
-            int result = int.Parse(Program.myReader.GetValue(0).ToString());
-            Program.myReader.Close();
+            finally
+            {
+                if (Program.myReader != null && !Program.myReader.IsClosed)
+                {
+                    Program.myReader.Close();
+                }
+            }
+
             return result;
         }
+
 
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -459,10 +508,12 @@ namespace QLVT
             string ho = drv["HO"].ToString();
             string ten = drv["TEN"].ToString();
             string diaChi = drv["DIACHI"].ToString();
+            //Console.WriteLine(drv["NGAYSINH"]);
             DateTime ngaySinh = ((DateTime)drv["NGAYSINH"]);
-            // Console.WriteLine(ngaySinh);
-            int luong = int.Parse(drv["LUONG"].ToString());
-            string maChiNhanh = drv["MACN"].ToString();
+            string luongstr = drv["LUONG"].ToString();
+            //Console.WriteLine(luongstr);
+            int luong = int.Parse(luongstr);
+            //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
 
             //Sử dụng kết quả bước trên và vị trí của txtManv => các trường hợp xảy ra
@@ -586,12 +637,8 @@ namespace QLVT
                 nhanVienGridControl.Enabled = true;
                 panelNhapLieu.Enabled = true;
 
-                // Hủy bỏ thao tác trên bds
+                //Hủy thao tác thêm
                 bdsNhanVien.CancelEdit();
-
-                //Xóa dòng hiện tại đang được thêm bởi nút thêm
-                bdsNhanVien.RemoveCurrent();
-
                 // Quay lại vị trí cũ
                 bdsNhanVien.Position = position;
                 return;
@@ -727,7 +774,6 @@ namespace QLVT
 
             // Lấy tên chi nhánh chuyển tới để làm tính năng hoàn tác
             Program.otherServerName = chiNhanh;
-            Console.WriteLine("Ten server con lai" + Program.otherServerName);
 
             // Thực hiện chức năng chuyển chi nhánh, dùng SP
             string query = "EXEC SP_ChuyenCN " + maNhanVien + ",'" + new_Brand + "'";

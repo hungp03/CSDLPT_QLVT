@@ -58,7 +58,7 @@
             this.panelControl1.Controls.Add(this.label1);
             this.panelControl1.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelControl1.Location = new System.Drawing.Point(0, 0);
-            this.panelControl1.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.panelControl1.Margin = new System.Windows.Forms.Padding(6);
             this.panelControl1.Name = "panelControl1";
             this.panelControl1.Size = new System.Drawing.Size(982, 232);
             this.panelControl1.TabIndex = 0;
@@ -69,7 +69,7 @@
             this.btnPublish.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPublish.ForeColor = System.Drawing.Color.White;
             this.btnPublish.Location = new System.Drawing.Point(655, 108);
-            this.btnPublish.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnPublish.Margin = new System.Windows.Forms.Padding(5);
             this.btnPublish.Name = "btnPublish";
             this.btnPublish.Size = new System.Drawing.Size(300, 70);
             this.btnPublish.TabIndex = 3;
@@ -83,7 +83,7 @@
             this.btnPreview.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.btnPreview.ForeColor = System.Drawing.Color.White;
             this.btnPreview.Location = new System.Drawing.Point(50, 108);
-            this.btnPreview.Margin = new System.Windows.Forms.Padding(5, 5, 5, 5);
+            this.btnPreview.Margin = new System.Windows.Forms.Padding(5);
             this.btnPreview.Name = "btnPreview";
             this.btnPreview.Size = new System.Drawing.Size(300, 70);
             this.btnPreview.TabIndex = 2;
@@ -136,10 +136,10 @@
             // 
             this.vattuGridControl.DataSource = this.vattuBindingSource;
             this.vattuGridControl.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.vattuGridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.vattuGridControl.EmbeddedNavigator.Margin = new System.Windows.Forms.Padding(6);
             this.vattuGridControl.Location = new System.Drawing.Point(0, 232);
             this.vattuGridControl.MainView = this.gridView1;
-            this.vattuGridControl.Margin = new System.Windows.Forms.Padding(6, 6, 6, 6);
+            this.vattuGridControl.Margin = new System.Windows.Forms.Padding(6);
             this.vattuGridControl.Name = "vattuGridControl";
             this.vattuGridControl.Size = new System.Drawing.Size(982, 221);
             this.vattuGridControl.TabIndex = 2;
@@ -210,7 +210,7 @@
             this.Controls.Add(this.vattuGridControl);
             this.Controls.Add(this.panelControl1);
             this.Name = "FormDanhMucVatTu";
-            this.Text = "FormDanhMucVatTu";
+            this.Text = "Danh sách vật tư";
             this.Load += new System.EventHandler(this.FormDanhMucVatTu_Load);
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();
             this.panelControl1.ResumeLayout(false);

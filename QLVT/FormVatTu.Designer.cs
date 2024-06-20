@@ -462,6 +462,7 @@
             // txtMaVT
             // 
             this.txtMaVT.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsVatTu, "MAVT", true));
+            this.txtMaVT.Enabled = false;
             this.txtMaVT.Location = new System.Drawing.Point(295, 92);
             this.txtMaVT.Margin = new System.Windows.Forms.Padding(4);
             this.txtMaVT.MenuManager = this.barManager1;

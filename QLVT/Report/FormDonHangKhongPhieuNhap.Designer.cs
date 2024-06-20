@@ -106,7 +106,7 @@
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "FormDonHangKhongPhieuNhap";
-            this.Text = "FormDonHangKhongPhieuNhap";
+            this.Text = "ĐH không PN";
             this.Load += new System.EventHandler(this.FormDonHangKhongPhieuNhap_Load);
             this.ResumeLayout(false);
             this.PerformLayout();

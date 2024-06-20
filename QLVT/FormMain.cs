@@ -161,14 +161,14 @@ namespace QLVT
 
         private void barButtonItem1_ItemClick(object sender, ItemClickEventArgs e)
         {
-            Form f = CheckExists(typeof(FormSupport));
+            Form f = CheckExists(typeof(FormSupportDSNV));
             if (f != null)
             {
                 f.Activate();
             }
             else
             {
-                FormSupport form = new FormSupport(1);
+                FormSupportDSNV form = new FormSupportDSNV(1);
                 form.MdiParent = this;
                 form.Show();
             }
@@ -278,7 +278,6 @@ namespace QLVT
                 form.Show();
             }
         }
-
         private void barButtonDH_ItemClick(object sender, ItemClickEventArgs e)
         {
             Form f = CheckExists(typeof(FormDonDatHang));
@@ -293,5 +292,21 @@ namespace QLVT
                 form.Show();
             }
         }
+        private void barButtonItem6_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormHoatdongNV));
+            if (f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormHoatdongNV form = new FormHoatdongNV();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
+
+
+        }
     }
-}

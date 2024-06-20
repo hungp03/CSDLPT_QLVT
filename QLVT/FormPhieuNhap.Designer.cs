@@ -66,6 +66,7 @@
             this.thêmToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.xóaToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.ghiToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.huyThemVatTuToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.vattuTableAdapter = new QLVT.DS1TableAdapters.VattuTableAdapter();
             this.dSNVTableAdapter = new QLVT.DS1TableAdapters.DSNVTableAdapter();
             this.groupBoxPhieuNhap = new System.Windows.Forms.GroupBox();
@@ -87,12 +88,11 @@
             this.gridView2 = new DevExpress.XtraGrid.Views.Grid.GridView();
             this.phieuNhapGridControl = new DevExpress.XtraGrid.GridControl();
             this.gridView1 = new DevExpress.XtraGrid.Views.Grid.GridView();
-            this.HOTEN = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colMAPN = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colNGAY = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colMasoDDH = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colHOTEN = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.colTENKHO = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMANV = new DevExpress.XtraGrid.Columns.GridColumn();
+            this.colMAKHO = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colrowguid = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colMAKHO1 = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colMANV1 = new DevExpress.XtraGrid.Columns.GridColumn();
@@ -415,30 +415,39 @@
             this.contextMenuStripCTPN.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.thêmToolStripMenuItem,
             this.xóaToolStripMenuItem,
-            this.ghiToolStripMenuItem});
+            this.ghiToolStripMenuItem,
+            this.huyThemVatTuToolStripMenuItem});
             this.contextMenuStripCTPN.Name = "contextMenuStrip1";
-            this.contextMenuStripCTPN.Size = new System.Drawing.Size(158, 76);
+            this.contextMenuStripCTPN.Size = new System.Drawing.Size(185, 100);
             // 
             // thêmToolStripMenuItem
             // 
             this.thêmToolStripMenuItem.Name = "thêmToolStripMenuItem";
-            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.thêmToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.thêmToolStripMenuItem.Text = "Thêm vật tư";
             this.thêmToolStripMenuItem.Click += new System.EventHandler(this.thêmToolStripMenuItem_Click);
             // 
             // xóaToolStripMenuItem
             // 
             this.xóaToolStripMenuItem.Name = "xóaToolStripMenuItem";
-            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.xóaToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.xóaToolStripMenuItem.Text = "Xóa vật tư";
             this.xóaToolStripMenuItem.Click += new System.EventHandler(this.xóaToolStripMenuItem_Click);
             // 
             // ghiToolStripMenuItem
             // 
             this.ghiToolStripMenuItem.Name = "ghiToolStripMenuItem";
-            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(157, 24);
+            this.ghiToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
             this.ghiToolStripMenuItem.Text = "Ghi vật tư";
             this.ghiToolStripMenuItem.Click += new System.EventHandler(this.ghiToolStripMenuItem_Click);
+            // 
+            // huyThemVatTuToolStripMenuItem
+            // 
+            this.huyThemVatTuToolStripMenuItem.Enabled = false;
+            this.huyThemVatTuToolStripMenuItem.Name = "huyThemVatTuToolStripMenuItem";
+            this.huyThemVatTuToolStripMenuItem.Size = new System.Drawing.Size(184, 24);
+            this.huyThemVatTuToolStripMenuItem.Text = "Hủy thêm vật tư";
+            this.huyThemVatTuToolStripMenuItem.Click += new System.EventHandler(this.huyThemVatTuToolStripMenuItem_Click);
             // 
             // vattuTableAdapter
             // 
@@ -475,7 +484,6 @@
             this.groupBoxPhieuNhap.TabIndex = 28;
             this.groupBoxPhieuNhap.TabStop = false;
             this.groupBoxPhieuNhap.Text = "Thông Tin";
-            this.groupBoxPhieuNhap.Enter += new System.EventHandler(this.groupBoxPhieuNhap_Enter);
             // 
             // tENKHOComboBox
             // 
@@ -483,6 +491,7 @@
             this.tENKHOComboBox.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.bdsPhieuNhap, "MAKHO", true));
             this.tENKHOComboBox.DataSource = this.dSKHOBindingSource;
             this.tENKHOComboBox.DisplayMember = "TENKHO";
+            this.tENKHOComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.tENKHOComboBox.FormattingEnabled = true;
             this.tENKHOComboBox.Location = new System.Drawing.Point(140, 150);
             this.tENKHOComboBox.Name = "tENKHOComboBox";
@@ -502,6 +511,7 @@
             this.hOTENComboBox.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.bdsPhieuNhap, "MANV", true));
             this.hOTENComboBox.DataSource = this.dSNVBindingSource;
             this.hOTENComboBox.DisplayMember = "HOTEN";
+            this.hOTENComboBox.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.hOTENComboBox.FormattingEnabled = true;
             this.hOTENComboBox.Location = new System.Drawing.Point(140, 95);
             this.hOTENComboBox.Name = "hOTENComboBox";
@@ -546,6 +556,7 @@
             this.cbxMASODDH.DataBindings.Add(new System.Windows.Forms.Binding("SelectedValue", this.bdsPhieuNhap, "MasoDDH", true));
             this.cbxMASODDH.DataSource = this.datHangBindingSource;
             this.cbxMASODDH.DisplayMember = "MasoDDH";
+            this.cbxMASODDH.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbxMASODDH.FormattingEnabled = true;
             this.cbxMASODDH.Location = new System.Drawing.Point(140, 200);
             this.cbxMASODDH.Name = "cbxMASODDH";
@@ -594,6 +605,7 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.dataGridViewTextBoxColumn4});
+            this.dgvCTPN.ContextMenuStrip = this.contextMenuStripCTPN;
             this.dgvCTPN.DataSource = this.bdsCTPN;
             this.dgvCTPN.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvCTPN.Location = new System.Drawing.Point(979, 338);
@@ -602,12 +614,11 @@
             this.dgvCTPN.RowTemplate.Height = 24;
             this.dgvCTPN.Size = new System.Drawing.Size(945, 703);
             this.dgvCTPN.TabIndex = 33;
-            this.dgvCTPN.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCTPN_CellContentClick);
             // 
             // dataGridViewTextBoxColumn1
             // 
             this.dataGridViewTextBoxColumn1.DataPropertyName = "MAPN";
-            this.dataGridViewTextBoxColumn1.HeaderText = "Số PN";
+            this.dataGridViewTextBoxColumn1.HeaderText = "Phiếu";
             this.dataGridViewTextBoxColumn1.MinimumWidth = 6;
             this.dataGridViewTextBoxColumn1.Name = "dataGridViewTextBoxColumn1";
             this.dataGridViewTextBoxColumn1.ReadOnly = true;
@@ -660,27 +671,18 @@
             this.phieuNhapGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1,
             this.gridView2});
+            this.phieuNhapGridControl.Click += new System.EventHandler(this.phieuNhapGridControl_Click);
             // 
             // gridView1
             // 
             this.gridView1.Columns.AddRange(new DevExpress.XtraGrid.Columns.GridColumn[] {
-            this.HOTEN,
             this.colMAPN,
             this.colNGAY,
             this.colMasoDDH,
-            this.colHOTEN,
-            this.colTENKHO});
+            this.colMANV,
+            this.colMAKHO});
             this.gridView1.GridControl = this.phieuNhapGridControl;
             this.gridView1.Name = "gridView1";
-            // 
-            // HOTEN
-            // 
-            this.HOTEN.Caption = "HOTEN";
-            this.HOTEN.MinWidth = 25;
-            this.HOTEN.Name = "HOTEN";
-            this.HOTEN.Visible = true;
-            this.HOTEN.VisibleIndex = 0;
-            this.HOTEN.Width = 94;
             // 
             // colMAPN
             // 
@@ -689,8 +691,9 @@
             this.colMAPN.MinWidth = 25;
             this.colMAPN.Name = "colMAPN";
             this.colMAPN.OptionsColumn.AllowEdit = false;
+            this.colMAPN.OptionsColumn.ReadOnly = true;
             this.colMAPN.Visible = true;
-            this.colMAPN.VisibleIndex = 1;
+            this.colMAPN.VisibleIndex = 0;
             this.colMAPN.Width = 94;
             // 
             // colNGAY
@@ -701,40 +704,41 @@
             this.colNGAY.Name = "colNGAY";
             this.colNGAY.OptionsColumn.AllowEdit = false;
             this.colNGAY.Visible = true;
-            this.colNGAY.VisibleIndex = 2;
+            this.colNGAY.VisibleIndex = 1;
             this.colNGAY.Width = 94;
             // 
             // colMasoDDH
             // 
+            this.colMasoDDH.Caption = "Mã đơn đặt hàng";
             this.colMasoDDH.FieldName = "MasoDDH";
             this.colMasoDDH.MinWidth = 25;
             this.colMasoDDH.Name = "colMasoDDH";
             this.colMasoDDH.OptionsColumn.AllowEdit = false;
             this.colMasoDDH.Visible = true;
-            this.colMasoDDH.VisibleIndex = 3;
+            this.colMasoDDH.VisibleIndex = 2;
             this.colMasoDDH.Width = 94;
             // 
-            // colHOTEN
+            // colMANV
             // 
-            this.colHOTEN.Caption = "HOTEN";
-            this.colHOTEN.FieldName = "HOTEN";
-            this.colHOTEN.MinWidth = 25;
-            this.colHOTEN.Name = "colHOTEN";
-            this.colHOTEN.OptionsColumn.AllowEdit = false;
-            this.colHOTEN.Visible = true;
-            this.colHOTEN.VisibleIndex = 4;
-            this.colHOTEN.Width = 94;
+            this.colMANV.Caption = "Mã Nhân Viên";
+            this.colMANV.FieldName = "MANV";
+            this.colMANV.MinWidth = 25;
+            this.colMANV.Name = "colMANV";
+            this.colMANV.OptionsColumn.AllowEdit = false;
+            this.colMANV.Visible = true;
+            this.colMANV.VisibleIndex = 3;
+            this.colMANV.Width = 94;
             // 
-            // colTENKHO
+            // colMAKHO
             // 
-            this.colTENKHO.Caption = "TENKHO";
-            this.colTENKHO.FieldName = "TENKHO";
-            this.colTENKHO.MinWidth = 25;
-            this.colTENKHO.Name = "colTENKHO";
-            this.colTENKHO.OptionsColumn.AllowEdit = false;
-            this.colTENKHO.Visible = true;
-            this.colTENKHO.VisibleIndex = 5;
-            this.colTENKHO.Width = 94;
+            this.colMAKHO.Caption = "Mã Kho";
+            this.colMAKHO.FieldName = "MAKHO";
+            this.colMAKHO.MinWidth = 25;
+            this.colMAKHO.Name = "colMAKHO";
+            this.colMAKHO.OptionsColumn.AllowEdit = false;
+            this.colMAKHO.Visible = true;
+            this.colMAKHO.VisibleIndex = 4;
+            this.colMAKHO.Width = 94;
             // 
             // colrowguid
             // 
@@ -791,7 +795,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(9F, 18F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 1041);
-            this.ContextMenuStrip = this.contextMenuStripCTPN;
             this.Controls.Add(this.dgvCTPN);
             this.Controls.Add(this.groupBoxPhieuNhap);
             this.Controls.Add(this.phieuNhapGridControl);
@@ -802,7 +805,7 @@
             this.Controls.Add(this.barDockControlTop);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "FormPhieuNhap";
-            this.Text = "frmPhieuNhap";
+            this.Text = "Phiếu Nhập";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormPhieuNhap_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
@@ -871,10 +874,6 @@
         private System.Windows.Forms.DataGridView dgvCTPN;
         private DevExpress.XtraEditors.TextEdit txtMAPN;
         private DevExpress.XtraEditors.DateEdit dteNGAY;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
-        private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewTextBoxColumn2;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
-        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
         private DevExpress.XtraGrid.GridControl phieuNhapGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView2;
@@ -891,15 +890,19 @@
         private DevExpress.XtraGrid.Columns.GridColumn colMAPN;
         private DevExpress.XtraGrid.Columns.GridColumn colNGAY;
         private DevExpress.XtraGrid.Columns.GridColumn colMasoDDH;
-        private DevExpress.XtraGrid.Columns.GridColumn colHOTEN;
-        private DevExpress.XtraGrid.Columns.GridColumn colTENKHO;
+        private DevExpress.XtraGrid.Columns.GridColumn colMANV;
+        private DevExpress.XtraGrid.Columns.GridColumn colMAKHO;
         private DevExpress.XtraEditors.TextEdit txtMAKHO;
         private DevExpress.XtraEditors.TextEdit txtMANV;
         private System.Windows.Forms.ComboBox hOTENComboBox;
         private System.Windows.Forms.BindingSource dSKHOBindingSource;
         private DS1TableAdapters.DSKHOTableAdapter dSKHOTableAdapter;
         private System.Windows.Forms.ComboBox tENKHOComboBox;
-        private DevExpress.XtraGrid.Columns.GridColumn HOTEN;
         private System.Windows.Forms.ToolStripMenuItem ghiToolStripMenuItem;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn1;
+        private System.Windows.Forms.DataGridViewComboBoxColumn dataGridViewTextBoxColumn2;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn3;
+        private System.Windows.Forms.DataGridViewTextBoxColumn dataGridViewTextBoxColumn4;
+        private System.Windows.Forms.ToolStripMenuItem huyThemVatTuToolStripMenuItem;
     }
 }

@@ -7,17 +7,18 @@ using System.Data;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace QLVT.Report
 {
-    public partial class FormSupport : Form
+    public partial class FormSupportDSNV : Form
     {
         private int choice;
-        private string brandName = "";
-        public FormSupport(int choice)
+        private string brandName;
+        public FormSupportDSNV(int choice)
         {
             InitializeComponent();
             //Phân quyền nhóm CONGTY được đổi chi nhánh report
@@ -40,7 +41,7 @@ namespace QLVT.Report
             cbChiNhanh.DisplayMember = "TENCN";
             cbChiNhanh.ValueMember = "TENSERVER";
             cbChiNhanh.SelectedIndex = Program.brand;
-            this.brandName = cbChiNhanh.SelectedValue.ToString().Contains("1") ? "TP.HCM" : "Cần Thơ";
+            brandName = cbChiNhanh.Text;
         }
 
         private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)
@@ -49,8 +50,18 @@ namespace QLVT.Report
             {
                 return;
             }
-            Program.servername = cbChiNhanh.SelectedValue.ToString();
+            try
+            {
+                Program.servername = cbChiNhanh.SelectedValue.ToString();
+                //Console.WriteLine(cbChiNhanh.SelectedValue.ToString());
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Có lỗi xảy ra, thử lại sau\n" + ex.Message);
+                return;
+            }
 
+            brandName = cbChiNhanh.Text;
             // Nếu chọn chi nhánh khác với chi nhánh hiện tại
             if (cbChiNhanh.SelectedIndex != Program.brand)
             {
@@ -68,13 +79,11 @@ namespace QLVT.Report
             {
                 MessageBox.Show("Lỗi kết nối tới chi nhánh", "Thông báo", MessageBoxButtons.OK);
             }
-
-            brandName = cbChiNhanh.SelectedValue.ToString().Contains("1") ? "TP.HCM" : "Cần Thơ";
+            
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-
             switch (choice)
             {
                 case 1:
@@ -122,6 +131,11 @@ namespace QLVT.Report
                     }
                     break;
             }
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

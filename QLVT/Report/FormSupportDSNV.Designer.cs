@@ -1,6 +1,6 @@
 ﻿namespace QLVT.Report
 {
-    partial class FormSupport
+    partial class FormSupportDSNV
     {
         /// <summary>
         /// Required designer variable.
@@ -43,11 +43,12 @@
             this.label1.Cursor = System.Windows.Forms.Cursors.Default;
             this.label1.Font = new System.Drawing.Font("Tahoma", 22.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label1.ForeColor = System.Drawing.Color.Firebrick;
-            this.label1.Location = new System.Drawing.Point(299, 42);
+            this.label1.Location = new System.Drawing.Point(192, 45);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(166, 45);
+            this.label1.Size = new System.Drawing.Size(408, 45);
             this.label1.TabIndex = 0;
-            this.label1.Text = "Báo cáo";
+            this.label1.Text = "Danh sách nhân viên";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label2
             // 
@@ -61,6 +62,7 @@
             // 
             // cbChiNhanh
             // 
+            this.cbChiNhanh.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cbChiNhanh.Font = new System.Drawing.Font("Microsoft Sans Serif", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.cbChiNhanh.FormattingEnabled = true;
             this.cbChiNhanh.Location = new System.Drawing.Point(307, 134);
@@ -100,7 +102,7 @@
             this.contextMenuStrip1.Name = "contextMenuStrip1";
             this.contextMenuStrip1.Size = new System.Drawing.Size(61, 4);
             // 
-            // FormSupport
+            // FormSupportDSNV
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -110,8 +112,8 @@
             this.Controls.Add(this.cbChiNhanh);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
-            this.Name = "FormSupport";
-            this.Text = "Hỗ trợ Report";
+            this.Name = "FormSupportDSNV";
+            this.Text = "Danh sách nhân viên";
             this.WindowState = System.Windows.Forms.FormWindowState.Maximized;
             this.Load += new System.EventHandler(this.FormSupport_Load);
             this.ResumeLayout(false);

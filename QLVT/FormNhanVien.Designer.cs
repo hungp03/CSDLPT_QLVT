@@ -557,9 +557,7 @@
             this.txtLuong.Name = "txtLuong";
             this.txtLuong.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.txtLuong.Properties.Appearance.Options.UseFont = true;
-            this.txtLuong.Properties.DisplayFormat.FormatString = "n0";
             this.txtLuong.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.txtLuong.Properties.EditFormat.FormatString = "n0";
             this.txtLuong.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.txtLuong.Size = new System.Drawing.Size(299, 24);
             this.txtLuong.TabIndex = 16;
@@ -590,7 +588,7 @@
             // deNgaySinh
             // 
             this.deNgaySinh.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsNhanVien, "NGAYSINH", true));
-            this.deNgaySinh.EditValue = null;
+            this.deNgaySinh.EditValue = new System.DateTime(2024, 6, 17, 17, 58, 54, 166);
             this.deNgaySinh.Location = new System.Drawing.Point(225, 116);
             this.deNgaySinh.Margin = new System.Windows.Forms.Padding(5);
             this.deNgaySinh.MenuManager = this.barManager1;
@@ -601,6 +599,7 @@
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
             this.deNgaySinh.Properties.CalendarTimeProperties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
             new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.deNgaySinh.Properties.TextEditStyle = DevExpress.XtraEditors.Controls.TextEditStyles.DisableTextEditor;
             this.deNgaySinh.Size = new System.Drawing.Size(178, 24);
             this.deNgaySinh.TabIndex = 9;
             // 

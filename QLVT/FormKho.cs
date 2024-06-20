@@ -62,7 +62,7 @@ namespace QLVT
 
             this.khoTableAdapter.Connection.ConnectionString = Program.conStr;
             this.khoTableAdapter.Fill(this.dS1.Kho);
-            // wtf bug :)))
+            //???
             maCN = ((DataRowView)bdsKho[0])["MACN"].ToString();
             cbChiNhanh.DataSource = Program.bindingSource;
             cbChiNhanh.DisplayMember = "TENCN";
@@ -131,11 +131,10 @@ namespace QLVT
             position = bdsKho.Position;
             panelControl2.Enabled = true;
             isAdding = true;
-
             bdsKho.AddNew();
             txtMacn.Text = maCN;
             txtMakho.Enabled = true;
-
+            btnHoantac.Enabled = true;
             btnThoat.Enabled = btnLammoi.Enabled = btnXoa.Enabled = btnThem.Enabled = false;
             khoGridControl.Enabled = false;
             panelControl2.Enabled = true;
@@ -145,7 +144,7 @@ namespace QLVT
         {
             if (bdsKho.Count <= 0)
             {
-                btnXoa.Enabled = true;
+                btnXoa.Enabled = false;
             }
 
             if (bdsDatHang.Count > 0)
@@ -167,9 +166,9 @@ namespace QLVT
             }
 
             string undoQuery = "INSERT INTO DBO.KHO( MAKHO,TENKHO,DIACHI,MACN) " +
-                " VALUES( '" + txtMakho.Text + "','" +
-                        txtTenkho.Text + "','" +
-                        txtDiachi.Text + "', '" +
+                " VALUES( N'" + txtMakho.Text + "',N'" +
+                        txtTenkho.Text + "',N'" +
+                        txtDiachi.Text + "', N'" +
                         txtMacn.Text.Trim() + "' ) ";
 
             undoStack.Push(undoQuery);
@@ -179,7 +178,6 @@ namespace QLVT
             {
                 try
                 {
-
                     position = bdsKho.Position;
                     bdsKho.RemoveCurrent();
 
@@ -213,78 +211,77 @@ namespace QLVT
             }
 
             string maKho = txtMakho.Text.Trim();
-            DataRowView drv = ((DataRowView)bdsKho[bdsKho.Position]);
+            DataRowView drv = (DataRowView)bdsKho[bdsKho.Position];
             string tenKhoHang = drv["TENKHO"].ToString();
             string diaChi = drv["DIACHI"].ToString();
 
-            string query = "DECLARE  @res int\n" +
-            "EXEC @res = [dbo].[SP_KiemtraMaKho] @MAKHO = N'" + maKho + "'\n" +
-            "SELECT @res";
-
-            SqlCommand sqlCommand = new SqlCommand(query, Program.conn);
+            string query = "DECLARE @result int " +
+                           "EXEC @result = [dbo].[SP_KiemtraMaKho] @MAKHO = '" + maKho + "' " +
+                           "SELECT @result";
+            _ = new SqlCommand(query, Program.conn);
             try
             {
+                if (Program.myReader != null && !Program.myReader.IsClosed)
+                {
+                    Program.myReader.Close();
+                }
+
                 Program.myReader = Program.ExecSqlDataReader(query);
                 if (Program.myReader == null)
                 {
                     return;
                 }
-            }
-            catch (Exception ex)
-            {
-                ThongBao("Thực thi DB thất bại\n" + ex.Message);
-                return;
-            }
-            Program.myReader.Read();
-            int res = int.Parse(Program.myReader.GetValue(0).ToString());
-            Program.myReader.Close();
 
-            // Xử lý 4 trường hợp
-            /*TH1: result = 1 && pointerPosition != khoPosition->Thêm mới nhưng MAKHO đã tồn tại
-            TH2: result = 1 && pointerPosition == khoPosition->Sửa kho đang tồn tại
-            TH3: result = 0 && pointerPosition == khoPosition->Thêm mới bình thường
-            TH4: result = 0 && pointerPosition != khoPosition->Thêm mới bình thường*/
-            int pointerPosition = bdsKho.Position;
-            int khoPosition = bdsKho.Find("MAKHO", txtMakho.Text);
+                Program.myReader.Read();
+                int res = int.Parse(Program.myReader.GetValue(0).ToString());
+                Program.myReader.Close();
 
-            //TH1
-            if (res == 1 && pointerPosition != khoPosition)
-            {
-                ThongBao("Mã kho đã được sử dụng");
-                return;
-            }
+                int pointerPosition = bdsKho.Position;
+                int khoPosition = bdsKho.Find("MAKHO", txtMakho.Text);
+                // Xử lý 4 trường hợp
+                /*TH1: result = 1 && pointerPosition != khoPosition->Thêm mới nhưng MAKHO đã tồn tại
+                TH2: result = 1 && pointerPosition == khoPosition->Sửa kho đang tồn tại
+                TH3: result = 0 && pointerPosition == khoPosition->Thêm mới bình thường
+                TH4: result = 0 && pointerPosition != khoPosition->Thêm mới bình thường*/
 
-            //TH2,3,4
-            else
-            {
+                //TH1
+                if (res == 1 && pointerPosition != khoPosition)
+                {
+                    ThongBao("Mã kho đã được sử dụng");
+                    return;
+                }
+
+                //TH2,3,4
                 DialogResult dr = MessageBox.Show("Bạn có chắc muốn ghi dữ liệu?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                 if (dr == DialogResult.OK)
                 {
-
                     try
                     {
                         string undoQuery = "";
-                        btnThem.Enabled = true;
-                        btnXoa.Enabled = true;
-                        btnLammoi.Enabled = true;
-                        btnHoantac.Enabled = true;
-                        btnThoat.Enabled = true;
-                        txtMakho.Enabled = false;
-                        khoGridControl.Enabled = true;
-
                         if (isAdding == true)
                         {
                             undoQuery = "DELETE DBO.KHO WHERE MAKHO = '" + txtMakho.Text.Trim() + "'";
                         }
                         else
                         {
-                            undoQuery = "UPDATE DBO.KHO set TENKHO = '" + tenKhoHang + "', DIACHI = '" + diaChi + "' WHERE MAKHO = '" + maKho + "'";
+                            undoQuery = "UPDATE DBO.KHO set TENKHO = N'" + tenKhoHang + "', DIACHI = N'" + diaChi + "' WHERE MAKHO = '" + maKho + "'";
                         }
                         undoStack.Push(undoQuery);
+
+                        // Kết thúc chỉnh sửa và cập nhật dữ liệu
                         bdsKho.EndEdit();
-                        this.khoTableAdapter.Update(this.dS1.Kho);
+                        khoTableAdapter.Update(this.dS1.Kho);
+
                         isAdding = false;
                         ThongBao("Ghi dữ liệu thành công");
+
+                        btnThem.Enabled = true;
+                        btnXoa.Enabled = true;
+                        btnLammoi.Enabled = true;
+                        btnHoantac.Enabled = true;
+                        btnThoat.Enabled = true;
+                        khoGridControl.Enabled = true;
+                        txtMakho.Enabled = false;
                     }
                     catch (Exception ex)
                     {
@@ -292,6 +289,17 @@ namespace QLVT
                         ThongBao("Có lỗi xảy ra:\n" + ex.Message);
                         return;
                     }
+                }
+            }
+            catch (Exception ex)
+            {
+                ThongBao("Thực thi DB thất bại\n" + ex.Message);
+            }
+            finally
+            {
+                if (Program.myReader != null && !Program.myReader.IsClosed)
+                {
+                    Program.myReader.Close();
                 }
             }
         }
@@ -345,21 +353,19 @@ namespace QLVT
 
         private void btnHoantac_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            if (isAdding == true && btnThem.Enabled == true)
+            if (isAdding == true && btnThem.Enabled == false)
             {
                 isAdding = false;
-                txtMakho.Enabled = false;
                 btnThem.Enabled = true;
                 btnXoa.Enabled = true;
                 btnHoantac.Enabled = false;
                 btnLammoi.Enabled = true;
                 btnThoat.Enabled = true;
-
+                txtMakho.Enabled = false;
                 khoGridControl.Enabled = true;
                 panelControl2.Enabled = true;
 
                 bdsKho.CancelEdit();
-                bdsKho.RemoveCurrent();
 
                 bdsKho.Position = position;
                 return;
@@ -374,7 +380,7 @@ namespace QLVT
 
             bdsKho.CancelEdit();
             string undoQuery = undoStack.Pop().ToString();
-            int tmp = Program.ExecSqlNonQuery(undoQuery);
+            _ = Program.ExecSqlNonQuery(undoQuery);
             bdsKho.Position = position;
             this.khoTableAdapter.Fill(dS1.Kho);
         }

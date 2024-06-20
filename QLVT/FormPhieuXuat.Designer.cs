@@ -43,12 +43,12 @@
             this.btnGhi = new DevExpress.XtraBars.BarButtonItem();
             this.btnHoanTac = new DevExpress.XtraBars.BarButtonItem();
             this.btnLamMoi = new DevExpress.XtraBars.BarButtonItem();
-            this.btnChitietPX = new DevExpress.XtraBars.BarButtonItem();
             this.btnThoat = new DevExpress.XtraBars.BarButtonItem();
             this.barDockControlTop = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlBottom = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlLeft = new DevExpress.XtraBars.BarDockControl();
             this.barDockControlRight = new DevExpress.XtraBars.BarDockControl();
+            this.btnChitietPX = new DevExpress.XtraBars.BarButtonItem();
             this.panelControl1 = new DevExpress.XtraEditors.PanelControl();
             this.cbChiNhanh = new System.Windows.Forms.ComboBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -257,13 +257,6 @@
             this.btnLamMoi.Name = "btnLamMoi";
             this.btnLamMoi.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.btnLamMoi_ItemClick);
             // 
-            // btnChitietPX
-            // 
-            this.btnChitietPX.Caption = "Chi tiết phiếu";
-            this.btnChitietPX.Id = 5;
-            this.btnChitietPX.ImageOptions.SvgImage = global::QLVT.Properties.Resources.bo_note;
-            this.btnChitietPX.Name = "btnChitietPX";
-            // 
             // btnThoat
             // 
             this.btnThoat.Caption = "Thoát";
@@ -304,6 +297,13 @@
             this.barDockControlRight.Manager = this.barManager1;
             this.barDockControlRight.Size = new System.Drawing.Size(0, 1011);
             // 
+            // btnChitietPX
+            // 
+            this.btnChitietPX.Caption = "Chi tiết phiếu";
+            this.btnChitietPX.Id = 5;
+            this.btnChitietPX.ImageOptions.SvgImage = global::QLVT.Properties.Resources.bo_note;
+            this.btnChitietPX.Name = "btnChitietPX";
+            // 
             // panelControl1
             // 
             this.panelControl1.Controls.Add(this.cbChiNhanh);
@@ -314,6 +314,7 @@
             this.panelControl1.Name = "panelControl1";
             this.panelControl1.Size = new System.Drawing.Size(1924, 88);
             this.panelControl1.TabIndex = 12;
+            this.panelControl1.Paint += new System.Windows.Forms.PaintEventHandler(this.panelControl1_Paint);
             // 
             // cbChiNhanh
             // 

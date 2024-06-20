@@ -41,17 +41,19 @@
             this.btnLapPhieu = new DevExpress.XtraBars.BarSubItem();
             this.barButtonPN = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonPX = new DevExpress.XtraBars.BarButtonItem();
-            this.barButtonItem7 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonDH = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem1 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem2 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem3 = new DevExpress.XtraBars.BarButtonItem();
             this.barButtonItem4 = new DevExpress.XtraBars.BarButtonItem();
+            this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             this.ribbonPage1 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup1 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage2 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup2 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPageGroup4 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPageGroup5 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
+            this.ribbonPageGroup6 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.ribbonPage3 = new DevExpress.XtraBars.Ribbon.RibbonPage();
             this.ribbonPageGroup3 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
@@ -59,8 +61,6 @@
             this.NAME = new System.Windows.Forms.ToolStripStatusLabel();
             this.GROUP = new System.Windows.Forms.ToolStripStatusLabel();
             this.xtraTabbedMdiManager1 = new DevExpress.XtraTabbedMdi.XtraTabbedMdiManager(this.components);
-            this.ribbonPageGroup6 = new DevExpress.XtraBars.Ribbon.RibbonPageGroup();
-            this.barButtonItem5 = new DevExpress.XtraBars.BarButtonItem();
             ((System.ComponentModel.ISupportInitialize)(this.ribbonControl1)).BeginInit();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.xtraTabbedMdiManager1)).BeginInit();
@@ -83,7 +83,7 @@
             this.btnLapPhieu,
             this.barButtonPN,
             this.barButtonPX,
-            this.barButtonItem7,
+            this.barButtonDH,
             this.barButtonItem1,
             this.barButtonItem2,
             this.barButtonItem3,
@@ -167,7 +167,7 @@
             this.btnLapPhieu.LinksPersistInfo.AddRange(new DevExpress.XtraBars.LinkPersistInfo[] {
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonPN),
             new DevExpress.XtraBars.LinkPersistInfo(this.barButtonPX),
-            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonItem7)});
+            new DevExpress.XtraBars.LinkPersistInfo(this.barButtonDH)});
             this.btnLapPhieu.Name = "btnLapPhieu";
             // 
             // barButtonPN
@@ -184,11 +184,12 @@
             this.barButtonPX.Name = "barButtonPX";
             this.barButtonPX.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonPX_ItemClick);
             // 
-            // barButtonItem7
+            // barButtonDH
             // 
-            this.barButtonItem7.Caption = "Đặt hàng";
-            this.barButtonItem7.Id = 13;
-            this.barButtonItem7.Name = "barButtonItem7";
+            this.barButtonDH.Caption = "Đặt hàng";
+            this.barButtonDH.Id = 13;
+            this.barButtonDH.Name = "barButtonDH";
+            this.barButtonDH.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonDH_ItemClick);
             // 
             // barButtonItem1
             // 
@@ -221,6 +222,14 @@
             this.barButtonItem4.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("barButtonItem4.ImageOptions.SvgImage")));
             this.barButtonItem4.Name = "barButtonItem4";
             this.barButtonItem4.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem4_ItemClick);
+            // 
+            // barButtonItem5
+            // 
+            this.barButtonItem5.Caption = "Đơn hàng chưa có phiếu nhập";
+            this.barButtonItem5.Id = 18;
+            this.barButtonItem5.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("barButtonItem5.ImageOptions.SvgImage")));
+            this.barButtonItem5.Name = "barButtonItem5";
+            this.barButtonItem5.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem5_ItemClick);
             // 
             // ribbonPage1
             // 
@@ -263,6 +272,11 @@
             // 
             this.ribbonPageGroup5.ItemLinks.Add(this.barButtonItem3);
             this.ribbonPageGroup5.Name = "ribbonPageGroup5";
+            // 
+            // ribbonPageGroup6
+            // 
+            this.ribbonPageGroup6.ItemLinks.Add(this.barButtonItem5);
+            this.ribbonPageGroup6.Name = "ribbonPageGroup6";
             // 
             // ribbonPage3
             // 
@@ -314,19 +328,6 @@
             // 
             this.xtraTabbedMdiManager1.MdiParent = this;
             // 
-            // ribbonPageGroup6
-            // 
-            this.ribbonPageGroup6.ItemLinks.Add(this.barButtonItem5);
-            this.ribbonPageGroup6.Name = "ribbonPageGroup6";
-            // 
-            // barButtonItem5
-            // 
-            this.barButtonItem5.Caption = "Đơn hàng chưa có phiếu nhập";
-            this.barButtonItem5.Id = 18;
-            this.barButtonItem5.ImageOptions.SvgImage = ((DevExpress.Utils.Svg.SvgImage)(resources.GetObject("barButtonItem5.ImageOptions.SvgImage")));
-            this.barButtonItem5.Name = "barButtonItem5";
-            this.barButtonItem5.ItemClick += new DevExpress.XtraBars.ItemClickEventHandler(this.barButtonItem5_ItemClick);
-            // 
             // FormMain
             // 
             this.Appearance.Options.UseFont = true;
@@ -370,7 +371,7 @@
         private DevExpress.XtraBars.BarSubItem btnLapPhieu;
         private DevExpress.XtraBars.BarButtonItem barButtonPN;
         private DevExpress.XtraBars.BarButtonItem barButtonPX;
-        private DevExpress.XtraBars.BarButtonItem barButtonItem7;
+        private DevExpress.XtraBars.BarButtonItem barButtonDH;
         private System.Windows.Forms.StatusStrip statusStrip1;
         public System.Windows.Forms.ToolStripStatusLabel UID;
         public System.Windows.Forms.ToolStripStatusLabel NAME;

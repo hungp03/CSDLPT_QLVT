@@ -278,5 +278,20 @@ namespace QLVT
                 form.Show();
             }
         }
+
+        private void barButtonDH_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormDonDatHang));
+            if(f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormDonDatHang form = new FormDonDatHang();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
     }
 }

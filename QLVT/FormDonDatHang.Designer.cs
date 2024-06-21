@@ -71,7 +71,7 @@
             this.colNhaCC = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colMANV = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colMAKHO = new DevExpress.XtraGrid.Columns.GridColumn();
-            this.vattuBindingSource = new System.Windows.Forms.BindingSource(this.components);
+            this.nhanVienBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.groupBoxDonDatHang = new System.Windows.Forms.GroupBox();
             this.txtNhaCC = new DevExpress.XtraEditors.TextEdit();
             this.txtMaDDH = new DevExpress.XtraEditors.TextEdit();
@@ -85,6 +85,7 @@
             this.dgvCTDDH = new System.Windows.Forms.DataGridView();
             this.masoDDHDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.mAVTDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewComboBoxColumn();
+            this.vattuBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.sOLUONGDataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.dONGIADataGridViewTextBoxColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.contextMenuStripDDH = new System.Windows.Forms.ContextMenuStrip(this.components);
@@ -94,7 +95,6 @@
             this.bdsCTDDH = new System.Windows.Forms.BindingSource(this.components);
             this.contextMenuStripRowDDH = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.xóaVậtTưToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.nhanVienBindingSource = new System.Windows.Forms.BindingSource(this.components);
             this.dSKHOTableAdapter = new QLVT.DS1TableAdapters.DSKHOTableAdapter();
             this.cTDDHTableAdapter = new QLVT.DS1TableAdapters.CTDDHTableAdapter();
             this.vattuTableAdapter = new QLVT.DS1TableAdapters.VattuTableAdapter();
@@ -114,7 +114,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.bdsDatHang)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.datHangGridControl)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vattuBindingSource)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nhanVienBindingSource)).BeginInit();
             this.groupBoxDonDatHang.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtNhaCC.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMaDDH.Properties)).BeginInit();
@@ -125,10 +125,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dateNgay.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dateNgay.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCTDDH)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vattuBindingSource)).BeginInit();
             this.contextMenuStripDDH.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.bdsCTDDH)).BeginInit();
             this.contextMenuStripRowDDH.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nhanVienBindingSource)).BeginInit();
             this.SuspendLayout();
             // 
             // tENKHOLabel
@@ -400,6 +400,7 @@
             this.cbChiNhanh.Name = "cbChiNhanh";
             this.cbChiNhanh.Size = new System.Drawing.Size(375, 26);
             this.cbChiNhanh.TabIndex = 2;
+            this.cbChiNhanh.SelectedIndexChanged += new System.EventHandler(this.cbChiNhanh_SelectedIndexChanged);
             // 
             // label1
             // 
@@ -411,6 +412,7 @@
             this.label1.Size = new System.Drawing.Size(87, 18);
             this.label1.TabIndex = 1;
             this.label1.Text = "CHI NHÁNH";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // dS1
             // 
@@ -469,7 +471,6 @@
             // 
             // colMasoDDH
             // 
-            this.colMasoDDH.Caption = "Mã đơn đặt hàng";
             this.colMasoDDH.FieldName = "MasoDDH";
             this.colMasoDDH.MinWidth = 25;
             this.colMasoDDH.Name = "colMasoDDH";
@@ -479,7 +480,6 @@
             // 
             // colNGAY
             // 
-            this.colNGAY.Caption = "Ngày";
             this.colNGAY.FieldName = "NGAY";
             this.colNGAY.MinWidth = 25;
             this.colNGAY.Name = "colNGAY";
@@ -489,7 +489,6 @@
             // 
             // colNhaCC
             // 
-            this.colNhaCC.Caption = "Nhà cung cấp";
             this.colNhaCC.FieldName = "NhaCC";
             this.colNhaCC.MinWidth = 25;
             this.colNhaCC.Name = "colNhaCC";
@@ -499,7 +498,6 @@
             // 
             // colMANV
             // 
-            this.colMANV.Caption = "Mã nhân viên";
             this.colMANV.FieldName = "MANV";
             this.colMANV.MinWidth = 25;
             this.colMANV.Name = "colMANV";
@@ -509,7 +507,6 @@
             // 
             // colMAKHO
             // 
-            this.colMAKHO.Caption = "Mã kho";
             this.colMAKHO.FieldName = "MAKHO";
             this.colMAKHO.MinWidth = 25;
             this.colMAKHO.Name = "colMAKHO";
@@ -517,10 +514,10 @@
             this.colMAKHO.VisibleIndex = 4;
             this.colMAKHO.Width = 94;
             // 
-            // vattuBindingSource
+            // nhanVienBindingSource
             // 
-            this.vattuBindingSource.DataMember = "Vattu";
-            this.vattuBindingSource.DataSource = this.dS1;
+            this.nhanVienBindingSource.DataMember = "NhanVien";
+            this.nhanVienBindingSource.DataSource = this.dS1;
             // 
             // groupBoxDonDatHang
             // 
@@ -682,6 +679,11 @@
             this.mAVTDataGridViewTextBoxColumn.SortMode = System.Windows.Forms.DataGridViewColumnSortMode.Automatic;
             this.mAVTDataGridViewTextBoxColumn.ValueMember = "MAVT";
             // 
+            // vattuBindingSource
+            // 
+            this.vattuBindingSource.DataMember = "Vattu";
+            this.vattuBindingSource.DataSource = this.dS1;
+            // 
             // sOLUONGDataGridViewTextBoxColumn
             // 
             this.sOLUONGDataGridViewTextBoxColumn.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.Fill;
@@ -741,19 +743,14 @@
             this.contextMenuStripRowDDH.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.xóaVậtTưToolStripMenuItem});
             this.contextMenuStripRowDDH.Name = "contextMenuStrip1";
-            this.contextMenuStripRowDDH.Size = new System.Drawing.Size(211, 56);
+            this.contextMenuStripRowDDH.Size = new System.Drawing.Size(147, 28);
             // 
             // xóaVậtTưToolStripMenuItem
             // 
             this.xóaVậtTưToolStripMenuItem.Name = "xóaVậtTưToolStripMenuItem";
-            this.xóaVậtTưToolStripMenuItem.Size = new System.Drawing.Size(210, 24);
+            this.xóaVậtTưToolStripMenuItem.Size = new System.Drawing.Size(146, 24);
             this.xóaVậtTưToolStripMenuItem.Text = "Xóa vật tư";
             this.xóaVậtTưToolStripMenuItem.Click += new System.EventHandler(this.xóaVậtTưToolStripMenuItem_Click);
-            // 
-            // nhanVienBindingSource
-            // 
-            this.nhanVienBindingSource.DataMember = "NhanVien";
-            this.nhanVienBindingSource.DataSource = this.dS1;
             // 
             // dSKHOTableAdapter
             // 
@@ -803,7 +800,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.bdsDatHang)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.datHangGridControl)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.vattuBindingSource)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nhanVienBindingSource)).EndInit();
             this.groupBoxDonDatHang.ResumeLayout(false);
             this.groupBoxDonDatHang.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.txtNhaCC.Properties)).EndInit();
@@ -815,10 +812,10 @@
             ((System.ComponentModel.ISupportInitialize)(this.dateNgay.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dateNgay.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.dgvCTDDH)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.vattuBindingSource)).EndInit();
             this.contextMenuStripDDH.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.bdsCTDDH)).EndInit();
             this.contextMenuStripRowDDH.ResumeLayout(false);
-            ((System.ComponentModel.ISupportInitialize)(this.nhanVienBindingSource)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -866,29 +863,29 @@
         private System.Windows.Forms.BindingSource dSKHOBindingSource;
         private DS1TableAdapters.DSKHOTableAdapter dSKHOTableAdapter;
         private DevExpress.XtraEditors.TextEdit txtNhaCC;
-        private DevExpress.XtraGrid.Columns.GridColumn colMasoDDH;
-        private DevExpress.XtraGrid.Columns.GridColumn colNGAY;
-        private DevExpress.XtraGrid.Columns.GridColumn colNhaCC;
-        private DevExpress.XtraGrid.Columns.GridColumn colMANV;
-        private DevExpress.XtraGrid.Columns.GridColumn colMAKHO;
         private System.Windows.Forms.DataGridView dgvCTDDH;
         private System.Windows.Forms.BindingSource bdsCTDDH;
         private DS1TableAdapters.CTDDHTableAdapter cTDDHTableAdapter;
         private System.Windows.Forms.ContextMenuStrip contextMenuStripDDH;
         private System.Windows.Forms.ToolStripMenuItem thêmToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem xóaToolStripMenuItem;
-        private System.Windows.Forms.BindingSource vattuBindingSource;
         private DS1TableAdapters.VattuTableAdapter vattuTableAdapter;
         private System.Windows.Forms.ToolStripMenuItem ghiToolStripMenuItem;
-        private System.Windows.Forms.BindingSource nhanVienBindingSource;
         private DS1TableAdapters.NhanVienTableAdapter nhanVienTableAdapter;
         private System.Windows.Forms.BindingSource dSNVBindingSource;
         private DS1TableAdapters.DSNVTableAdapter dSNVTableAdapter;
+        private System.Windows.Forms.ContextMenuStrip contextMenuStripRowDDH;
+        private System.Windows.Forms.ToolStripMenuItem xóaVậtTưToolStripMenuItem;
+        private System.Windows.Forms.BindingSource nhanVienBindingSource;
+        private System.Windows.Forms.BindingSource vattuBindingSource;
         private System.Windows.Forms.DataGridViewTextBoxColumn masoDDHDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewComboBoxColumn mAVTDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn sOLUONGDataGridViewTextBoxColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn dONGIADataGridViewTextBoxColumn;
-        private System.Windows.Forms.ContextMenuStrip contextMenuStripRowDDH;
-        private System.Windows.Forms.ToolStripMenuItem xóaVậtTưToolStripMenuItem;
+        private DevExpress.XtraGrid.Columns.GridColumn colMasoDDH;
+        private DevExpress.XtraGrid.Columns.GridColumn colNGAY;
+        private DevExpress.XtraGrid.Columns.GridColumn colNhaCC;
+        private DevExpress.XtraGrid.Columns.GridColumn colMANV;
+        private DevExpress.XtraGrid.Columns.GridColumn colMAKHO;
     }
 }

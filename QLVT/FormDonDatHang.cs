@@ -150,6 +150,7 @@ namespace QLVT
                 this.datHangTableAdapter.Fill(this.dS1.DatHang);
                 this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
                 this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+                bdsDatHang.Position = positionDDH;
             }
             catch (Exception ex)
             {
@@ -277,9 +278,15 @@ namespace QLVT
         }
         private bool validateInputCTDDH()
         {
-            return validateMaVTCTDDH(dgvCTDDH.Rows[positionCTDDH].Cells[1].Value.ToString().Trim()) &&
-                validateSoLuongCTDDH(dgvCTDDH.Rows[positionCTDDH].Cells[2].Value.ToString().Trim()) &&
-                validateDonGiaCTDDH(dgvCTDDH.Rows[positionCTDDH].Cells[3].Value.ToString().Trim());
+            string MaVTCTDDH = dgvCTDDH.Rows[positionCTDDH].Cells[1].Value?.ToString().Trim() ?? string.Empty;
+            string SoLuongCTDDH = dgvCTDDH.Rows[positionCTDDH].Cells[2].Value?.ToString().Trim() ?? string.Empty;
+            string DonGiaCTDDH = dgvCTDDH.Rows[positionCTDDH].Cells[3].Value?.ToString().Trim() ?? string.Empty;
+            return validateMaVTCTDDH(MaVTCTDDH) &&
+            validateSoLuongCTDDH(SoLuongCTDDH) &&
+            validateDonGiaCTDDH(DonGiaCTDDH);
+            //return validateMaVTCTDDH(dgvCTDDH.Rows[positionCTDDH].Cells[1].Value.ToString().Trim()) &&
+            //    validateSoLuongCTDDH(dgvCTDDH.Rows[positionCTDDH].Cells[2].Value.ToString().Trim()) &&
+            //    validateDonGiaCTDDH(dgvCTDDH.Rows[positionCTDDH].Cells[3].Value.ToString().Trim());
         }
         private bool validateMaVTCTDDH(string maVT)
         {   
@@ -323,6 +330,7 @@ namespace QLVT
 
         private void btnHoanTac_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            positionDDH = bdsCTDDH.Position;
             dgvCTDDH.Enabled = true;
             thêmToolStripMenuItem.Enabled = true;
             xóaToolStripMenuItem.Enabled = true;
@@ -638,6 +646,7 @@ namespace QLVT
 
         private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            positionDDH = bdsDatHang.Position;
             if (validateInputCTDDH() ==false)
             {
                 return;
@@ -734,6 +743,7 @@ namespace QLVT
             contextMenuStripRowDDH.Enabled = true;
             //xóaVậtTưToolStripMenuItem.Enabled= true;
             btnHoanTac.Enabled = undoStack.Count > 0;
+            bdsDatHang.Position = positionDDH;
         }
         private int Execute_SPKiemTraCTDDH(String MasoDDH,String MaVT)
         {
@@ -947,6 +957,42 @@ namespace QLVT
             MessageBox.Show("Xóa hết phiếu xuất thành công", "Thông báo", MessageBoxButtons.OK);
         }
 
+        private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (cbChiNhanh.SelectedValue.ToString() == "System.Data.DataRowView" || cbChiNhanh.SelectedValue == null)
+            {
+                return;
+            }
+            Program.servername = cbChiNhanh.SelectedValue.ToString();
 
+            // Nếu chọn chi nhánh khác với chi nhánh hiện tại
+            if (cbChiNhanh.SelectedIndex != Program.brand)
+            {
+                // Dùng tài khoản hỗ trợ kết nối để chuẩn bị cho việc login vào chi nhánh khác
+                Program.mlogin = Program.remotelogin;
+                Program.password = Program.remotepassword;
+            }
+            else
+            {
+                // Lấy tài khoản hiện tại đang đăng nhập để đăng nhập
+                Program.mlogin = Program.mloginDN;
+                Program.password = Program.passwordDN;
+            }
+            if (Program.connectDB() == 0)
+            {
+                MessageBox.Show("Lỗi kết nối tới chi nhánh", "Thông báo", MessageBoxButtons.OK);
+            }
+            this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
+            this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
+            this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+            bdsDatHang.Position = positionDDH;
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

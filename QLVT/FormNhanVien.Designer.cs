@@ -35,8 +35,8 @@
             System.Windows.Forms.Label nGAYSINHLabel;
             System.Windows.Forms.Label mACNLabel;
             System.Windows.Forms.Label trangThaiXoaLabel;
-            System.Windows.Forms.Label lUONGLabel;
             System.Windows.Forms.Label cMNDLabel;
+            System.Windows.Forms.Label lUONGLabel1;
             this.barManager1 = new DevExpress.XtraBars.BarManager(this.components);
             this.bar1 = new DevExpress.XtraBars.Bar();
             this.btnThem = new DevExpress.XtraBars.BarButtonItem();
@@ -69,8 +69,8 @@
             this.colTrangThaiXoa = new DevExpress.XtraGrid.Columns.GridColumn();
             this.colCMND = new DevExpress.XtraGrid.Columns.GridColumn();
             this.panelNhapLieu = new DevExpress.XtraEditors.PanelControl();
+            this.txtLuong = new DevExpress.XtraEditors.SpinEdit();
             this.txtCMND = new DevExpress.XtraEditors.TextEdit();
-            this.txtLuong = new DevExpress.XtraEditors.TextEdit();
             this.checkboxTHXoa = new System.Windows.Forms.CheckBox();
             this.txtMacn = new DevExpress.XtraEditors.TextEdit();
             this.deNgaySinh = new DevExpress.XtraEditors.DateEdit();
@@ -91,8 +91,8 @@
             nGAYSINHLabel = new System.Windows.Forms.Label();
             mACNLabel = new System.Windows.Forms.Label();
             trangThaiXoaLabel = new System.Windows.Forms.Label();
-            lUONGLabel = new System.Windows.Forms.Label();
             cMNDLabel = new System.Windows.Forms.Label();
+            lUONGLabel1 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.dS1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.bdsNhanVien)).BeginInit();
@@ -102,8 +102,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.gridView1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelNhapLieu)).BeginInit();
             this.panelNhapLieu.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.txtCMND.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtLuong.Properties)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCMND.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMacn.Properties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deNgaySinh.Properties.CalendarTimeProperties)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.deNgaySinh.Properties)).BeginInit();
@@ -183,17 +183,6 @@
             trangThaiXoaLabel.TabIndex = 14;
             trangThaiXoaLabel.Text = "Trạng thái xóa";
             // 
-            // lUONGLabel
-            // 
-            lUONGLabel.AutoSize = true;
-            lUONGLabel.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            lUONGLabel.Location = new System.Drawing.Point(554, 119);
-            lUONGLabel.Margin = new System.Windows.Forms.Padding(5, 0, 5, 0);
-            lUONGLabel.Name = "lUONGLabel";
-            lUONGLabel.Size = new System.Drawing.Size(48, 18);
-            lUONGLabel.TabIndex = 15;
-            lUONGLabel.Text = "Lương";
-            // 
             // cMNDLabel
             // 
             cMNDLabel.AutoSize = true;
@@ -203,6 +192,16 @@
             cMNDLabel.Size = new System.Drawing.Size(54, 18);
             cMNDLabel.TabIndex = 16;
             cMNDLabel.Text = "CMND:";
+            // 
+            // lUONGLabel1
+            // 
+            lUONGLabel1.AutoSize = true;
+            lUONGLabel1.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            lUONGLabel1.Location = new System.Drawing.Point(556, 119);
+            lUONGLabel1.Name = "lUONGLabel1";
+            lUONGLabel1.Size = new System.Drawing.Size(48, 18);
+            lUONGLabel1.TabIndex = 17;
+            lUONGLabel1.Text = "Lương";
             // 
             // barManager1
             // 
@@ -404,6 +403,7 @@
             this.nhanVienGridControl.TabIndex = 10;
             this.nhanVienGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
+            this.nhanVienGridControl.Click += new System.EventHandler(this.nhanVienGridControl_Click);
             // 
             // gridView1
             // 
@@ -428,6 +428,7 @@
             this.colMANV.FieldName = "MANV";
             this.colMANV.MinWidth = 25;
             this.colMANV.Name = "colMANV";
+            this.colMANV.OptionsColumn.AllowEdit = false;
             this.colMANV.Visible = true;
             this.colMANV.VisibleIndex = 0;
             this.colMANV.Width = 94;
@@ -438,6 +439,7 @@
             this.colHO.FieldName = "HO";
             this.colHO.MinWidth = 25;
             this.colHO.Name = "colHO";
+            this.colHO.OptionsColumn.AllowEdit = false;
             this.colHO.Visible = true;
             this.colHO.VisibleIndex = 1;
             this.colHO.Width = 94;
@@ -448,6 +450,7 @@
             this.colTEN.FieldName = "TEN";
             this.colTEN.MinWidth = 25;
             this.colTEN.Name = "colTEN";
+            this.colTEN.OptionsColumn.AllowEdit = false;
             this.colTEN.Visible = true;
             this.colTEN.VisibleIndex = 2;
             this.colTEN.Width = 94;
@@ -458,6 +461,7 @@
             this.colDIACHI.FieldName = "DIACHI";
             this.colDIACHI.MinWidth = 25;
             this.colDIACHI.Name = "colDIACHI";
+            this.colDIACHI.OptionsColumn.AllowEdit = false;
             this.colDIACHI.Visible = true;
             this.colDIACHI.VisibleIndex = 3;
             this.colDIACHI.Width = 94;
@@ -468,6 +472,7 @@
             this.colNGAYSINH.FieldName = "NGAYSINH";
             this.colNGAYSINH.MinWidth = 25;
             this.colNGAYSINH.Name = "colNGAYSINH";
+            this.colNGAYSINH.OptionsColumn.AllowEdit = false;
             this.colNGAYSINH.Visible = true;
             this.colNGAYSINH.VisibleIndex = 4;
             this.colNGAYSINH.Width = 94;
@@ -475,9 +480,12 @@
             // colLUONG
             // 
             this.colLUONG.Caption = "Lương";
+            this.colLUONG.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colLUONG.FieldName = "LUONG";
+            this.colLUONG.GroupFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.colLUONG.MinWidth = 25;
             this.colLUONG.Name = "colLUONG";
+            this.colLUONG.OptionsColumn.AllowEdit = false;
             this.colLUONG.Visible = true;
             this.colLUONG.VisibleIndex = 5;
             this.colLUONG.Width = 94;
@@ -488,6 +496,7 @@
             this.colMACN.FieldName = "MACN";
             this.colMACN.MinWidth = 25;
             this.colMACN.Name = "colMACN";
+            this.colMACN.OptionsColumn.AllowEdit = false;
             this.colMACN.Visible = true;
             this.colMACN.VisibleIndex = 6;
             this.colMACN.Width = 94;
@@ -498,6 +507,7 @@
             this.colTrangThaiXoa.FieldName = "TrangThaiXoa";
             this.colTrangThaiXoa.MinWidth = 25;
             this.colTrangThaiXoa.Name = "colTrangThaiXoa";
+            this.colTrangThaiXoa.OptionsColumn.AllowEdit = false;
             this.colTrangThaiXoa.Visible = true;
             this.colTrangThaiXoa.VisibleIndex = 7;
             this.colTrangThaiXoa.Width = 94;
@@ -507,16 +517,17 @@
             this.colCMND.FieldName = "CMND";
             this.colCMND.MinWidth = 25;
             this.colCMND.Name = "colCMND";
+            this.colCMND.OptionsColumn.AllowFocus = false;
             this.colCMND.Visible = true;
             this.colCMND.VisibleIndex = 8;
             this.colCMND.Width = 94;
             // 
             // panelNhapLieu
             // 
+            this.panelNhapLieu.Controls.Add(lUONGLabel1);
+            this.panelNhapLieu.Controls.Add(this.txtLuong);
             this.panelNhapLieu.Controls.Add(cMNDLabel);
             this.panelNhapLieu.Controls.Add(this.txtCMND);
-            this.panelNhapLieu.Controls.Add(lUONGLabel);
-            this.panelNhapLieu.Controls.Add(this.txtLuong);
             this.panelNhapLieu.Controls.Add(trangThaiXoaLabel);
             this.panelNhapLieu.Controls.Add(this.checkboxTHXoa);
             this.panelNhapLieu.Controls.Add(mACNLabel);
@@ -537,6 +548,30 @@
             this.panelNhapLieu.Size = new System.Drawing.Size(1882, 405);
             this.panelNhapLieu.TabIndex = 11;
             // 
+            // txtLuong
+            // 
+            this.txtLuong.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsNhanVien, "LUONG", true));
+            this.txtLuong.EditValue = new decimal(new int[] {
+            4000000,
+            0,
+            0,
+            0});
+            this.txtLuong.Location = new System.Drawing.Point(651, 117);
+            this.txtLuong.MenuManager = this.barManager1;
+            this.txtLuong.Name = "txtLuong";
+            this.txtLuong.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtLuong.Properties.Appearance.Options.UseFont = true;
+            this.txtLuong.Properties.Buttons.AddRange(new DevExpress.XtraEditors.Controls.EditorButton[] {
+            new DevExpress.XtraEditors.Controls.EditorButton(DevExpress.XtraEditors.Controls.ButtonPredefines.Combo)});
+            this.txtLuong.Properties.DisplayFormat.FormatString = "n0";
+            this.txtLuong.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.txtLuong.Properties.EditFormat.FormatString = "n0";
+            this.txtLuong.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.txtLuong.Properties.IsFloatValue = false;
+            this.txtLuong.Properties.MaskSettings.Set("mask", "N00");
+            this.txtLuong.Size = new System.Drawing.Size(195, 24);
+            this.txtLuong.TabIndex = 18;
+            // 
             // txtCMND
             // 
             this.txtCMND.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsNhanVien, "CMND", true));
@@ -547,20 +582,6 @@
             this.txtCMND.Properties.Appearance.Options.UseFont = true;
             this.txtCMND.Size = new System.Drawing.Size(178, 24);
             this.txtCMND.TabIndex = 17;
-            // 
-            // txtLuong
-            // 
-            this.txtLuong.DataBindings.Add(new System.Windows.Forms.Binding("EditValue", this.bdsNhanVien, "LUONG", true));
-            this.txtLuong.Location = new System.Drawing.Point(651, 116);
-            this.txtLuong.Margin = new System.Windows.Forms.Padding(5);
-            this.txtLuong.MenuManager = this.barManager1;
-            this.txtLuong.Name = "txtLuong";
-            this.txtLuong.Properties.Appearance.Font = new System.Drawing.Font("Tahoma", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.txtLuong.Properties.Appearance.Options.UseFont = true;
-            this.txtLuong.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.txtLuong.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
-            this.txtLuong.Size = new System.Drawing.Size(299, 24);
-            this.txtLuong.TabIndex = 16;
             // 
             // checkboxTHXoa
             // 
@@ -712,8 +733,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.panelNhapLieu)).EndInit();
             this.panelNhapLieu.ResumeLayout(false);
             this.panelNhapLieu.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.txtCMND.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtLuong.Properties)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.txtCMND.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.txtMacn.Properties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deNgaySinh.Properties.CalendarTimeProperties)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.deNgaySinh.Properties)).EndInit();
@@ -762,7 +783,6 @@
         private DevExpress.XtraEditors.TextEdit txtManv;
         private DevExpress.XtraGrid.GridControl nhanVienGridControl;
         private DevExpress.XtraGrid.Views.Grid.GridView gridView1;
-        private DevExpress.XtraEditors.TextEdit txtLuong;
         private System.Windows.Forms.BindingSource bdsPhieuXuat;
         private System.Windows.Forms.BindingSource bdsPhieuNhap;
         private System.Windows.Forms.BindingSource bdsDatHang;
@@ -780,5 +800,6 @@
         private DevExpress.XtraGrid.Columns.GridColumn colTrangThaiXoa;
         private DevExpress.XtraGrid.Columns.GridColumn colCMND;
         private DevExpress.XtraEditors.TextEdit txtCMND;
+        private DevExpress.XtraEditors.SpinEdit txtLuong;
     }
 }

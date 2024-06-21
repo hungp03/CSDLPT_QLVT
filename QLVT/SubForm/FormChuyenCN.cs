@@ -41,13 +41,13 @@ namespace QLVT.SubForm
 
         /*Trong ngôn ngữ lập trình C#
          * delegate là một kiểu dữ liệu đặc biệt 
-         * cho phép bạn tạo ra một biến tham chiếu đến một phương thức.
-         * Delegate cho phép bạn truyền phương thức
+         * cho phép tạo ra một biến tham chiếu đến một phương thức.
+         * Delegate cho phép truyền phương thức
          * như một tham số cho một phương thức khác hoặc lưu trữ nó như một biến.
 
           Một delegate định nghĩa kiểu của một phương thức, 
         bao gồm kiểu trả về của phương thức và danh sách các tham số của phương thức.
-        Khi bạn khai báo một biến delegate, bạn đang tạo ra một tham chiếu 
+        Khi khai báo một biến delegate thif đang tạo ra một tham chiếu 
         đến một phương thức có cùng kiểu dữ liệu với delegate.
         */
         public delegate void MyDelegate(string chiNhanh);
@@ -66,7 +66,7 @@ namespace QLVT.SubForm
                 return;
             }
 
-            Console.WriteLine(comboBox1.Text.Trim());
+            //Console.WriteLine(comboBox1.Text.Trim());
 
             // Kiểm tra xem branchTransfer đã được gán chưa
             if (branchTransfer != null)
@@ -75,7 +75,7 @@ namespace QLVT.SubForm
 
                 if (dialogResult == DialogResult.OK)
                 {
-                    Console.WriteLine("TRANSFER:" + branchTransfer);
+                    //Console.WriteLine("TRANSFER:" + branchTransfer);
                     branchTransfer(comboBox1.SelectedValue.ToString());
                 }
             }

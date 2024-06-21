@@ -78,6 +78,12 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>DS1.xsd</DependentUpon>
     </Compile>
+    <Compile Include="FormDonDatHang.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="FormDonDatHang.Designer.cs">
+      <DependentUpon>FormDonDatHang.cs</DependentUpon>
+    </Compile>
     <Compile Include="FormKho.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -121,6 +127,12 @@
     </Compile>
     <Compile Include="FormLogin.Designer.cs">
       <DependentUpon>FormLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\FormHoatDongNhapXuat.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Report\FormHoatDongNhapXuat.Designer.cs">
+      <DependentUpon>FormHoatDongNhapXuat.cs</DependentUpon>
     </Compile>
     <Compile Include="Report\FormHoatdongNV.cs">
       <SubType>Form</SubType>
@@ -176,11 +188,23 @@
     <Compile Include="Report\ReportDSNV.Designer.cs">
       <DependentUpon>ReportDSNV.cs</DependentUpon>
     </Compile>
+    <Compile Include="Report\ReportTongHopNhapXuat.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\ReportTongHopNhapXuat.Designer.cs">
+      <DependentUpon>ReportTongHopNhapXuat.cs</DependentUpon>
+    </Compile>
     <Compile Include="Report\RP_HoatdongNV.cs">
       <SubType>Component</SubType>
     </Compile>
     <Compile Include="Report\RP_HoatdongNV.Designer.cs">
       <DependentUpon>RP_HoatdongNV.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Report\XtraReport1.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Report\XtraReport1.Designer.cs">
+      <DependentUpon>XtraReport1.cs</DependentUpon>
     </Compile>
     <Compile Include="SubForm\FormChonNV.cs">
       <SubType>Form</SubType>
@@ -200,6 +224,9 @@
     <Compile Include="FormTaoTK.Designer.cs">
       <DependentUpon>FormTaoTK.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="FormDonDatHang.resx">
+      <DependentUpon>FormDonDatHang.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="FormKho.resx">
       <DependentUpon>FormKho.cs</DependentUpon>
     </EmbeddedResource>
@@ -241,6 +268,9 @@
     <EmbeddedResource Include="Report\FormDonHangKhongPhieuNhap.resx">
       <DependentUpon>FormDonHangKhongPhieuNhap.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Report\FormHoatDongNhapXuat.resx">
+      <DependentUpon>FormHoatDongNhapXuat.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Report\FormHoatdongNV.resx">
       <DependentUpon>FormHoatdongNV.cs</DependentUpon>
     </EmbeddedResource>
@@ -259,8 +289,14 @@
     <EmbeddedResource Include="Report\ReportDSNV.resx">
       <DependentUpon>ReportDSNV.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Report\ReportTongHopNhapXuat.resx">
+      <DependentUpon>ReportTongHopNhapXuat.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Report\RP_HoatdongNV.resx">
       <DependentUpon>RP_HoatdongNV.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Report\XtraReport1.resx">
+      <DependentUpon>XtraReport1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubForm\FormChonNV.resx">
       <DependentUpon>FormChonNV.cs</DependentUpon>

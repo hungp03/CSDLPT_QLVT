@@ -436,3 +436,130 @@ BEGIN
 END
 
 GO
+*******************SP_kiểm tra đơn đặt hàng 1 đơn đặt hàng chỉ có 1 vật tư************************
+CREATE PROCEDURE [dbo].[SP_KiemTraCTDDH]
+	@MasoDDH NCHAR(8), @MAVT NVARCHAR(10)
+AS
+BEGIN
+	--Nếu Mã vật tư đã tồn tại trong đơn đặt hàng thì ra kết quả là 1
+	IF(EXISTS (SELECT * FROM CTDDH WHERE MasoDDH=@MasoDDH AND MAVT=@MAVT))
+		RETURN 1;
+	IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTDDH WHERE MasoDDH=@MasoDDH AND MAVT=@MAVT))
+		RETURN 1;
+	RETURN 0;
+END
+*********************SP_ kiểm tra mã đơn đặt hàng đã tồn tại chưa**********
+CREATE PROC [dbo].[SP_KiemTraMDDH] @MaDDH NCHAR(8)
+AS 
+--Kiểm tra xem Mã đơn đặt hàng có tồn tại trong chi nhánh hiện tại và chi nhánh khác không
+BEGIN
+	IF(EXISTS(SELECT * FROM DatHang WHERE MasoDDH=@MaDDH)) RETURN 1;
+	IF(EXISTS(SELECT * FROM LINK1.QLVT.DBO.DatHang WHERE MasoDDH=@MaDDH)) RETURN 1;
+	RETURN 0;
+END;
+**********************SP_ kiểm tra nhập xuất và phần trăm nhập xuất theo ngày***********************
+CREATE PROCEDURE [dbo].[SP_TongHopNhapXuat]
+    @startDate DATE,
+    @endDate DATE
+AS
+BEGIN
+    -- Khai báo tổng số tièn
+    DECLARE @totalNhap MONEY, @totalXuat MONEY;
+
+    -- Tính tổng số tiền của tất cả các vật tư trong phiếu nhập
+    SELECT @totalNhap = SUM(CTPN.SOLUONG * CTPN.DONGIA)
+    FROM PhieuNhap PN
+    JOIN CTPN ON PN.MAPN = CTPN.MAPN
+    WHERE PN.NGAY BETWEEN @startDate AND @endDate;
+	-- Tính tổng số tiền của tất cả các vật tư trong phiếu xuất
+    SELECT @totalXuat = SUM(CTPX.SOLUONG * CTPX.DONGIA)
+    FROM PhieuXuat PX
+    JOIN CTPX ON PX.MAPX = CTPX.MAPX
+    WHERE PX.NGAY BETWEEN @startDate AND @endDate;
+
+    -- 1 Bảng lưu trữ tạm cho giá trị hàng ngày của tổng hợp nhập xuất
+    CREATE TABLE #DailyTotals (
+        Ngay DATE,
+        Nhap MONEY,
+        Xuat MONEY
+    );
+
+    -- Thêm lưu trữ kết hợp của nhập và xuất
+    INSERT INTO #DailyTotals (Ngay, Nhap, Xuat)
+    SELECT 
+        Combined.Ngay,
+        SUM(ISNULL(Combined.NhapTotal, 0)) AS Nhap,
+        SUM(ISNULL(Combined.XuatTotal, 0)) AS Xuat
+    FROM (
+        SELECT PN.NGAY AS Ngay, SUM(CTPN.SOLUONG * CTPN.DONGIA) AS NhapTotal, NULL AS XuatTotal
+        FROM PhieuNhap PN
+        JOIN CTPN ON PN.MAPN = CTPN.MAPN
+        WHERE PN.NGAY BETWEEN @startDate AND @endDate
+        GROUP BY PN.NGAY
+
+        UNION ALL
+
+        SELECT PX.NGAY AS Ngay, NULL AS NhapTotal, SUM(CTPX.SOLUONG * CTPX.DONGIA) AS XuatTotal
+        FROM PhieuXuat PX
+        JOIN CTPX ON PX.MAPX = CTPX.MAPX
+        WHERE PX.NGAY BETWEEN @startDate AND @endDate
+        GROUP BY PX.NGAY
+    ) AS Combined
+    GROUP BY Combined.Ngay
+    ORDER BY Combined.Ngay;
+
+    -- Tính kết quả theo phần trăm cuối cùng
+
+    SELECT 
+        Ngay,
+        ISNULL(Nhap, 0) AS Nhap,
+        CASE 
+            WHEN @totalNhap = 0 THEN 0
+            ELSE ISNULL((ISNULL(Nhap, 0) / @totalNhap) * 100, 0)
+        END AS TyLeNhap,
+        ISNULL(Xuat, 0) AS Xuat,
+        CASE 
+            WHEN @totalXuat = 0 THEN 0
+            ELSE ISNULL((ISNULL(Xuat, 0) / @totalXuat) * 100, 0)
+        END AS TyLeXuat
+    FROM 
+        #DailyTotals
+    ORDER BY 
+        Ngay;
+
+
+    DROP TABLE #DailyTotals;
+END;
+
+*****Xóa login khi xóa tài khoản nhân viên*****
+CREATE PROC [dbo].[Xoa_Login]
+@USRNAME VARCHAR(50)
+AS
+BEGIN
+    DECLARE @LGNAME VARCHAR(50)
+    DECLARE @SPID INT
+
+    -- Kiểm tra nếu người dùng tồn tại
+    IF EXISTS (SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = @USRNAME)
+    BEGIN
+        -- Lấy tên login tương ứng với user
+        SET @LGNAME = (SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = @USRNAME)
+
+        -- Buộc đăng xuất các phiên kết nối của user
+        DECLARE @sql NVARCHAR(MAX)
+        SET @sql = N''
+
+        SELECT @sql = @sql + N'KILL ' + CAST(session_id AS NVARCHAR(5)) + N'; '
+        FROM sys.dm_exec_sessions
+        WHERE login_name = @LGNAME
+
+        EXEC sp_executesql @sql
+
+        -- Xóa user từ database
+        EXEC sp_dropuser @USRNAME
+
+        -- Xóa login từ server
+        EXEC sp_droplogin @LGNAME
+    END
+END
+GO

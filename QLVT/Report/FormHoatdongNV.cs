@@ -28,6 +28,7 @@ namespace QLVT.Report
 
         private void button1_Click(object sender, EventArgs e)
         {
+            Program.createAcc = false;
             FormChonNV form = new FormChonNV();
             form.ShowDialog();
             txtManv.Text = Program.selectedEmp;

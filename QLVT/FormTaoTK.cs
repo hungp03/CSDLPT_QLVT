@@ -80,7 +80,14 @@ namespace QLVT
             loginName = txtTendangnhap.Text.Trim();
             password = txtMatkhau.Text.Trim();
             userID = Program.selectedEmp;
-            role = (rdCN.Checked == true) ? "CHINHANH" : "USER";
+            if (!rdCN.Checked && !rdUser.Checked)
+            {
+                role = "CONGTY";
+            }
+            else
+            {
+                role = rdCN.Checked ? "CHINHANH" : "USER";
+            }
             /*Console.WriteLine("ĐANG TẠO TK:" + loginName + " - " + password + " - " + userID + " - " + role);
             Console.WriteLine(Program.servername);*/
 
@@ -106,6 +113,7 @@ namespace QLVT
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Program.createAcc = true;
             FormChonNV form = new FormChonNV();
             form.ShowDialog();
             txtManv.Text = Program.selectedEmp;

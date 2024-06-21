@@ -1,0 +1,438 @@
+*****View lấy danh sách phân mảnh*****
+CREATE VIEW [dbo].[V_DS_PHANMANH]
+AS
+
+SELECT  TENCN=PUBS.description, TENSERVER= subscriber_server
+   FROM dbo.sysmergepublications PUBS,  dbo.sysmergesubscriptions SUBS
+   WHERE PUBS.pubid= SUBS.PUBID  AND PUBS.publisher <> SUBS.subscriber_server
+   AND PUBS.description <> N'TRA CỨU'
+GO
+
+
+*****SP lấy thông tin user khi đăng nhập******
+CREATE PROC [dbo].[SP_LaythongtinNV]
+	@TENLOGIN NVARCHAR( 100)
+AS
+	DECLARE @UID INT
+	DECLARE @MANV NVARCHAR(100)
+	SELECT @UID= uid , @MANV= NAME FROM sys.sysusers 
+  	WHERE sid = SUSER_SID(@TENLOGIN)
+
+	SELECT  MANV= @MANV, 
+       		HOTEN = (SELECT HO+ ' '+TEN FROM dbo.NHANVIEN WHERE MANV=@MANV ), 
+       		TENNHOM=NAME
+  	FROM sys.sysusers
+    	WHERE UID = (SELECT groupuid FROM sys.sysmembers WHERE memberuid=@uid)
+
+
+*****SP kiểm tra nhân viên đã tồn tại chưa*****
+CREATE PROC SP_TracuuNV
+    @MANHANVIEN INT
+AS
+BEGIN
+    DECLARE @Result INT;
+
+    IF EXISTS (SELECT MANV FROM LINK2.QLVT.DBO.NHANVIEN AS NV WHERE NV.MANV = @MANHANVIEN)
+        SET @Result = 1;
+    ELSE
+        SET @Result = 0;
+
+    RETURN @Result;
+END;
+
+
+LINK2 là link từ site phân mảnh tới site tra cứu
+Trả về kết quả:
+declare @res int
+exec @res = SP_TracuuNV '1'
+select @res
+
+*****SP thực hiện chức năng chuyển chi nhánh*****
+ALTER PROCEDURE [dbo].[SP_ChuyenCN]
+	@MANV INT, 
+	@MACN nchar(10)
+AS
+DECLARE @LOGINNAME VARCHAR(50)
+DECLARE @USERNAME VARCHAR(50)
+SET XACT_ABORT ON;
+SET TRANSACTION ISOLATION LEVEL SERIALIZABLE;
+BEGIN
+	BEGIN DISTRIBUTED TRAN
+		DECLARE @CMND NVARCHAR(20)
+		DECLARE @HONV NVARCHAR(40)
+		DECLARE @TENNV NVARCHAR(10)
+		DECLARE @DIACHINV NVARCHAR(100)
+		DECLARE @NGAYSINHNV DATETIME
+		DECLARE @LUONGNV FLOAT		
+		DECLARE @NEWMANV int
+		-- Lưu lại thông tin nhân viên cần chuyển chi nhánh để làm điều kiện kiểm tra
+		SELECT @CMND = CMND, @HONV = HO, @TENNV = TEN, @DIACHINV = DIACHI, @NGAYSINHNV = NGAYSINH, @LUONGNV = LUONG FROM NhanVien WHERE MANV = @MANV
+		-- Kiểm tra xem bên Site chuyển tới đã có dữ liệu nhân viên đó chưa. Nếu có rồi thì đổi trạng thái, chưa thì thêm vào
+		IF EXISTS(select MANV
+				from LINK1.QLVT.dbo.NhanVien
+				where CMND = @CMND)
+		BEGIN
+				SET @NEWMANV = (select MANV from LINK1.QLVT.dbo.NhanVien where CMND = @CMND)
+				UPDATE LINK1.QLVT.dbo.NhanVien
+				SET TrangThaiXoa = 0
+				WHERE MANV = @NEWMANV
+		END
+		ELSE
+		-- nếu chưa tồn tại thì thêm mới hoàn toàn vào chi nhánh mới với MANV sẽ là MANV lớn nhất hiện tại + 1
+		BEGIN
+			SET @NEWMANV =(SELECT MAX(MANV) FROM LINK2.QLVT.dbo.NhanVien) + 1
+			INSERT INTO LINK1.QLVT.dbo.NhanVien (MANV, CMND, HO, TEN, DIACHI, NGAYSINH, LUONG, MACN, TRANGTHAIXOA)
+			VALUES (@NEWMANV, @CMND ,@HONV, @TENNV, @DIACHINV, @NGAYSINHNV, @LUONGNV, @MACN, 0)
+		END
+		-- Đổi trạng thái xóa đối với tài khoản cũ ở site hiện tại
+		UPDATE dbo.NhanVien
+		SET TrangThaiXoa = 1
+		WHERE MANV = @MANV
+	COMMIT TRAN;
+		-- sp_droplogin và sp_dropuser không thể được thực thi trong một giao tác do người dùng định nghĩa
+		-- Kiểm tra xem Nhân viên đã có login chưa. Có thì xóa
+		IF EXISTS(SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = CAST(@MANV AS NVARCHAR))
+		BEGIN
+			SET @LOGINNAME = CAST((SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = CAST(@MANV AS NVARCHAR)) AS VARCHAR(50))
+			SET @USERNAME = CAST(@MANV AS VARCHAR(50))
+			EXEC SP_DROPUSER @USERNAME;
+			EXEC SP_DROPLOGIN @LOGINNAME;
+		END	
+END
+SELECT @NEWMANV AS MANV;
+GO
+*****Kiểm tra mã vật tư đã sử dụng chưa*****
+create proc [dbo].[SP_KiemtraVT]
+@MAVT nchar(4)
+as
+begin
+	if exists (select 1 from Vattu where Vattu.MAVT = @MAVT)
+		return 1;
+	else if exists (select 1 from LINK1.QLVT.DBO.Vattu VT where VT.MAVT = @MAVT)
+		return 1;
+	return 0;
+end
+
+*****Kiểm tra vật tư đã được sử dụng ở chi nhánh khác hay chưa*****
+create proc [dbo].[SP_KiemtraVT_CNkhac]
+@MAVT nchar(4)
+as
+begin
+	if exists (select 1 from LINK1.QLVT.DBO.Vattu VT
+	where VT.MAVT = @MAVT and
+	(exists (select 1 from LINK1.QLVT.DBO.CTPN where CTPN.MAVT = @MAVT))
+	or (exists (select 1 from LINK1.QLVT.DBO.CTPX where CTPX.MAVT = @MAVT))
+	or (exists (select 1 from LINK1.QLVT.DBO.CTDDH where CTDDH.MAVT = @MAVT))
+	)
+		return 1;
+	return 0;
+end
+
+*****Kiểm tra mã kho đã được sử dụng hay chưa*****
+create proc [dbo].[SP_KiemtraMaKho]
+@MAKHO NCHAR(4)
+as
+begin
+	if exists (select 1 from LINK2.QLVT.DBO.KHO where KHO.MAKHO = @MAKHO)
+		return 1;
+	return 0;
+end 
+
+*****Kiểm tra CMND dùng chưa*****
+CREATE PROCEDURE [dbo].[SP_KiemtraCMND] @CMND nvarchar(20),
+    @MANV int = NULL
+AS
+BEGIN
+    DECLARE @Result INT;
+
+    IF EXISTS (SELECT CMND FROM LINK2.QLVT.DBO.NHANVIEN WHERE CMND = @CMND)
+    BEGIN
+        -- Kiểm tra nếu giá trị CMND trùng với giá trị cũ (dựa trên ID của nhân viên)
+        IF EXISTS (SELECT 1 FROM LINK2.QLVT.DBO.NHANVIEN WHERE CMND = @CMND AND (MANV = @MANV OR @MANV IS NULL))
+            SET @Result = 1; -- Cho phép cập nhật trùng với giá trị cũ
+        ELSE
+            SET @Result = 0; -- Không cho phép thêm mới trùng
+    END
+    ELSE
+        SET @Result = 1; -- Không tồn tại, cho phép thêm mới
+
+    RETURN @Result;
+END;
+END;
+
+
+*****Tạo tài khoản*****
+CREATE PROC [dbo].[SP_TAOTK]
+--4 tham số: loginname, pass, username, role
+@LOGINNAME VARCHAR(50),
+@PASS varchar(50),
+@USERNAME VARCHAR(50),
+@ROLE VARCHAR(50)    
+AS
+BEGIN
+	DECLARE @RES INT
+	EXEC @RES = sp_addlogin @LOGINNAME, @PASS, 'QLVT'
+	--Nếu @RES == 1 tức loginname đã tồn tại
+	IF (@RES = 1)
+	BEGIN
+		RAISERROR('Login name bị trùng', 16, 1)
+		RETURN
+	END
+	--sp_grantdbaccess: cấp quyền truy cập vào một cơ sở dữ liệu cụ thể cho một tài khoản đăng nhập
+	EXEC @RES = sp_grantdbaccess @LOGINNAME, @USERNAME
+	--Nếu @RES == 1 tức username đã tồn tại
+	IF (@RES = 1)
+	BEGIN
+		EXEC SP_DROPLOGIN @LOGINNAME
+		RAISERROR('NV đã có tài khoản', 16, 2)
+		RETURN
+	END
+	EXEC sp_addrolemember @ROLE, @USERNAME
+	IF @ROLE = 'CONGTY'
+	BEGIN
+		EXEC sp_addsrvrolemember @LOGINNAME, 'SecurityAdmin'
+	END
+END
+--*****Kiểm tra mã phiếu nhập xuất đã tồn tại chưa*****
+GO
+CREATE PROC [dbo].[SP_KiemTraMaPhieuNhapXuat]
+@CHEDO NVARCHAR(8), @MaPhieu nchar(8)
+AS
+BEGIN
+	DECLARE @result INT
+	IF(@CHEDO = 'NHAP')
+	BEGIN
+		IF(EXISTS (SELECT * FROM PhieuNhap WHERE MAPN = @MaPhieu))
+			SET @result = 1 --TON TAI MA PHIEU NHAP
+		ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuNhap WHERE MAPN = @MaPhieu))
+			SET @result = 1--TON TAI MA PHIEU NHAP
+		ELSE
+			SET @result = 0
+	END;
+	IF(@CHEDO = 'XUAT')
+	BEGIN
+		IF(EXISTS (SELECT * FROM PhieuXuat WHERE MAPX = @MaPhieu))
+			SET @result = 1 --TON TAI MA PHIEU XUAT
+		ELSE IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.PhieuXuat WHERE MAPX = @MaPhieu))
+			SET @result = 1--TON TAI MA PHIEU XUAT
+		ELSE
+			SET @result = 0
+	END;
+	RETURN @result;
+END;
+
+END;
+--*****Kiểm tra chi tiết phiếu nhập xuất đã tồn tại chưa chưa*****
+GO
+CREATE PROC [dbo].[SP_KiemTraVattuCTPNhapXuat]
+@CHEDO NVARCHAR(8),@MAPhieu NVARCHAR(8), @MAVT NVARCHAR(10)
+AS
+BEGIN
+	IF(@CHEDO = 'NHAP')
+	BEGIN
+		IF(EXISTS (SELECT * FROM CTPN WHERE MAPN=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPN WHERE MAPN=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		RETURN 0;
+	END
+	IF(@CHEDO = 'XUAT')
+	BEGIN
+		IF(EXISTS (SELECT * FROM CTPX WHERE MAPX=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTPX WHERE MAPX=@MAPhieu AND MAVT=@MAVT))
+			RETURN 1;
+		RETURN 0;
+	END;
+END;
+END
+
+--*****Kiểm tra số lượng vật tư tồn*****
+CREATE PROC SP_KiemTraSoluongVattu
+@MAVT NCHAR(4),@SOLUONG INT
+AS
+BEGIN
+	DECLARE @soLuongTon INT = (SELECT SOLUONGTON FROM Vattu WHERE MAVT=@MAVT)
+	IF @SOLUONG > @soLuongTon
+		RETURN 0
+	RETURN 1
+END;
+
+--*****Một đơn đặt hàng chỉ có 1 phiếu nhập*****
+CREATE PROC [dbo].[SP_KiemtraDDHPhieuNhap]
+@MasoDDH NCHAR(8)
+AS
+BEGIN
+	IF EXISTS (SELECT 1 FROM PhieuNhap WHERE MasoDDH=@MasoDDH)
+		RETURN 1;
+	IF EXISTS (SELECT 1 FROM LINK1.QLVT.DBO.PhieuNhap WHERE MasoDDH=@MasoDDH)
+		RETURN 1;
+	RETURN 0;
+END;
+--*****Số lượng vật tư trong phiếu nhập không được vượt quá số lượng vật tư trong đơn đặt hàng*****
+CREATE PROC [dbo].[SP_KiemTraSoluongVattuDDH]
+@MasoDDH nchar(8),@MAVT nchar(4),@SOLUONG INT
+AS
+BEGIN
+	DECLARE @soLuongMaDDH INT = (SELECT SOLUONG FROM CTDDH WHERE MasoDDH=@MasoDDH AND MAVT=@MAVT)
+	IF @SOLUONG > @soLuongMaDDH
+		RETURN 0
+	RETURN 1
+END;
+
+--*****Cập nhật số lượng vật tư tồn*****
+CREATE PROC [dbo].[SP_CapNhatSoLuongVatTu]
+@CHEDO NVARCHAR(6),@MAVT NCHAR(4),@SOLUONG INT
+AS
+BEGIN
+	-- NEU XUAT VAT TU RA
+	IF(@CHEDO = 'EXPORT')
+	BEGIN
+		IF EXISTS (SELECT * FROM Vattu WHERE MAVT=@MAVT)
+		BEGIN
+			UPDATE Vattu
+			SET SOLUONGTON = SOLUONGTON - @SOLUONG
+			WHERE MAVT=@MAVT
+		END;
+	END;
+	-- NEU NHAP VAT TU VAO
+	IF(@CHEDO = 'IMPORT')
+	BEGIN
+		IF EXISTS (SELECT * FROM Vattu WHERE MAVT=@MAVT)
+		BEGIN
+			UPDATE Vattu
+			SET SOLUONGTON = SOLUONGTON + @SOLUONG
+			WHERE MAVT=@MAVT
+		END;
+	END;
+END;
+
+--***** SP báo cáo chi tiết số luojngwj trị giá hàng hóa nhập xuất*****
+
+CREATE PROC [dbo].[SP_ChiTietSoLuongTriGiaHangHoaNhapXuat]
+@ROLE NVARCHAR(8),
+@TYPE NVARCHAR(4),
+@DATEFROM DATETIME,
+@DATETO DATETIME
+AS
+BEGIN
+	IF( @ROLE = 'CONGTY')
+	BEGIN 
+		IF(@TYPE = 'NHAP')
+		BEGIN
+			SELECT FORMAT(NGAY,'MM-yyyy') THANGNAM,TENVT,SUM(SOLUONG) TONGSOLUONG,SUM(SOLUONG * DONGIA) TONGTRIGIA 
+			FROM (SELECT MAPN,NGAY FROM LINK0.QLVT.DBO.PhieuNhap WHERE NGAY BETWEEN @DATEFROM AND @DATETO) Phieu, 
+			(SELECT MAVT,TENVT FROM LINK0.QLVT.DBO.Vattu) VT, 
+			(SELECT MAPN,MAVT,SOLUONG,DONGIA FROM LINK0.QLVT.DBO.CTPN) CT
+			WHERE Phieu.MAPN = CT.MAPN AND CT.MAVT = VT.MAVT
+			GROUP BY NGAY, TENVT
+			ORDER BY NGAY, TENVT
+		END
+		ELSE --@TYPE = 'XUAT'
+		BEGIN
+			SELECT FORMAT(NGAY,'MM-yyyy') THANGNAM,TENVT,SUM(SOLUONG) TONGSOLUONG,SUM(SOLUONG * DONGIA) TONGTRIGIA 
+			FROM (SELECT MAPX,NGAY FROM LINK0.QLVT.DBO.PhieuXuat WHERE NGAY BETWEEN @DATEFROM AND @DATETO) Phieu, 
+			(SELECT MAVT,TENVT FROM LINK0.QLVT.DBO.Vattu) VT, 
+			(SELECT MAPX,MAVT,SOLUONG,DONGIA FROM LINK0.QLVT.DBO.CTPX) CT
+			WHERE Phieu.MAPX = CT.MAPX AND CT.MAVT = VT.MAVT
+			GROUP BY NGAY, TENVT
+			ORDER BY NGAY, TENVT
+		END
+	END
+	ELSE
+	BEGIN
+		IF(@TYPE = 'NHAP')
+		BEGIN
+			SELECT FORMAT(NGAY,'MM-yyyy') THANGNAM,TENVT,SUM(SOLUONG) TONGSOLUONG,SUM(SOLUONG * DONGIA) TONGTRIGIA 
+			FROM (SELECT MAPN,NGAY FROM PhieuNhap WHERE NGAY BETWEEN @DATEFROM AND @DATETO) Phieu, 
+			(SELECT MAVT,TENVT FROM Vattu) VT, 
+			(SELECT MAPN,MAVT,SOLUONG,DONGIA FROM CTPN) CT
+			WHERE Phieu.MAPN = CT.MAPN AND CT.MAVT = VT.MAVT
+			GROUP BY NGAY, TENVT
+			ORDER BY NGAY, TENVT
+		END
+		ELSE --@TYPE = 'XUAT'
+		BEGIN
+			SELECT FORMAT(NGAY,'MM-yyyy') THANGNAM,TENVT,SUM(SOLUONG) TONGSOLUONG,SUM(SOLUONG * DONGIA) TONGTRIGIA 
+			FROM (SELECT MAPX,NGAY FROM PhieuXuat WHERE NGAY BETWEEN @DATEFROM AND @DATETO) Phieu, 
+			(SELECT MAVT,TENVT FROM Vattu) VT, 
+			(SELECT MAPX,MAVT,SOLUONG,DONGIA FROM CTPX) CT
+			WHERE Phieu.MAPX = CT.MAPX AND CT.MAVT = VT.MAVT
+			GROUP BY NGAY, TENVT
+			ORDER BY NGAY, TENVT
+		END
+	END
+END
+
+--**** SP Báo cáo đơn hàng không có phiếu nhập*****
+CREATE PROC [dbo].[SP_DonHangKhongPhieuNhap]
+AS
+BEGIN
+	SELECT DH.MasoDDH,FORMAT(DH.NGAY,'dd-MM-yyyy') NGAY,DH.NhaCC,DH.HOTEN,VT.TENVT,CT.SOLUONG,CT.DONGIA 
+	FROM 
+	(SELECT MasoDDH, NGAY, NhaCC,HOTEN = (SELECT HO + ' '+ TEN FROM NhanVien WHERE NhanVien.MANV=DatHang.MANV)
+	FROM DBO.DatHang) DH, 
+	(SELECT MasoDDH,MAVT,SOLUONG,DONGIA FROM CTDDH ) CT,
+	(SELECT TENVT, MAVT FROM Vattu ) VT
+	WHERE DH.MasoDDH=CT.MasoDDH AND CT.MAVT=VT.MAVT AND 
+	DH.MasoDDH NOT IN (SELECT MasoDDH FROM PhieuNhap)
+	ORDER BY DH.NGAY
+END;
+
+******SP_HOẠT ĐỘNG NHÂN VIÊN******
+CREATE PROCEDURE [dbo].[sp_HoatDongNhanVien]
+@MANV INT, 
+@FROM DATE, 
+@TO DATE
+AS
+BEGIN
+    -- phiếu nhập
+    SELECT 
+        FORMAT(PN.NGAY, 'MM/yyyy') AS THANGNAM,
+        PN.NGAY, 
+        PN.MAPN AS MAPHIEU,
+		N'Nhập' AS LOAIPHIEU,
+        N'Không' AS HOTENKH, 
+        VT.TENVT, 
+        KHO.TENKHO, 
+        CTPN.SOLUONG, 
+        CTPN.DONGIA, 
+        CTPN.SOLUONG * CTPN.DONGIA AS THANHTIEN
+    FROM 
+        (SELECT MAPN, NGAY, MAKHO FROM dbo.PhieuNhap WHERE MANV = @MANV AND NGAY BETWEEN @FROM AND @TO) PN,
+        CTPN,
+        (SELECT TENVT, MAVT FROM Vattu) VT,
+        (SELECT TENKHO, MAKHO FROM Kho) KHO
+    WHERE 
+        VT.MAVT = CTPN.MAVT 
+        AND CTPN.MAPN = PN.MAPN 
+        AND PN.MAKHO = KHO.MAKHO
+
+    UNION ALL
+
+    -- phiếu xuất
+    SELECT 
+        FORMAT(PX.NGAY, 'MM/yyyy') AS THANGNAM,
+        PX.NGAY, 
+        PX.MAPX AS MAPHIEU, 
+		N'Xuất' AS LOAIPHIEU,
+        PX.HOTENKH, 
+        VT.TENVT, 
+        KHO.TENKHO, 
+        CTPX.SOLUONG, 
+        CTPX.DONGIA, 
+        CTPX.SOLUONG * CTPX.DONGIA AS THANHTIEN
+    FROM 
+        (SELECT MAPX, NGAY, HOTENKH, MAKHO FROM dbo.PhieuXuat WHERE MANV = @MANV AND NGAY BETWEEN @FROM AND @TO) PX,
+        CTPX,
+        (SELECT TENVT, MAVT FROM Vattu) VT,
+        (SELECT TENKHO, MAKHO FROM Kho) KHO
+    WHERE 
+        VT.MAVT = CTPX.MAVT 
+        AND CTPX.MAPX = PX.MAPX 
+        AND PX.MAKHO = KHO.MAKHO
+
+    ORDER BY NGAY, MAPHIEU, TENVT
+END
+
+GO

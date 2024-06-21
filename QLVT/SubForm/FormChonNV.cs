@@ -38,9 +38,20 @@ namespace QLVT.SubForm
             comboBox1.ValueMember = "TENSERVER";
             comboBox1.SelectedIndex = Program.brand;
 
-            if (Program.mGroup == "CONGTY")
+            if (Program.createAcc == false)
             {
-                comboBox1.Enabled = true;
+                if (Program.mGroup == "CONGTY")
+                {
+                    comboBox1.Enabled = true;
+                }
+                if (Program.mGroup == "CHINHANH" || Program.mGroup == "USER")
+                {
+                    comboBox1.Enabled = false;
+                }
+            }
+            else
+            {
+                comboBox1.Enabled = false;
             }
 
         }

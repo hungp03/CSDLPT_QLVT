@@ -364,6 +364,8 @@ namespace QLVT
 
             return result;
         }
+
+       
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             string maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
@@ -425,6 +427,7 @@ namespace QLVT
                 {
                     position = bdsNhanVien.Position;
                     bdsNhanVien.RemoveCurrent();
+                    _ = Program.ExecSqlNonQuery("EXEC [dbo].[Xoa_Login] '" +maNV + "'");
                     this.nhanVienTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.nhanVienTableAdapter.Update(this.dS1.NhanVien);
 

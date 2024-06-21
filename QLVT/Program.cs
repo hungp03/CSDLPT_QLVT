@@ -18,6 +18,8 @@ namespace QLVT
     {
         public static SqlConnection conn = new SqlConnection();
         public static SqlDataReader myReader;
+        //Gắn cờ để theo dõi form chọn nv
+        public static bool createAcc = false;
 
         //Chuỗi kết nối về server
         public static string conStr = "";

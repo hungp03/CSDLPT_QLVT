@@ -26,8 +26,8 @@ namespace QLVT.Properties {
         [global::System.Configuration.ApplicationScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
-        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=HUNG-PC\\SERVER1;Initial Catalog=QLVT;Persist Security Info=True;User " +
-            "ID=HTKN;password=123456;TrustServerCertificate=True")]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=LAPTOP-PUD7RCFK\\SERVER1;Initial Catalog=QLVT;Integrated Security=True" +
+            ";User ID=HTKN;Password=123456")]
         public string QLVTConnectionString {
             get {
                 return ((string)(this["QLVTConnectionString"]));

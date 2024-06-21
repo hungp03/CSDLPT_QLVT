@@ -556,6 +556,14 @@ namespace QLVT
             Console.WriteLine(cheDo);
             positionCTDDH = bdsCTDDH.Position;
             Console.WriteLine(positionCTDDH);
+            String MasoDDH = txtMaDDH.Text.Trim();
+            if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép thêm vì MasoDDH đã đc dùng cho với phiếu nhập
+            {
+                MessageBox.Show("Không sửa được đơn đặt hàng này vì đơn đặt hàng đã được sử dụng cho phiếu nhập", "Thông báo", MessageBoxButtons.OK);
+                this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
+                this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+                return;
+            }
             btnLamMoi.Enabled = false;
             btnXoa.Enabled = false;
             btnThem.Enabled = false;
@@ -634,7 +642,15 @@ namespace QLVT
             {
                 return;
             }
-            
+            String MasoDDH = dgvCTDDH.Rows[positionCTDDH].Cells[0].Value.ToString().Trim();
+            if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép sửa vì MasoDDH đã đc dùng cho với phiếu nhập
+            {
+                MessageBox.Show("Không sửa được đơn đặt hàng này vì đơn đặt hàng đã được sử dụng cho phiếu nhập", "Thông báo", MessageBoxButtons.OK);
+                this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
+                this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+                return;
+            }
+
             if (isAdding== true && cheDo.Equals("CTDDH"))
             {
                 

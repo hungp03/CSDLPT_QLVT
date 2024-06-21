@@ -436,3 +436,24 @@ BEGIN
 END
 
 GO
+*******************SP_kiểm tra đơn đặt hàng 1 đơn đặt hàng chỉ có 1 vật tư************************
+CREATE PROCEDURE [dbo].[SP_KiemTraCTDDH]
+	@MasoDDH NCHAR(8), @MAVT NVARCHAR(10)
+AS
+BEGIN
+	--Nếu Mã vật tư đã tồn tại trong đơn đặt hàng thì ra kết quả là 1
+	IF(EXISTS (SELECT * FROM CTDDH WHERE MasoDDH=@MasoDDH AND MAVT=@MAVT))
+		RETURN 1;
+	IF(EXISTS (SELECT * FROM LINK1.QLVT.DBO.CTDDH WHERE MasoDDH=@MasoDDH AND MAVT=@MAVT))
+		RETURN 1;
+	RETURN 0;
+END
+*********************SP_ kiểm tra mã đơn đặt hàng đã tồn tại chưa**********
+CREATE PROC [dbo].[SP_KiemTraMDDH] @MaDDH NCHAR(8)
+AS 
+--Kiểm tra xem Mã đơn đặt hàng có tồn tại trong chi nhánh hiện tại và chi nhánh khác không
+BEGIN
+	IF(EXISTS(SELECT * FROM DatHang WHERE MasoDDH=@MaDDH)) RETURN 1;
+	IF(EXISTS(SELECT * FROM LINK1.QLVT.DBO.DatHang WHERE MasoDDH=@MaDDH)) RETURN 1;
+	RETURN 0;
+END;

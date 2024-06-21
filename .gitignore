@@ -7,3 +7,5 @@
 *.sln.cache
 *.dll
 QLVT/App.config
+.gitignore
+QLVT/App.config

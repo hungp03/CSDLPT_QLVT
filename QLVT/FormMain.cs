@@ -278,7 +278,20 @@ namespace QLVT
                 form.Show();
             }
         }
-
+        private void barButtonDH_ItemClick(object sender, ItemClickEventArgs e)
+        {
+            Form f = CheckExists(typeof(FormDonDatHang));
+            if(f != null)
+            {
+                f.Activate();
+            }
+            else
+            {
+                FormDonDatHang form = new FormDonDatHang();
+                form.MdiParent = this;
+                form.Show();
+            }
+        }
         private void barButtonItem6_ItemClick(object sender, ItemClickEventArgs e)
         {
             Form f = CheckExists(typeof(FormHoatdongNV));
@@ -288,12 +301,12 @@ namespace QLVT
             }
             else
             {
-                FormHoatdongNV form = new FormHoatdongNV
-                {
-                    MdiParent = this
-                };
+                FormHoatdongNV form = new FormHoatdongNV();
+                form.MdiParent = this;
                 form.Show();
             }
         }
+
+
+        }
     }
-}

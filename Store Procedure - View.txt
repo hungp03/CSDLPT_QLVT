@@ -530,6 +530,38 @@ BEGIN
 
     DROP TABLE #DailyTotals;
 END;
+*****Xóa login khi xóa tài khoản nhân viên*****
+CREATE PROC [dbo].[Xoa_Login]
+@USRNAME VARCHAR(50)
+AS
+BEGIN
+    DECLARE @LGNAME VARCHAR(50)
+    DECLARE @SPID INT
+
+    -- Kiểm tra nếu người dùng tồn tại
+    IF EXISTS (SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = @USRNAME)
+    BEGIN
+        -- Lấy tên login tương ứng với user
+        SET @LGNAME = (SELECT SUSER_SNAME(sid) FROM sys.sysusers WHERE name = @USRNAME)
+
+        -- Buộc đăng xuất các phiên kết nối của user
+        DECLARE @sql NVARCHAR(MAX)
+        SET @sql = N''
+
+        SELECT @sql = @sql + N'KILL ' + CAST(session_id AS NVARCHAR(5)) + N'; '
+        FROM sys.dm_exec_sessions
+        WHERE login_name = @LGNAME
+
+        EXEC sp_executesql @sql
+
+        -- Xóa user từ database
+        EXEC sp_dropuser @USRNAME
+
+        -- Xóa login từ server
+        EXEC sp_droplogin @LGNAME
+    END
+END
+GO
 ***********SP_Kiểm tra trạng thái nhân viên******************
 CREATE PROCEDURE [dbo].[SP_KiemTraTrangThaiNV]
 @MaNV int

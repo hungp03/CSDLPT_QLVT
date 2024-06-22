@@ -567,6 +567,11 @@
             this.txtLuong.Properties.DisplayFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
             this.txtLuong.Properties.EditFormat.FormatString = "n0";
             this.txtLuong.Properties.EditFormat.FormatType = DevExpress.Utils.FormatType.Numeric;
+            this.txtLuong.Properties.Increment = new decimal(new int[] {
+            100000,
+            0,
+            0,
+            0});
             this.txtLuong.Properties.IsFloatValue = false;
             this.txtLuong.Properties.MaskSettings.Set("mask", "N00");
             this.txtLuong.Size = new System.Drawing.Size(195, 24);

@@ -23,6 +23,10 @@ namespace QLVT
             btnNhanVien.Enabled = true;
             btnVatTu.Enabled = true;
             ribbonPage1.Visible = ribbonPage2.Visible = true; 
+            if (Program.mGroup.Equals("USER"))
+            {
+                btnTaoTK.Enabled = false;
+            }
         }
 
         private async void InitializeAsync()
@@ -78,7 +82,8 @@ namespace QLVT
 
             btnDangNhap.Enabled = true;
             btnDangXuat.Enabled = false;
-            btnNhanVien.Enabled = false;
+            ribbonPage1.Visible = false;
+            ribbonPage2.Visible = false;
 
             Form f = CheckExists(typeof(FormLogin));
             if (f != null)

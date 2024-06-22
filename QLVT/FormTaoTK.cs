@@ -51,7 +51,11 @@ namespace QLVT
                 MessageBox.Show("Mật khẩu không khớp với mật khẩu xác nhận", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }
-
+            if (Program.mGroup.Equals("CHINHANH") && !rdCN.Checked && !rdUser.Checked)
+            {
+                MessageBox.Show("Chưa chọn vai trò nhân viên", "Thông báo", MessageBoxButtons.OK);
+                return false;
+            }
             return true;
         }
 
@@ -63,7 +67,7 @@ namespace QLVT
                 rdCN.Enabled = false;
                 rdUser.Enabled = false;
             }
-            else
+            else if (Program.mGroup.Equals("CHINHANH"))
             {
                 rdCN.Enabled = true;
                 rdUser.Enabled = true;
@@ -80,7 +84,14 @@ namespace QLVT
             loginName = txtTendangnhap.Text.Trim();
             password = txtMatkhau.Text.Trim();
             userID = Program.selectedEmp;
-            role = (rdCN.Checked == true) ? "CHINHANH" : "USER";
+            if (!rdCN.Checked && !rdUser.Checked)
+            {
+                role = "CONGTY";
+            }
+            else
+            {
+                role = rdCN.Checked ? "CHINHANH" : "USER";
+            }
             /*Console.WriteLine("ĐANG TẠO TK:" + loginName + " - " + password + " - " + userID + " - " + role);
             Console.WriteLine(Program.servername);*/
 
@@ -106,6 +117,7 @@ namespace QLVT
 
         private void button3_Click(object sender, EventArgs e)
         {
+            Program.createAcc = true;
             FormChonNV form = new FormChonNV();
             form.ShowDialog();
             txtManv.Text = Program.selectedEmp;

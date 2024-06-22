@@ -272,6 +272,9 @@
             this.table2});
             this.Detail.HeightF = 25F;
             this.Detail.Name = "Detail";
+            this.Detail.SortFields.AddRange(new DevExpress.XtraReports.UI.GroupField[] {
+            new DevExpress.XtraReports.UI.GroupField("TEN", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending),
+            new DevExpress.XtraReports.UI.GroupField("HO", DevExpress.XtraReports.UI.XRColumnSortOrder.Ascending)});
             // 
             // table2
             // 

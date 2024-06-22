@@ -471,6 +471,7 @@
             // 
             // colMasoDDH
             // 
+            this.colMasoDDH.Caption = "Mã số đơn đặt hàng";
             this.colMasoDDH.FieldName = "MasoDDH";
             this.colMasoDDH.MinWidth = 25;
             this.colMasoDDH.Name = "colMasoDDH";
@@ -480,6 +481,7 @@
             // 
             // colNGAY
             // 
+            this.colNGAY.Caption = "Ngày";
             this.colNGAY.FieldName = "NGAY";
             this.colNGAY.MinWidth = 25;
             this.colNGAY.Name = "colNGAY";
@@ -489,6 +491,7 @@
             // 
             // colNhaCC
             // 
+            this.colNhaCC.Caption = "Nhà cung cấp";
             this.colNhaCC.FieldName = "NhaCC";
             this.colNhaCC.MinWidth = 25;
             this.colNhaCC.Name = "colNhaCC";
@@ -498,6 +501,7 @@
             // 
             // colMANV
             // 
+            this.colMANV.Caption = "Mã nhân viên";
             this.colMANV.FieldName = "MANV";
             this.colMANV.MinWidth = 25;
             this.colMANV.Name = "colMANV";
@@ -507,6 +511,7 @@
             // 
             // colMAKHO
             // 
+            this.colMAKHO.Caption = "Mã kho";
             this.colMAKHO.FieldName = "MAKHO";
             this.colMAKHO.MinWidth = 25;
             this.colMAKHO.Name = "colMAKHO";

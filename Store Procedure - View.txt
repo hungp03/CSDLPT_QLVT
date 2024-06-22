@@ -530,7 +530,6 @@ BEGIN
 
     DROP TABLE #DailyTotals;
 END;
-
 *****Xóa login khi xóa tài khoản nhân viên*****
 CREATE PROC [dbo].[Xoa_Login]
 @USRNAME VARCHAR(50)
@@ -563,3 +562,13 @@ BEGIN
     END
 END
 GO
+***********SP_Kiểm tra trạng thái nhân viên******************
+CREATE PROCEDURE [dbo].[SP_KiemTraTrangThaiNV]
+@MaNV int
+	-- Add the parameters for the stored procedure here
+AS
+BEGIN
+	IF NOT (EXISTS(SELECT TrangThaiXoa FROM NhanVien WHERE MANV = @MaNV)) RETURN -1;
+	DECLARE @Result INT =(SELECT TrangThaiXoa FROM NhanVien WHERE MANV =@MaNV);
+	RETURN @Result;
+END

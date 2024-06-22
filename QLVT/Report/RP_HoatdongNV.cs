@@ -110,7 +110,7 @@ namespace QLVT.Report
         }
 
 
-        public RP_HoatdongNV(String maNhanVien, DateTime fromDate, DateTime toDate)
+        public RP_HoatdongNV(string maNhanVien, DateTime fromDate, DateTime toDate)
         {
             InitializeComponent();
             this.sqlDataSource1.Connection.ConnectionString = Program.conStr;

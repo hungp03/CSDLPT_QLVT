@@ -19,8 +19,6 @@ namespace QLVT.Report
         DateTime fromDate;
         DateTime toDate;
         string tennv;
-        string formattedDate;
-        DateTime currentDay;
         public FormHoatdongNV()
         {
             InitializeComponent();
@@ -92,10 +90,6 @@ namespace QLVT.Report
             tennv = txtHoten.Text.Trim();
             RP_HoatdongNV hdnv = new RP_HoatdongNV(manv, fromDate, toDate);
             hdnv.xrName.Text = "Họ tên nhân viên: " + tennv;
-            hdnv.xrDate.Text = "Từ ngày " + fromDate.ToString("dd/MM/yyyy") + "đến ngày " + toDate.ToString("dd/MM/yyyy");
-            currentDay = DateTime.Now;
-            formattedDate = "Ngày tạo báo cáo: " +currentDay.ToString("dd/MM/yyyy");
-            hdnv.xrReportDate.Text = formattedDate;
             ReportPrintTool rpt = new ReportPrintTool(hdnv);
             rpt.ShowPreviewDialog();
         }
@@ -115,10 +109,6 @@ namespace QLVT.Report
 
                 RP_HoatdongNV hdnv = new RP_HoatdongNV(manv, fromDate, toDate);
                 hdnv.xrName.Text = "Họ tên nhân viên: " + tennv;
-                hdnv.xrDate.Text = "Từ ngày " + fromDate.ToString("dd/MM/yyyy") + "đến ngày " + toDate.ToString("dd/MM/yyyy");
-                currentDay = DateTime.Now;
-                formattedDate = "Ngày tạo báo cáo: " + currentDay.ToString("dd/MM/yyyy");
-                hdnv.xrReportDate.Text = formattedDate;
                 ReportPrintTool rpt = new ReportPrintTool(hdnv);
 
                 if (File.Exists($@"D:\ReportQLVT\ReportHoatDongNhanVien_{manv}.pdf"))

@@ -405,7 +405,7 @@ namespace QLVT
             }
             if (checkTHXoaNV(maNV) == 1)
             {
-                ThongBao("Nhân viên đã bị xóa, đang ở chi nhánh khác");
+                ThongBao("Nhân viên đã bị vô hiệu hóa hoặc đang ở chi nhánh khác");
                 return;
             }
 
@@ -419,7 +419,7 @@ namespace QLVT
             undoStack.Push(undoQuery);
 
             // Xác nhận nếu bấm OK thì xóa
-            if (MessageBox.Show("Bạn có chắc chắn muốn xóa nhân viên này không ?", "Thông báo",
+            if (MessageBox.Show("Bạn có chắc chắn muốn xóa nhân viên này không ?\nNếu xóa, sẽ không thể khôi phục tài khoản đăng nhập!", "Thông báo",
                 MessageBoxButtons.OKCancel) == DialogResult.OK)
             {
                 // Nút xóa này là xóa hẳn, còn chuyển chi nhánh thì mới cho trạng thái sang 1
@@ -559,7 +559,15 @@ namespace QLVT
             string ten = drv["TEN"].ToString();
             string diaChi = drv["DIACHI"].ToString();
             //Console.WriteLine(drv["NGAYSINH"]);
-            DateTime ngaySinh = ((DateTime)drv["NGAYSINH"]);
+            DateTime ngaySinh;
+            if (DateTime.TryParse(drv["NGAYSINH"].ToString(), out ngaySinh))
+            {
+            //
+            }
+            else
+            {
+                ngaySinh = deNgaySinh.DateTime;
+            }
             string luongstr = drv["LUONG"]?.ToString();
             if (String.IsNullOrEmpty(drv["LUONG"].ToString()))
             {
@@ -583,7 +591,7 @@ namespace QLVT
            
             if (nvResult != 1 && nvResult != 0)
             {
-                ThongBao("Có lỗi trong quá trình xử lý");
+                ThongBao("Có lỗi trong quá trình xử lý kiểm tra MANV");
                 return;
             }
             // TH1
@@ -630,7 +638,7 @@ namespace QLVT
 
                     // Lưu truy vấn phục vụ hoàn tác
                     string undoQuery = "";
-
+                    string mess = "Ghi thành công";
                     // Trường hợp thêm nhân viên
                     if (isAdding == true)
                     {
@@ -642,6 +650,15 @@ namespace QLVT
                     // Trường hợp sửa nhân viên
                     else
                     {
+                        if (trangThai == 1)
+                        {
+                            DialogResult dr1 = MessageBox.Show("Bạn có muốn vô hiệu tài khoản đăng nhập của nhân viên này (nếu có)?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
+                            if (dr1 == DialogResult.OK)
+                            {
+                                _ = Program.ExecSqlNonQuery("EXEC [dbo].[Xoa_Login] '" + maNv + "'");
+                                mess += "\nTài khoản của nhân viên (nếu có) đã được vô hiệu hóa. Vui lòng kiểm tra";
+                            }
+                        }
                         undoQuery = "UPDATE DBO.NhanVien " +
                         "SET " +
                         "CMND = '" + cmnd + "'," +
@@ -660,7 +677,7 @@ namespace QLVT
 
                     // Cập nhật lại trạng thái đang thêm mới
                     isAdding = false;
-                    ThongBao("Ghi thành công");
+                    ThongBao(mess);
                 }
                 catch (Exception ex)
                 {

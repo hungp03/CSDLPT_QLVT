@@ -51,7 +51,11 @@ namespace QLVT
                 MessageBox.Show("Mật khẩu không khớp với mật khẩu xác nhận", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }
-
+            if (Program.mGroup.Equals("CHINHANH") && !rdCN.Checked && !rdUser.Checked)
+            {
+                MessageBox.Show("Chưa chọn vai trò nhân viên", "Thông báo", MessageBoxButtons.OK);
+                return false;
+            }
             return true;
         }
 
@@ -63,7 +67,7 @@ namespace QLVT
                 rdCN.Enabled = false;
                 rdUser.Enabled = false;
             }
-            else
+            else if (Program.mGroup.Equals("CHINHANH"))
             {
                 rdCN.Enabled = true;
                 rdUser.Enabled = true;

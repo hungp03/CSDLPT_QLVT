@@ -1,4 +1,5 @@
-﻿using DevExpress.XtraEditors;
+﻿using DevExpress.CodeParser;
+using DevExpress.XtraEditors;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -59,6 +60,11 @@ namespace QLVT.SubForm
         private void button1_Click(object sender, EventArgs e)
         {
             DataRowView drv = ((DataRowView)(bdsNhanVien.Current));
+            if (drv["TRANGTHAIXOA"].ToString().Trim().Equals("1") && Program.createAcc == true)
+            {
+               MessageBox.Show("Không khuyến khích tạo tài khoản cho nhân viên đã bị vô hiệu hóa\nHãy sửa lại trạng thái nhân viên trước khi tạo (nếu muốn)", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
             string maNhanVien = drv["MANV"].ToString().Trim();
             string tenNV = drv["HO"].ToString().Trim() + " " + drv["TEN"].ToString().Trim();
             //Console.WriteLine(maNhanVien);
@@ -98,6 +104,12 @@ namespace QLVT.SubForm
                 this.nhanVienTableAdapter.Connection.ConnectionString = Program.conStr;
                 this.nhanVienTableAdapter.Fill(dS1.NhanVien);
             }
+        }
+
+        private void button2_Click(object sender, EventArgs e)
+        {
+            Dispose();
+            //Close();
         }
     }
 }

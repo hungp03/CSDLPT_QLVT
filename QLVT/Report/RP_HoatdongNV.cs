@@ -11,119 +11,104 @@ namespace QLVT.Report
         public RP_HoatdongNV()
         {
             InitializeComponent();
-            //this.BeforePrint += new System.Drawing.Printing.PrintEventHandler(this.RP_HoatdongNV_BeforePrint);
         }
-        /*private void RP_HoatdongNV_BeforePrint(object sender, System.Drawing.Printing.PrintEventArgs e)
-        {
-            string totalAmount = xrLabel4.Text.ToString();
-            Console.WriteLine(totalAmount);
-           // this.xrLabel6.Text = ChuyenSo(totalAmount);
-        }*/
-        /*private string ChuyenSo(string number)
-        {
-            string[] dv = { "", "mươi", "trăm", "nghìn", "triệu", "tỉ" };
-            string[] cs = { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
-            string doc;
-            int i, j, k, n, len, found, ddv, rd;
 
-            len = number.Length;
-            number += "ss";
-            doc = "";
-            found = 0;
-            ddv = 0;
-            rd = 0;
+        private void SummaryCalculatedAmount(object sender, DevExpress.XtraReports.UI.TextFormatEventArgs e)
+        {
+            decimal totalValue = Convert.ToDecimal(e.Value);
+            e.Text = $"{totalValue:N0} đồng ({NumberToText(totalValue)} đồng)";
+        }
 
-            i = 0;
-            while (i < len)
+        private string NumberToText(decimal input)
+        {
+            // định nghĩa kí tự
+            string sNumber = input.ToString("#");
+            string[] unitNumbers = new string[] { "không", "một", "hai", "ba", "bốn", "năm", "sáu", "bảy", "tám", "chín" };
+            string[] placeValues = new string[] { "", "nghìn", "triệu", "tỷ" };
+
+            int ones, tens, hundreds;
+            // duyệt số từ cuối quay lại đầu
+            int digitPosition = sNumber.Length; 
+
+            // chuyển số sang chuỗi.
+            string output = " ";
+            if (digitPosition == 0) output = unitNumbers[0] + output;
+            else
             {
-                //So chu so o hang dang duyet
-                n = (len - i + 2) % 3 + 1;
-
-                //Kiem tra so 0
-                found = 0;
-                for (j = 0; j < n; j++)
+                // 0:       ###
+                // 1: nghìn ###,###
+                // 2: triệu ###,###,###
+                // 3: tỷ    ###,###,###,###
+                int placeValue = 0;
+                while (digitPosition > 0)
                 {
-                    if (number[i + j] != '0')
+                    // kiểm tra 3 số cuối cùng còn lại
+                    tens = hundreds = -1;
+                    ones = Convert.ToInt32(sNumber.Substring(digitPosition - 1, 1));
+                    digitPosition--;
+                    if (digitPosition > 0)
                     {
-                        found = 1;
-                        break;
-                    }
-                }
-
-                //Duyet n chu so
-                if (found == 1)
-                {
-                    rd = 1;
-                    for (j = 0; j < n; j++)
-                    {
-                        ddv = 1;
-                        switch (number[i + j])
+                        tens = Convert.ToInt32(sNumber.Substring(digitPosition - 1, 1));
+                        digitPosition--;
+                        if (digitPosition > 0)
                         {
-                            case '0':
-                                if (n - j == 3) doc += cs[0] + " ";
-                                if (n - j == 2)
-                                {
-                                    if (number[i + j + 1] != '0') doc += "lẻ ";
-                                    ddv = 0;
-                                }
-                                break;
-                            case '1':
-                                if (n - j == 3) doc += cs[1] + " ";
-                                if (n - j == 2)
-                                {
-                                    doc += "mười ";
-                                    ddv = 0;
-                                }
-                                if (n - j == 1)
-                                {
-                                    if (i + j == 0) k = 0;
-                                    else k = i + j - 1;
-
-                                    if (number[k] != '1' && number[k] != '0')
-                                        doc += "mốt ";
-                                    else
-                                        doc += cs[1] + " ";
-                                }
-                                break;
-                            case '5':
-                                if (i + j == len - 1)
-                                    doc += "lăm ";
-                                else
-                                    doc += cs[5] + " ";
-                                break;
-                            default:
-                                doc += cs[(int)number[i + j] - 48] + " ";
-                                break;
-                        }
-
-                        if (ddv == 1)
-                        {
-                            doc += dv[n - j - 1] + " ";
+                            hundreds = Convert.ToInt32(sNumber.Substring(digitPosition - 1, 1));
+                            digitPosition--;
                         }
                     }
-                }
 
-                if (len - i - n > 0)
-                {
-                    if ((len - i - n) % 9 == 0)
-                    {
-                        if (rd == 1)
-                            for (k = 0; k < (len - i - n) / 9; k++)
-                                doc += "tỉ ";
-                        rd = 0;
-                    }
+                    if ((ones > 0) || (tens > 0) || (hundreds > 0) || (placeValue == 3))
+                        output = placeValues[placeValue] + output;
+
+                    placeValue++;
+                    if (placeValue > 3) placeValue = 1;
+
+                    if ((ones == 1) && (tens > 1)) output = "một " + output;
                     else
-                        if (found != 0) doc += dv[((len - i - n + 1) % 9) / 3 + 2] + " ";
-                }
+                    {
+                        if ((ones == 5) && (tens > 0)) output = "lăm " + output;
+                        else if (ones > 0) output = unitNumbers[ones] + " " + output;
+                    }
 
-                i += n;
+                    if (tens < 0) break;
+                    else
+                    {
+                        if ((tens == 0) && (ones > 0)) output = "lẻ " + output;
+                        if (tens == 1) output = "mười " + output;
+                        if (tens > 1) output = unitNumbers[tens] + " mươi " + output;
+                    }
+
+                    if (hundreds < 0) break;
+                    else
+                    {
+                        if ((hundreds > 0) || (tens > 0) || (ones > 0))
+                            output = unitNumbers[hundreds] + " trăm " + output;
+                    }
+
+                    output = " " + output;
+                }
             }
 
-            if (len == 1)
-                if (number[0] == '0' || number[0] == '5') return cs[(int)number[0] - 48];
+            return CapitalizeFirstLetter(output.Trim());
+        }
 
-            return doc;
-        }*/
+        private string CapitalizeFirstLetter(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+                return input;
+
+            char firstChar = char.ToUpper(input[0]);
+
+            if (input.Length > 1)
+            {
+                return firstChar + input.Substring(1);
+            }
+            else
+            {
+                return firstChar.ToString();
+            }
+        }
+
 
         public RP_HoatdongNV(String maNhanVien, DateTime fromDate, DateTime toDate)
         {
@@ -133,6 +118,10 @@ namespace QLVT.Report
             this.sqlDataSource1.Queries[0].Parameters[1].Value = fromDate;
             this.sqlDataSource1.Queries[0].Parameters[2].Value = toDate;
             this.sqlDataSource1.Fill();
+            xrDate.Text = "Từ ngày " + fromDate.ToString("dd/MM/yyyy") + "đến ngày " + toDate.ToString("dd/MM/yyyy");
+            DateTime currentDay = DateTime.Now;
+            string formattedDate = "Ngày tạo báo cáo: " + currentDay.ToString("dd/MM/yyyy");
+            xrReportDate.Text = formattedDate;
         }
     }
         

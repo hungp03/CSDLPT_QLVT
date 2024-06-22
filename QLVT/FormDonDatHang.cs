@@ -80,8 +80,13 @@ namespace QLVT
                 btnGhi.Enabled = false;
                 btnXoa.Enabled = false;
                 btnHoanTac.Enabled = false;
-                //groupBoxPhieuXuat.Enabled = false;
-                //contextMenuStripCTPX.Enabled = false;
+                groupBoxDonDatHang.Enabled = false;
+                contextMenuStripDDH.Enabled = false;
+                contextMenuStripRowDDH.Enabled = false;
+                foreach (DataGridViewRow row in dgvCTDDH.Rows)
+                {
+                    row.ContextMenuStrip = null;
+                }
             }
 
             //Phân quyền nhóm CHINHANH-USER có thể thao tác với dữ liệu
@@ -144,6 +149,7 @@ namespace QLVT
 
         private void btnLamMoi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            positionDDH = bdsDatHang.Position;
             try
             {
                 this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
@@ -156,6 +162,10 @@ namespace QLVT
             {
                 MessageBox.Show("Có lỗi khi làm mới dữ liệu", "Thông báo", MessageBoxButtons.OK);
                 return;
+            }
+            if (positionDDH >= 0)
+            {
+                bdsDatHang.Position = positionDDH;
             }
         }
 
@@ -429,16 +439,34 @@ namespace QLVT
             }
             int manv;
             int.TryParse(txtMANV.Text, out manv);
-            
             if (Execute_SPKiemTraTrangThaiNV(manv) == 1) //1 là đã bị xóa, 0 là chưa được sử dụng
             {
                 MessageBox.Show("Nhân viên đã bị xóa không thể ghi vào cơ sở dữ liệu", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
-            if (Execute_SPKiemTraMDDH(txtMaDDH.Text.Trim())==1) //1 là đã đc sd,0 là chưa được sử dụng
+            if (dateNgay.DateTime > DateTime.Now)
             {
-                MessageBox.Show("Mã đơn đặt hàng đã được sử dụng", "Thông báo", MessageBoxButtons.OK); 
+                MessageBox.Show("Ngày đặt hàng không được phép lớn hơn ngày hôm nay", "Thông báo", MessageBoxButtons.OK);
                 return;
+            }
+            //if(isAdding == false)
+            //{
+            //    DataRowView drvMaNV = (DataRowView)bdsDatHang[bdsDatHang.Position];
+            //    DataRow rowMaNV = drvMaNV.Row;
+            //    String checkmaNV = rowMaNV["MANV"].ToString().Trim();
+            //    if (txtMANV.Text.Trim() != checkmaNV)
+            //    {
+            //        MessageBox.Show("Không thể đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
+            //        return;
+            //    }
+            //}
+            if (isAdding == true)
+            {
+                if (Execute_SPKiemTraMDDH(txtMaDDH.Text.Trim()) == 1) //1 là đã đc sd,0 là chưa được sử dụng
+                {
+                    MessageBox.Show("Mã đơn đặt hàng đã được sử dụng", "Thông báo", MessageBoxButtons.OK);
+                    return;
+                }
             }
             DialogResult dlr = MessageBox.Show("Bạn có chắc chắn muốn ghi dữ liệu vào cơ sở dữ liệu không?", "Thông báo",
     MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
@@ -480,6 +508,16 @@ namespace QLVT
                         String maDDH = row["MasoDDH", DataRowVersion.Original].ToString().Trim();
                         String maKho = row["MAKHO", DataRowVersion.Original].ToString().Trim();
                         //Console.WriteLine($"{maNV} {nhaCC} {maDDH} {maKho} {bdsDatHang.Position}");
+
+                        //DataRowView drvMaNV = (DataRowView)bdsDatHang[bdsDatHang.Position];
+                        //DataRow rowMaNV = drvMaNV.Row;
+                        //String checkmaNV = rowMaNV["MANV"].ToString().Trim();
+                        //if (txtMANV.Text.Trim() != checkmaNV)
+                        //{
+                        //    MessageBox.Show("Không thể sửa mã đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
+                        //    return;
+                        //}
+
                         DateTime ngayLap;
                         if (DateTime.TryParse(row["NGAY", DataRowVersion.Original].ToString(), out ngayLap))
                         {
@@ -599,12 +637,23 @@ namespace QLVT
 
         private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            positionDDH = bdsDatHang.Position;
             String MasoDDH = txtMaDDH.Text.Trim();
             if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép xóa vì MasoDDH đã đc dùng cho với phiếu nhập
             {
                 MessageBox.Show("Không xóa được đơn đặt hàng này vì đơn đặt hàng đã được sử dụng cho phiếu nhập", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
+
+            //DataRowView drvMaNV = (DataRowView)bdsDatHang[bdsDatHang.Position];
+            //DataRow rowMaNV = drvMaNV.Row;
+            //String checkmaNV = rowMaNV["MANV"].ToString().Trim();
+            //if (txtMANV.Text.Trim() != checkmaNV)
+            //{
+            //    MessageBox.Show("Không thể sửa chi tiết đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
+            //    return;
+            //}
+
             List<String> undoQueryList = new List<String>();
             while (bdsCTDDH.Count > 0)
             {
@@ -642,6 +691,7 @@ namespace QLVT
             this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
             undoStack.Push(undoQueryList);
             btnHoanTac.Enabled = undoStack.Count > 0;
+            bdsDatHang.Position = positionDDH;
         }
 
         private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
@@ -686,7 +736,15 @@ namespace QLVT
             }
             else
             {
-                
+                //DataRowView drvMaNV = (DataRowView)bdsDatHang[bdsDatHang.Position];
+                //DataRow rowMaNV = drvMaNV.Row;
+                //String checkmaNV = rowMaNV["MANV"].ToString().Trim();
+                //if (txtMANV.Text.Trim() != checkmaNV)
+                //{
+                //    MessageBox.Show("Không thể sửa chi tiết đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
+                //    return;
+                //}
+
                 List<String> undoQueryList = new List<String>();
                 List<String> deleteQueryList = new List<String>();
                 int updateRow = 0;
@@ -874,11 +932,11 @@ namespace QLVT
                 MessageBox.Show("Giá trị trong cột NGAY không phải là kiểu ngày tháng hợp lệ", "Lỗi", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
-            if (Program.username != MaNV)
-            {
-                MessageBox.Show("Không thể xóa đơn dặt hàng không phải do mình tạo ra");
-                return;
-            }
+            //if (program.username != manv)
+            //{
+            //    messagebox.show("không thể xóa đơn dặt hàng không phải do mình tạo ra");
+            //    return;
+            //}
 
             String undoQuery = $"INSERT INTO [dbo].[DatHang]([MasoDDH],[NGAY],[NhaCC],[MANV],[MAKHO])" +
                 $"VALUES \r\n " +

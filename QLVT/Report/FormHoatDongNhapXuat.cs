@@ -9,6 +9,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.IO;
+using DevExpress.XtraEditors;
 
 namespace QLVT.Report
 {
@@ -67,24 +68,33 @@ namespace QLVT.Report
             {
                 return;
             }
-            chiNhanh = cbChiNhanh.SelectedValue.ToString().Contains("SERVER1") ? "HCM" : "HÀ NỘI";
-            ReportTongHopNhapXuat reportExportToPDF = new ReportTongHopNhapXuat(fromDate, toDate);
-            string savePath = $@"D:\ReportQLVT\ReportTongHopNhapXuat{currentDay.ToString("dd-MM-yyyy")} chi nhánh {chiNhanh}.pdf";
-            if (File.Exists($@"{savePath}"))
+            try
             {
-                DialogResult dr = MessageBox.Show("Đã có file khác trùng tên với file của Report này","Xác nhận",MessageBoxButtons.YesNo,MessageBoxIcon.Warning);
-                if(dr != DialogResult.Yes)
+                chiNhanh = cbChiNhanh.SelectedValue.ToString().Contains("SERVER1") ? "HCM" : "HÀ NỘI";
+                ReportTongHopNhapXuat reportExportToPDF = new ReportTongHopNhapXuat(fromDate, toDate);
+                string savePath = $@"D:\ReportQLVT\ReportTongHopNhapXuat{currentDay.ToString("dd-MM-yyyy")} chi nhánh {chiNhanh}.pdf";
+                if (File.Exists($@"{savePath}"))
                 {
-                    reportExportToPDF.ExportToPdf(savePath);
-                    MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    reportExportToPDF.ExportToPdf(savePath);
-                    MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    DialogResult dr = MessageBox.Show("Đã có file khác trùng tên với file của Report này", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (dr != DialogResult.Yes)
+                    {
+                        reportExportToPDF.ExportToPdf(savePath);
+                        MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
+                    else
+                    {
+                        reportExportToPDF.ExportToPdf(savePath);
+                        MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
             }
-                
+            catch (IOException)
+            {
+                MessageBox.Show("Lưu file thất bại",
+                    "Xác nhận", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                return;
+            }
+            
         }
 
         private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)

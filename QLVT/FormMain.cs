@@ -84,6 +84,7 @@ namespace QLVT
             btnDangXuat.Enabled = false;
             ribbonPage1.Visible = false;
             ribbonPage2.Visible = false;
+            btnTaoTK.Enabled = false;
 
             Form f = CheckExists(typeof(FormLogin));
             if (f != null)

@@ -66,6 +66,9 @@ namespace QLVT
                 role = "CONGTY";
                 rdCN.Enabled = false;
                 rdUser.Enabled = false;
+                label5.Visible = false;
+                rdCN.Visible = false;
+                rdUser.Visible = false;
             }
             else if (Program.mGroup.Equals("CHINHANH"))
             {
@@ -80,11 +83,11 @@ namespace QLVT
             {
                 return;
             }
-
+            MessageBox.Show("CHON NV CONN: " + Program.conStr);
             loginName = txtTendangnhap.Text.Trim();
             password = txtMatkhau.Text.Trim();
             userID = Program.selectedEmp;
-            if (!rdCN.Checked && !rdUser.Checked)
+            if ((!rdCN.Checked && !rdUser.Checked) || Program.mGroup.Equals("CONGTY"))
             {
                 role = "CONGTY";
             }

@@ -28,7 +28,7 @@ namespace QLVT.Report
 
             int ones, tens, hundreds;
             // duyệt số từ cuối quay lại đầu
-            int digitPosition = sNumber.Length; 
+            int digitPosition = sNumber.Length;
 
             // chuyển số sang chuỗi.
             string output = " ";
@@ -124,5 +124,5 @@ namespace QLVT.Report
             xrReportDate.Text = formattedDate;
         }
     }
-        
+
 }

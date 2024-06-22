@@ -39,22 +39,17 @@ namespace QLVT.SubForm
             comboBox1.ValueMember = "TENSERVER";
             comboBox1.SelectedIndex = Program.brand;
 
-            if (Program.createAcc == false)
+            Program.selectedEmp = "";
+            Program.empName = "";
+
+            if (Program.mGroup == "CONGTY")
             {
-                if (Program.mGroup == "CONGTY")
-                {
-                    comboBox1.Enabled = true;
-                }
-                if (Program.mGroup == "CHINHANH" || Program.mGroup == "USER")
-                {
-                    comboBox1.Enabled = false;
-                }
+                comboBox1.Enabled = true;
             }
-            else
+            if (Program.mGroup == "CHINHANH")
             {
                 comboBox1.Enabled = false;
             }
-
         }
 
         private void button1_Click(object sender, EventArgs e)
@@ -62,7 +57,7 @@ namespace QLVT.SubForm
             DataRowView drv = ((DataRowView)(bdsNhanVien.Current));
             if (drv["TRANGTHAIXOA"].ToString().Trim().Equals("1") && Program.createAcc == true)
             {
-               MessageBox.Show("Không khuyến khích tạo tài khoản cho nhân viên đã bị vô hiệu hóa\nHãy sửa lại trạng thái nhân viên trước khi tạo (nếu muốn)", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Không khuyến khích tạo tài khoản cho nhân viên đã bị vô hiệu hóa\nHãy sửa lại trạng thái nhân viên trước khi tạo (nếu muốn)", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
             string maNhanVien = drv["MANV"].ToString().Trim();
@@ -70,7 +65,8 @@ namespace QLVT.SubForm
             //Console.WriteLine(maNhanVien);
             Program.selectedEmp = maNhanVien;
             Program.empName = tenNV;
-            this.Close();
+            //this.Close();
+            Dispose();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

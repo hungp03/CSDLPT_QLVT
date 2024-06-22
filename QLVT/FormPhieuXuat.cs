@@ -116,7 +116,7 @@ namespace QLVT
         }
         private bool validateInputCTPX()
         {
-            if (position == -1)
+            if (bdsCTPX.Position == -1)
             {
                 ThongBao("Vui lòng nhập đầy đủ thông tin");
                 return false;
@@ -251,6 +251,11 @@ namespace QLVT
             if (result == 0)
             {
                 ThongBao("Số lượng vật tư trong chi tiết đơn xuất không thể lớn hơn số lượng vật tư tồn kho");
+                if (bdsCTPX.Count == 0)
+                {
+                    xoaToolStripMenuItem.Enabled = false;
+                    ghiToolStripMenuItem.Enabled = false;
+                }
                 return false;
             }
             return true;
@@ -528,6 +533,7 @@ namespace QLVT
             groupBoxPhieuXuat.Enabled = true;
             dgvCTPX.Enabled = false;
             contextMenuStripCTPX.Enabled = false;
+            hOTENComboBox.SelectedValue = Program.username;
         }
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -831,7 +837,7 @@ namespace QLVT
             btnXoa.Enabled = false;
             btnLamMoi.Enabled = false;
             btnThoat.Enabled = true;
-            btnHoanTac.Enabled = true;
+            btnHoanTac.Enabled = false;
             btnGhi.Enabled = false;
 
             phieuXuatGridControl.Enabled = false;
@@ -840,6 +846,7 @@ namespace QLVT
             thêmToolStripMenuItem.Enabled = false;
             xoaToolStripMenuItem.Enabled = false;
             huyThemVatTuToolStripMenuItem.Enabled = true;
+            ghiToolStripMenuItem.Enabled = true;
         }
         private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -871,7 +878,12 @@ namespace QLVT
                         /*Cap nhat lai do ben tren can tao cau truy van nen da dat dangThemMoi = true*/
                         isAdding = false;
                         ThongBao("Xóa chi tiết phiếu xuất thành công");
-                        btnHoanTac.Enabled = true;
+                        if (bdsCTPX.Count == 0)
+                        {
+                            ghiToolStripMenuItem.Enabled = false;
+                            xoaToolStripMenuItem.Enabled = false;
+                            huyThemVatTuToolStripMenuItem.Enabled = false;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -945,6 +957,22 @@ namespace QLVT
                     SqlTransaction transaction = connection.BeginTransaction();
                     try
                     {
+                        // Thay đổi bật/ tắt các nút chức năng
+                        btnThem.Enabled = true;
+                        btnXoa.Enabled = true;
+                        btnGhi.Enabled = true;
+                        btnHoanTac.Enabled = true;
+                        btnLamMoi.Enabled = true;
+
+
+                        dgvCTPX.Enabled = true;
+                        phieuXuatGridControl.Enabled = true;
+                        groupBoxPhieuXuat.Enabled = true;
+
+                        thêmToolStripMenuItem.Enabled = true;
+                        xoaToolStripMenuItem.Enabled = true;
+                        huyThemVatTuToolStripMenuItem.Enabled = false;
+
                         DataRowView drCTPX = (DataRowView)bdsCTPX[bdsCTPX.Position];
 
                         if (isAdding == true)
@@ -962,6 +990,11 @@ namespace QLVT
                             if (soLuong == -1)
                             {
                                 ThongBao("Có lỗi xảy ra trong quá trình thực thi");
+                                if (bdsCTPX.Count == 0)
+                                {
+                                    xoaToolStripMenuItem.Enabled = false;
+                                    ghiToolStripMenuItem.Enabled = false;
+                                }
                                 return;
                             }
                             String currMaVT = drCTPX["MAVT"].ToString().Trim();
@@ -997,24 +1030,6 @@ namespace QLVT
                         MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
-                    finally
-                    {
-                        // Thay đổi bật/ tắt các nút chức năng
-                        btnThem.Enabled = true;
-                        btnXoa.Enabled = true;
-                        btnGhi.Enabled = true;
-                        btnHoanTac.Enabled = true;
-                        btnLamMoi.Enabled = true;
-
-
-                        dgvCTPX.Enabled = true;
-                        phieuXuatGridControl.Enabled = true;
-                        groupBoxPhieuXuat.Enabled = true;
-
-                        thêmToolStripMenuItem.Enabled = true;
-                        xoaToolStripMenuItem.Enabled = true;
-                        huyThemVatTuToolStripMenuItem.Enabled = false;
-                    }
                 }
             }
         }
@@ -1038,7 +1053,12 @@ namespace QLVT
                 xoaToolStripMenuItem.Enabled = true;
                 huyThemVatTuToolStripMenuItem.Enabled = false;
                 bdsCTPX.CancelEdit();
-                if (bdsCTPX.Count != 0)
+                if (bdsCTPX.Count == 0)
+                {
+                    ghiToolStripMenuItem.Enabled = false;
+                    xoaToolStripMenuItem.Enabled = false;
+                }
+                else if (bdsCTPX.Count != 0)
                 {
                     bdsCTPX.RemoveCurrent();
                 }

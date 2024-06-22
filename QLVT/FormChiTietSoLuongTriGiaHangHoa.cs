@@ -22,46 +22,37 @@ namespace QLVT.Report
         {
             InitializeComponent();
         }
-/*        private bool validateInputReport()
+        private bool valitdateInput()
         {
-            return validateLoaiPhieu() && validateFromDate();
-        }
-        private bool validateLoaiPhieu()
-        {
-            if(cmbLoaiPhieu.SelectedItem == null)
+            if (dteTuNgay.EditValue == null)
             {
-                MessageBox.Show("Vui lòng chọn loại phiếu", "Thông báo", MessageBoxButtons.OK);
+                MessageBox.Show("Chưa chọn ngày bắt đầu", "Thông báo", MessageBoxButtons.OK);
+                return false;
+            }
+            if (dteToiNgay.EditValue == null)
+            {
+                MessageBox.Show("Chưa chọn ngày kết thúc", "Thông báo", MessageBoxButtons.OK);
+                return false;
+            }
+            if (dteTuNgay.DateTime >= dteToiNgay.DateTime)
+            {
+                MessageBox.Show("Ngày bắt đầu phải nhỏ hơn ngày kết thúc", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }
             return true;
         }
-        private bool validateFromDate()
-        {
-            string checkFromDate = dteTuNgay.DateTime.ToString();
-            if (string.IsNullOrEmpty(checkFromDate))
-            {
-                MessageBox.Show("Vui lòng chọn ngày bắt đầu", "Thông báo", MessageBoxButtons.OK);
-                return false;
-            }
-            return true;
-        }*/
+
         private void btnPreview_Click(object sender, EventArgs e)
         {
-            vaitro = Program.mGroup;
-/*            if (!validateInputReport())
+            if (!valitdateInput())
             {
-                return;
-            }*/
-            loaiPhieu = (cmbLoaiPhieu.SelectedItem.ToString() == "NHAP") ? "NHAP":"XUAT";
-            fromDate = dteTuNgay.DateTime;
-            toDate = dteToiNgay.DateTime;
-            if (fromDate > toDate)
-            {
-                MessageBox.Show("fromDate không được lớn hơn toDate! Vui lòng chọn lại",
-                "Thông báo", MessageBoxButtons.OK);
                 return;
             }
-            ReportChiTietSoLuongTriGiaHangHoa report = new ReportChiTietSoLuongTriGiaHangHoa(vaitro,loaiPhieu,fromDate,toDate);
+            vaitro = Program.mGroup;
+            loaiPhieu = (cmbLoaiPhieu.SelectedItem.ToString() == "NHAP") ? "NHAP" : "XUAT";
+            fromDate = dteTuNgay.DateTime;
+            toDate = dteToiNgay.DateTime;
+            ReportChiTietSoLuongTriGiaHangHoa report = new ReportChiTietSoLuongTriGiaHangHoa(vaitro, loaiPhieu, fromDate, toDate);
             ReportPrintTool print = new ReportPrintTool(report);
             report.txtLoaiPhieu.Text = loaiPhieu;
             report.txtTuNgay.Text = fromDate.ToString("dd-MM-yyyy");
@@ -75,12 +66,6 @@ namespace QLVT.Report
             loaiPhieu = (cmbLoaiPhieu.SelectedItem.ToString() == "NHAP") ? "NHAP" : "XUAT";
             fromDate = dteTuNgay.DateTime;
             toDate = dteToiNgay.DateTime;
-            if (fromDate > toDate)
-            {
-                MessageBox.Show("fromDate không được lớn hơn toDate! Vui lòng chọn lại",
-                "Thông báo", MessageBoxButtons.OK);
-                return;
-            }
             ReportChiTietSoLuongTriGiaHangHoa report = new ReportChiTietSoLuongTriGiaHangHoa(vaitro, loaiPhieu, fromDate, toDate);
             report.txtLoaiPhieu.Text = loaiPhieu;
             report.txtTuNgay.Text = fromDate.ToString("dd-MM-yyyy");
@@ -89,7 +74,7 @@ namespace QLVT.Report
             {
                 if (File.Exists(@"D:\ReportQLVT\ReportChiTietSoLuongTriGiaHangHoa.pdf"))
                 {
-                    DialogResult dr = MessageBox.Show("File đã tồn tại!\\nBạn có muốn ghi đè không?","Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    DialogResult dr = MessageBox.Show("File đã tồn tại!\\nBạn có muốn ghi đè không?", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (dr == DialogResult.Yes)
                     {
                         report.ExportToPdf(@"D:\ReportQLVT\ReportChiTietSoLuongTriGiaHangHoa.pdf");
@@ -114,7 +99,7 @@ namespace QLVT.Report
 
         private void FormChiTietSoLuongTriGiaHangHoa_Load(object sender, EventArgs e)
         {
-            this.cmbLoaiPhieu.SelectedIndex = 1;
+            this.cmbLoaiPhieu.SelectedIndex = 0;
             this.dteTuNgay.EditValue = "01/01/2024";
             DateTime temp = DateTime.Today.Date;
             this.dteToiNgay.EditValue = temp;

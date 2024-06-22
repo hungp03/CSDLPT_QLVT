@@ -119,7 +119,7 @@ namespace QLVT
         }
         private bool validateInputCTPN()
         {
-            if (position == -1)
+            if (bdsCTPN.Position == -1)
             {
                 ThongBao("Vui lòng nhập đầy đủ thông tin");
                 return false;
@@ -654,6 +654,7 @@ namespace QLVT
             groupBoxPhieuNhap.Enabled = true;
             dgvCTPN.Enabled = false;
             contextMenuStripCTPN.Enabled = false;
+            hOTENComboBox.SelectedValue = Program.username;
         }
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -994,6 +995,7 @@ namespace QLVT
             thêmToolStripMenuItem.Enabled = false;
             xóaToolStripMenuItem.Enabled = false;
             huyThemVatTuToolStripMenuItem.Enabled = true;
+            ghiToolStripMenuItem.Enabled = true;
         }
         private void xóaToolStripMenuItem_Click(object sender, EventArgs e)
         {
@@ -1036,6 +1038,12 @@ namespace QLVT
                         isAdding = false;
                         btnHoanTac.Enabled = true;
                         ThongBao("Xóa chi tiết phiếu nhập thành công");
+                        if (bdsCTPN.Count == 0)
+                        {
+                            ghiToolStripMenuItem.Enabled = false;
+                            xóaToolStripMenuItem.Enabled = false;
+                            huyThemVatTuToolStripMenuItem.Enabled = false;
+                        }
                     }
                     catch (Exception ex)
                     {
@@ -1128,6 +1136,21 @@ namespace QLVT
 
                         try
                         {
+                            btnThem.Enabled = true;
+                            btnXoa.Enabled = true;
+                            btnGhi.Enabled = true;
+                            btnHoanTac.Enabled = true;
+                            btnLamMoi.Enabled = true;
+
+                            dgvCTPN.Enabled = true;
+                            phieuNhapGridControl.Enabled = true;
+                            groupBoxPhieuNhap.Enabled = true;
+
+                            thêmToolStripMenuItem.Enabled = true;
+                            xóaToolStripMenuItem.Enabled = true;
+                            ghiToolStripMenuItem.Enabled = true;
+                            huyThemVatTuToolStripMenuItem.Enabled = false;
+
                             DataRowView drCTPN = (DataRowView)bdsCTPN[bdsCTPN.Position];
                             if (isAdding == true)
                             {
@@ -1143,6 +1166,11 @@ namespace QLVT
                                 if(soLuong == -1)
                                 {
                                     ThongBao("Có lỗi xảy ra trong quá trình thực thi");
+                                    if (bdsCTPN.Count == 0)
+                                    {
+                                        xóaToolStripMenuItem.Enabled = false;
+                                        ghiToolStripMenuItem.Enabled = false;
+                                    }
                                     return;
                                 }
 
@@ -1156,6 +1184,11 @@ namespace QLVT
                                     if (pnResult == 0)
                                     {
                                         ThongBao("Không thể chỉnh sửa chi tiết phiếu nhập này vì vật tư không đủ số lượng tồn");
+                                        if (bdsCTPN.Count == 0)
+                                        {
+                                            xóaToolStripMenuItem.Enabled = false;
+                                            ghiToolStripMenuItem.Enabled = false;
+                                        }
                                         return;
                                     }
                                     ExecuteSP_CapNhatSoLuongVatTu(maVT, int.Parse(drCTPN["SOLUONG"].ToString().Trim()) - soLuong);
@@ -1169,6 +1202,11 @@ namespace QLVT
                                     if (pnresult == 0)
                                     {
                                         ThongBao("Không thể chỉnh sửa chi tiết phiếu nhập này vì vật tư không đủ số lượng tồn");
+                                        if (bdsCTPN.Count == 0)
+                                        {
+                                            xóaToolStripMenuItem.Enabled = false;
+                                            ghiToolStripMenuItem.Enabled = false;
+                                        }
                                         return;
                                     }
                                     ExecuteSP_CapNhatSoLuongVatTu(maVT, soLuong * (-1));
@@ -1198,24 +1236,6 @@ namespace QLVT
                             MessageBox.Show("Thất bại. Vui lòng kiểm tra lại!\n" + ex.Message, "Lỗi",
                                 MessageBoxButtons.OK, MessageBoxIcon.Error);
                         }
-                        finally
-                        {
-
-                            // Thay đổi bật/ tắt các nút chức năng
-                            btnThem.Enabled = true;
-                            btnXoa.Enabled = true;
-                            btnGhi.Enabled = true;
-                            btnHoanTac.Enabled = true;
-                            btnLamMoi.Enabled = true;
-
-                            dgvCTPN.Enabled = true;
-                            phieuNhapGridControl.Enabled = true;
-                            groupBoxPhieuNhap.Enabled = true;
-
-                            thêmToolStripMenuItem.Enabled = true;
-                            xóaToolStripMenuItem.Enabled = true;
-                            huyThemVatTuToolStripMenuItem.Enabled = false;
-                        }
                     }
                 }
         }
@@ -1239,7 +1259,12 @@ namespace QLVT
                 xóaToolStripMenuItem.Enabled = true;
                 huyThemVatTuToolStripMenuItem.Enabled = false;
                 bdsCTPN.CancelEdit();
-                if (bdsCTPN.Count != 0)
+                if(bdsCTPN.Count == 0)
+                {
+                    ghiToolStripMenuItem.Enabled = false;
+                    xóaToolStripMenuItem.Enabled = false;
+                }
+                else if (bdsCTPN.Count != 0)
                 {
                     bdsCTPN.RemoveCurrent();
                 }

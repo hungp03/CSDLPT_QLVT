@@ -70,9 +70,10 @@ namespace QLVT.Report
             }
             try
             {
+                currentDay = DateTime.Now;
                 chiNhanh = cbChiNhanh.SelectedValue.ToString().Contains("SERVER1") ? "HCM" : "HÀ NỘI";
                 ReportTongHopNhapXuat reportExportToPDF = new ReportTongHopNhapXuat(fromDate, toDate);
-                string savePath = $@"D:\ReportQLVT\ReportTongHopNhapXuat{currentDay.ToString("dd-MM-yyyy")} chi nhánh {chiNhanh}.pdf";
+                string savePath = $@"D:\ReportQLVT\ReportTongHopNhapXuat{currentDay.ToString("dd-MM-yyyy")}_chi_nhanh_{chiNhanh}.pdf";
                 if (File.Exists($@"{savePath}"))
                 {
                     DialogResult dr = MessageBox.Show("Đã có file khác trùng tên với file của Report này", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
@@ -81,16 +82,18 @@ namespace QLVT.Report
                         reportExportToPDF.ExportToPdf(savePath);
                         MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
                     }
-                    else
-                    {
-                        reportExportToPDF.ExportToPdf(savePath);
-                        MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                    }
+                    
                 }
+                else
+                {
+                    reportExportToPDF.ExportToPdf(savePath);
+                    MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+
             }
-            catch (IOException)
+            catch (Exception E)
             {
-                MessageBox.Show("Lưu file thất bại",
+                MessageBox.Show("Lưu file thất bại" +E.Message,
                     "Xác nhận", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
                 return;
             }

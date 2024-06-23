@@ -1,5 +1,6 @@
 ﻿using DevExpress.DataProcessing.InMemoryDataProcessor;
 using DevExpress.PivotGrid.OLAP.SchemaEntities;
+using DevExpress.XtraGrid;
 using DevExpress.XtraPrinting.Native;
 using DevExpress.XtraRichEdit.API.Native;
 using System;
@@ -75,7 +76,7 @@ namespace QLVT
             cbChiNhanh.ValueMember = "TENSERVER";
             //cbChiNhanh.SelectedIndex = Program.brand;
             cbChiNhanh.SelectedIndex = Program.bindingSource.Position;
-
+            hOTENComboBox.Enabled = false;
             if (Program.mGroup == "CONGTY")
             {
                 btnThem.Enabled = false;
@@ -242,6 +243,12 @@ namespace QLVT
                 txtMaDDH.Focus();
                 return false;
             }
+            if (maDDH.Length > 8)
+            {
+                MessageBox.Show("Mã đơn dặt hàng tối đa 8 kí tự", "Thông báo", MessageBoxButtons.OK);
+                txtMaDDH.Focus();
+                return false;
+            }
             return true;
         }
         private bool validateNhaCungCap(string nhaCC)
@@ -257,6 +264,11 @@ namespace QLVT
                 MessageBox.Show("Nhà cung cấp chỉ có chữ cái và số không có kí tự đặc biệt", "Thông báo", MessageBoxButtons.OK);
 
                 txtNhaCC.Focus();
+                return false;
+            }
+            if (nhaCC.Length > 100)
+            {
+                MessageBox.Show("Nhà cung cấp chỉ có tối đa 100 kí tự", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }
             return true;
@@ -349,14 +361,6 @@ namespace QLVT
                     positionDDH = cellEventArgs.RowIndex;
                 }
             }
-            positionDDH = bdsDatHang.Position;
-            this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-            //this.datHangTableAdapter.Fill(this.dS1.DatHang);
-            this.datHangTableAdapter.FillBy(this.dS1.DatHang);
-            this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
-            this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
-            bdsDatHang.Position = positionDDH;
-
         }
 
         private void btnHoanTac_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -505,7 +509,8 @@ namespace QLVT
                     // Trường hợp thêm đơn đặt hàng
                     if (isAdding == true)
                     {   
-                        hOTENComboBox.Enabled = true;
+                        //hOTENComboBox.Enabled = true;
+                        hOTENComboBox.Enabled = false;
                         //Lấy dữ liệu mới để phục vụ xóa dữ liệu mơi nhập vào
                         DataRowView drv = (DataRowView)bdsDatHang[bdsDatHang.Position];
                         String maDDH = drv["MasoDDH"].ToString().Trim();
@@ -592,6 +597,7 @@ namespace QLVT
                     btnGhi.Enabled = true;
                     btnHoanTac.Enabled = true;
                     isAdding = false;
+                    btnLamMoi.Enabled = true;
                     //btnLamMoi.Enabled = true;
                     //if (undoStack.Count == 0)
                     //{
@@ -623,6 +629,12 @@ namespace QLVT
         private void thêmToolStripMenuItem_Click(object sender, EventArgs e)
         {
             bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+            foreach (DataGridViewRow row in dgvCTDDH.Rows)
+            {
+                row.ContextMenuStrip = null;
+                row.ReadOnly = true;
+            }
+            contextMenuStripRowDDH.Enabled = false ;
             if (isSameNhanVien == false)
             {
                 MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
@@ -750,16 +762,31 @@ namespace QLVT
         private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             positionDDH = bdsDatHang.Position;
+            
+            if (bdsCTDDH.Count == 0)
+            {
+                MessageBox.Show("Không ghi được vì chưa có thông tin gì để ghi hãy thêm mới ", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
+            //lẤY DỮ LIỆU TRÊN BẢNG NHÂN VIÊN
+            DataRowView drvMaNV = (DataRowView)bdsDatHang[bdsDatHang.Position];
+            DataRow rowMaNV = drvMaNV.Row;
+            String checkmaNV = rowMaNV["MANV"].ToString().Trim();
+            if (Program.username.ToString().Trim() != checkmaNV)
+            {
+                MessageBox.Show("Không thể sửa mã đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
             if (validateInputCTDDH() ==false)
             {
                 return;
             }
-            bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
-            if (isSameNhanVien == false)
-            {
-                MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
-                return;
-            }
+            //bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+            //if (isSameNhanVien == false)
+            //{
+            //    MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
+            //    return;
+            //}
             String MasoDDH = dgvCTDDH.Rows[positionCTDDH].Cells[0].Value.ToString().Trim();
             if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép sửa vì MasoDDH đã đc dùng cho với phiếu nhập
             {
@@ -768,7 +795,10 @@ namespace QLVT
                 this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
                 return;
             }
-
+            for(int i = 0; i < bdsCTDDH.Count; i++)
+            {
+                dgvCTDDH.Rows[i].ReadOnly = true;
+            }
             if (isAdding== true && cheDo.Equals("CTDDH"))
             {
                 
@@ -970,6 +1000,11 @@ namespace QLVT
         {
             cheDo = "";
             String MasoDDH = txtMaDDH.Text.Trim();
+            if (bdsCTDDH.Count > 0)
+            {
+                MessageBox.Show("Không xóa được đơn hàng này vì đã được dùng trong chi tiết đơn đặt hàng", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
             if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép xóa vì MasoDDH đã đc dùng cho với phiếu nhập
             {
                 MessageBox.Show("Không xóa được đơn đặt hàng này vì đơn đặt hàng đã được sử dụng cho phiếu nhập", "Thông báo", MessageBoxButtons.OK);

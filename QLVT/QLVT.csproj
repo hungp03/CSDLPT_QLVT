@@ -200,12 +200,6 @@
     <Compile Include="Report\RP_HoatdongNV.Designer.cs">
       <DependentUpon>RP_HoatdongNV.cs</DependentUpon>
     </Compile>
-    <Compile Include="Report\XtraReport1.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Report\XtraReport1.Designer.cs">
-      <DependentUpon>XtraReport1.cs</DependentUpon>
-    </Compile>
     <Compile Include="SubForm\FormChonNV.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -294,9 +288,6 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Report\RP_HoatdongNV.resx">
       <DependentUpon>RP_HoatdongNV.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Report\XtraReport1.resx">
-      <DependentUpon>XtraReport1.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="SubForm\FormChonNV.resx">
       <DependentUpon>FormChonNV.cs</DependentUpon>

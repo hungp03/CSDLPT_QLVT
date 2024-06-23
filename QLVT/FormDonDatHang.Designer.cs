@@ -436,6 +436,7 @@
             this.tableAdapterManager.CTPNTableAdapter = null;
             this.tableAdapterManager.CTPXTableAdapter = null;
             this.tableAdapterManager.DatHangTableAdapter = this.datHangTableAdapter;
+            this.tableAdapterManager.DSNVTableAdapter = null;
             this.tableAdapterManager.KhoTableAdapter = null;
             this.tableAdapterManager.NhanVienTableAdapter = null;
             this.tableAdapterManager.PhieuNhapTableAdapter = null;
@@ -501,8 +502,8 @@
             // 
             // colMANV
             // 
-            this.colMANV.Caption = "Mã nhân viên";
-            this.colMANV.FieldName = "MANV";
+            this.colMANV.Caption = "Họ và tên nhân viên";
+            this.colMANV.FieldName = "HOTEN";
             this.colMANV.MinWidth = 25;
             this.colMANV.Name = "colMANV";
             this.colMANV.Visible = true;
@@ -511,8 +512,8 @@
             // 
             // colMAKHO
             // 
-            this.colMAKHO.Caption = "Mã kho";
-            this.colMAKHO.FieldName = "MAKHO";
+            this.colMAKHO.Caption = "Tên kho";
+            this.colMAKHO.FieldName = "TENKHO";
             this.colMAKHO.MinWidth = 25;
             this.colMAKHO.Name = "colMAKHO";
             this.colMAKHO.Visible = true;
@@ -795,7 +796,7 @@
             this.Controls.Add(this.barDockControlBottom);
             this.Controls.Add(this.barDockControl4);
             this.Name = "FormDonDatHang";
-            this.Text = "FormDonDatHang";
+            this.Text = "Đơn đặt hàng";
             this.Load += new System.EventHandler(this.FormDonDatHang_Load);
             ((System.ComponentModel.ISupportInitialize)(this.barManager1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.panelControl1)).EndInit();

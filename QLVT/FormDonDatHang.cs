@@ -62,7 +62,8 @@ namespace QLVT
             this.dSKHOTableAdapter.Fill(this.dS1.DSKHO);
             // TODO: This line of code loads data into the 'dS1.DatHang' table. You can move, or remove it, as needed.
             this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-            this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            this.datHangTableAdapter.FillBy(this.dS1.DatHang);
 
             // TODO: This line of code loads data into the 'dS1.CTDDH' table. You can move, or remove it, as needed.
             this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
@@ -72,7 +73,8 @@ namespace QLVT
             cbChiNhanh.DataSource = Program.bindingSource;
             cbChiNhanh.DisplayMember = "TENCN";
             cbChiNhanh.ValueMember = "TENSERVER";
-            cbChiNhanh.SelectedIndex = Program.brand;
+            //cbChiNhanh.SelectedIndex = Program.brand;
+            cbChiNhanh.SelectedIndex = Program.bindingSource.Position;
 
             if (Program.mGroup == "CONGTY")
             {
@@ -83,6 +85,7 @@ namespace QLVT
                 groupBoxDonDatHang.Enabled = false;
                 contextMenuStripDDH.Enabled = false;
                 contextMenuStripRowDDH.Enabled = false;
+                //Ngăn không cho nhấn xóa data trong từng dòng bằng cách tắt contextMenuTrong dgv
                 foreach (DataGridViewRow row in dgvCTDDH.Rows)
                 {
                     row.ContextMenuStrip = null;
@@ -153,7 +156,8 @@ namespace QLVT
             try
             {
                 this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-                this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                this.datHangTableAdapter.FillBy(this.dS1.DatHang);
                 this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
                 this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
                 bdsDatHang.Position = positionDDH;
@@ -195,6 +199,7 @@ namespace QLVT
 
         private void btnThem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            //String nhanVien = hOTENComboBox.SelectedItem.ToString().Trim();
             cheDo = "";
             isAdding = true;
             bdsDatHang.AddNew();
@@ -212,6 +217,14 @@ namespace QLVT
             datHangGridControl.Enabled = false;
             dgvCTDDH.Enabled = false;
             contextMenuStripDDH.Enabled = false;
+
+            //Lấy mã nhân viên tự động và ngăn cho nhân viên thêm vào của nhân viên khác
+            //hOTENComboBox.DataSource = datHangGridControl;
+            int dsnvCBBIndex = dSNVBindingSource.Find("MANV", Program.username);
+            hOTENComboBox.SelectedIndex = dsnvCBBIndex;
+            hOTENComboBox.Enabled = false ;
+            //txtMANV.Text = Text;
+            //txtMANV.Enabled = false;
 
 
         }
@@ -336,11 +349,19 @@ namespace QLVT
                     positionDDH = cellEventArgs.RowIndex;
                 }
             }
+            positionDDH = bdsDatHang.Position;
+            this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
+            //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            this.datHangTableAdapter.FillBy(this.dS1.DatHang);
+            this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
+            this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+            bdsDatHang.Position = positionDDH;
+
         }
 
         private void btnHoanTac_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
-            positionDDH = bdsCTDDH.Position;
+            positionDDH = bdsDatHang.Position;
             dgvCTDDH.Enabled = true;
             thêmToolStripMenuItem.Enabled = true;
             xóaToolStripMenuItem.Enabled = true;
@@ -367,8 +388,10 @@ namespace QLVT
                 this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
                 this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
                 this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-                this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                this.datHangTableAdapter.FillBy(this.dS1.DatHang);
                 btnHoanTac.Enabled = undoStack.Count>0;
+                bdsDatHang.Position = positionDDH;
                 return;
 
             }
@@ -388,8 +411,10 @@ namespace QLVT
                 if (undoStack.Count == 0)
                 {
                     btnHoanTac.Enabled = false;
+                    bdsDatHang.Position = positionDDH;
                     return;
                 }
+                bdsDatHang.Position = positionDDH;
                 return;
             }
             object undoQueryExe = undoStack.Pop();
@@ -413,20 +438,20 @@ namespace QLVT
                 return;
             }
             this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-            this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            this.datHangTableAdapter.FillBy(this.dS1.DatHang);
             this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
             this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
             // Nếu Stack undo hết thì tự động vô hiệu hóa
             if (undoStack.Count == 0)
             {
                 btnHoanTac.Enabled = false;
+                if (positionDDH >= 0)
+                {
+                    bdsDatHang.Position = positionDDH;
+                }
                 return;
             }
-            if (positionDDH >= 0)
-            {
-                bdsDatHang.Position = positionDDH;
-            }
-            //Application.DoEvents();
         }
 
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
@@ -479,7 +504,8 @@ namespace QLVT
                     string undoQuery = "";
                     // Trường hợp thêm đơn đặt hàng
                     if (isAdding == true)
-                    {
+                    {   
+                        hOTENComboBox.Enabled = true;
                         //Lấy dữ liệu mới để phục vụ xóa dữ liệu mơi nhập vào
                         DataRowView drv = (DataRowView)bdsDatHang[bdsDatHang.Position];
                         String maDDH = drv["MasoDDH"].ToString().Trim();
@@ -517,6 +543,12 @@ namespace QLVT
                         //    MessageBox.Show("Không thể sửa mã đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
                         //    return;
                         //}
+                        bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+                        if(isSameNhanVien == false)
+                        {
+                            MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
+                            return;
+                        }
 
                         DateTime ngayLap;
                         if (DateTime.TryParse(row["NGAY", DataRowVersion.Original].ToString(), out ngayLap))
@@ -543,7 +575,8 @@ namespace QLVT
                     this.bdsDatHang.EndEdit();
                     this.datHangTableAdapter.Update(this.dS1.DatHang);
                     this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-                    this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                    //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                    this.datHangTableAdapter.FillBy(this.dS1.DatHang);
                 }
                 catch (Exception ex)
                 {
@@ -589,6 +622,12 @@ namespace QLVT
 
         private void thêmToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+            if (isSameNhanVien == false)
+            {
+                MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
             //dgvCTDDH.ReadOnly = false;
             isAdding = true;
             cheDo = "CTDDH";
@@ -599,9 +638,9 @@ namespace QLVT
             }
 
             bdsCTDDH.AddNew();
-            Console.WriteLine(cheDo);
+            //Console.WriteLine(cheDo);
             positionCTDDH = bdsCTDDH.Position;
-            Console.WriteLine(positionCTDDH);
+            //Console.WriteLine(positionCTDDH);
             String MasoDDH = txtMaDDH.Text.Trim();
             if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép thêm vì MasoDDH đã đc dùng cho với phiếu nhập
             {
@@ -639,59 +678,73 @@ namespace QLVT
         {
             positionDDH = bdsDatHang.Position;
             String MasoDDH = txtMaDDH.Text.Trim();
+            //MessageBox.Show("Bạn có xóa vật tư này không?","Xác nhận", MessageBoxButtons.YesNoCancel){
+
+            //}
+            bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+            if (isSameNhanVien == false)
+            {
+                MessageBox.Show("Không thể sửa chi tiết đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
             if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép xóa vì MasoDDH đã đc dùng cho với phiếu nhập
             {
                 MessageBox.Show("Không xóa được đơn đặt hàng này vì đơn đặt hàng đã được sử dụng cho phiếu nhập", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
-
-            //DataRowView drvMaNV = (DataRowView)bdsDatHang[bdsDatHang.Position];
-            //DataRow rowMaNV = drvMaNV.Row;
-            //String checkmaNV = rowMaNV["MANV"].ToString().Trim();
-            //if (txtMANV.Text.Trim() != checkmaNV)
-            //{
-            //    MessageBox.Show("Không thể sửa chi tiết đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
-            //    return;
-            //}
-
-            List<String> undoQueryList = new List<String>();
-            while (bdsCTDDH.Count > 0)
+            
+            
+            DialogResult dr = MessageBox.Show("Bạn có muốn xóa hết vật tư", "Xác nhận", MessageBoxButtons.YesNo);
+            if(dr == DialogResult.Yes)
             {
-                // Extract data from the current row
-                DataRowView currentRow = (DataRowView)bdsCTDDH.Current;
-                string maDDH = currentRow["MasoDDH"].ToString();
-                string maVT = currentRow["MAVT"].ToString();
-                int soLuongCTDDH;
-                int.TryParse(currentRow["SOLUONG"].ToString(),out soLuongCTDDH);
-                int donGiaCTDDH;
-                int.TryParse(currentRow["DONGIA"].ToString(),out donGiaCTDDH);
+                List<String> undoQueryList = new List<String>();
+                while (bdsCTDDH.Count > 0)
+                {
+                    // Extract data from the current row
+                    DataRowView currentRow = (DataRowView)bdsCTDDH.Current;
+                    string maDDH = currentRow["MasoDDH"].ToString();
+                    string maVT = currentRow["MAVT"].ToString();
+                    int soLuongCTDDH;
+                    int.TryParse(currentRow["SOLUONG"].ToString(), out soLuongCTDDH);
+                    int donGiaCTDDH;
+                    int.TryParse(currentRow["DONGIA"].ToString(), out donGiaCTDDH);
 
 
-                String undoQuery = $"INSERT INTO [dbo].[CTDDH]\r\n           " +
-                $"([MasoDDH]\r\n           ," +
-                $"[MAVT]\r\n           ," +
-                $"[SOLUONG]\r\n           ," +
-                $"[DONGIA]\r\n           )" +
-                $"VALUES\r\n           (" +
-                $"N'{maDDH}'," +
-                $"N'{maVT}'," +
-                $"{soLuongCTDDH}," +
-                $"{donGiaCTDDH}" +
-                ")";
-                undoQueryList.Add(undoQuery);
+                    String undoQuery = $"INSERT INTO [dbo].[CTDDH]\r\n           " +
+                    $"([MasoDDH]\r\n           ," +
+                    $"[MAVT]\r\n           ," +
+                    $"[SOLUONG]\r\n           ," +
+                    $"[DONGIA]\r\n           )" +
+                    $"VALUES\r\n           (" +
+                    $"N'{maDDH}'," +
+                    $"N'{maVT}'," +
+                    $"{soLuongCTDDH}," +
+                    $"{donGiaCTDDH}" +
+                    ")";
+                    undoQueryList.Add(undoQuery);
 
-                // Remove the current row from the BindingSource
-                bdsCTDDH.RemoveCurrent();
+                    // Remove the current row from the BindingSource
+                    bdsCTDDH.RemoveCurrent();
+                }
+                this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
+                this.datHangTableAdapter.Update(this.dS1.DatHang);
+                //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                this.datHangTableAdapter.FillBy(this.dS1.DatHang);
+                this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
+                this.cTDDHTableAdapter.Update(this.dS1.CTDDH);
+                this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+                undoStack.Push(undoQueryList);
+                btnHoanTac.Enabled = undoStack.Count > 0;
+                bdsDatHang.Position = positionDDH;
+                MessageBox.Show("Vật tư đã được xóa hết", "Thông báo", MessageBoxButtons.OK);
             }
             this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
             this.datHangTableAdapter.Update(this.dS1.DatHang);
-            this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            this.datHangTableAdapter.FillBy(this.dS1.DatHang);
             this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
             this.cTDDHTableAdapter.Update(this.dS1.CTDDH);
             this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
-            undoStack.Push(undoQueryList);
-            btnHoanTac.Enabled = undoStack.Count > 0;
-            bdsDatHang.Position = positionDDH;
         }
 
         private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
@@ -699,6 +752,12 @@ namespace QLVT
             positionDDH = bdsDatHang.Position;
             if (validateInputCTDDH() ==false)
             {
+                return;
+            }
+            bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+            if (isSameNhanVien == false)
+            {
+                MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
             String MasoDDH = dgvCTDDH.Rows[positionCTDDH].Cells[0].Value.ToString().Trim();
@@ -799,6 +858,7 @@ namespace QLVT
             xóaToolStripMenuItem.Enabled = true;
 
             contextMenuStripRowDDH.Enabled = true;
+            isAdding = false;
             //xóaVậtTưToolStripMenuItem.Enabled= true;
             btnHoanTac.Enabled = undoStack.Count > 0;
             bdsDatHang.Position = positionDDH;
@@ -915,6 +975,12 @@ namespace QLVT
                 MessageBox.Show("Không xóa được đơn đặt hàng này vì đơn đặt hàng đã được sử dụng cho phiếu nhập", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
+            bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+            if (isSameNhanVien == false)
+            {
+                MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
             DataRowView drv = ((DataRowView)bdsDatHang[bdsDatHang.Position]);
 
             String MaNV = drv["MANV"].ToString().Trim();
@@ -954,13 +1020,14 @@ namespace QLVT
                     bdsDatHang.RemoveCurrent();
                     this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.datHangTableAdapter.Update(this.dS1.DatHang);
-                    this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                    //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                    this.datHangTableAdapter.FillBy(this.dS1.DatHang);
                     undoStack.Push(undoQuery);
                     MessageBox.Show("Xóa đơn đặt hàng thành công", "Thông báo", MessageBoxButtons.OK);
                 }
                 catch (Exception ex)
                 {
-                    MessageBox.Show("Lỗi xóa phiếu xuất", "Thông báo" + ex.Message, MessageBoxButtons.OK);
+                    MessageBox.Show("Lỗi xóa đơn đặt hàng", "Thông báo" + ex.Message, MessageBoxButtons.OK);
                 }
 
             }
@@ -980,6 +1047,13 @@ namespace QLVT
 
         private void xóaVậtTưToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            positionDDH = bdsDatHang.Position;
+            bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+            if (isSameNhanVien == false)
+            {
+                MessageBox.Show("Không thể sửa chi tiết đơn đặt hàng của người khác", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
             String MaDDH = dgvCTDDH.Rows[positionCTDDH].Cells[0].Value.ToString().Trim();
             String MaVT = dgvCTDDH.Rows[positionCTDDH].Cells[1].Value.ToString().Trim();
             int soLuongCTDDH;
@@ -1006,13 +1080,15 @@ namespace QLVT
             bdsCTDDH.RemoveCurrent();
             this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
             this.datHangTableAdapter.Update(this.dS1.DatHang);
-            this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            this.datHangTableAdapter.FillBy(this.dS1.DatHang);
             this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
             this.cTDDHTableAdapter.Update(this.dS1.CTDDH);
             this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
             undoStack.Push(undoQuery);
             btnHoanTac.Enabled = undoStack.Count>0;
-            MessageBox.Show("Xóa hết phiếu xuất thành công", "Thông báo", MessageBoxButtons.OK);
+            MessageBox.Show("Xóa đơn đặt hàng thành công", "Thông báo", MessageBoxButtons.OK);
+            positionDDH = bdsDatHang.Position;
         }
 
         private void cbChiNhanh_SelectedIndexChanged(object sender, EventArgs e)
@@ -1041,7 +1117,8 @@ namespace QLVT
                 MessageBox.Show("Lỗi kết nối tới chi nhánh", "Thông báo", MessageBoxButtons.OK);
             }
             this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-            this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+            this.datHangTableAdapter.FillBy(this.dS1.DatHang);
             this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
             this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
             bdsDatHang.Position = positionDDH;

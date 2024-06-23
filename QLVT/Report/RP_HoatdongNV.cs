@@ -16,7 +16,7 @@ namespace QLVT.Report
         private void SummaryCalculatedAmount(object sender, DevExpress.XtraReports.UI.TextFormatEventArgs e)
         {
             decimal totalValue = Convert.ToDecimal(e.Value);
-            e.Text = $"{totalValue:N0} đồng ({NumberToText(totalValue)} đồng)";
+            e.Text = $"{totalValue:N0}.đ\n ({NumberToText(totalValue)} đồng)";
         }
 
         private string NumberToText(decimal input)

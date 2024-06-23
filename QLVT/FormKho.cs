@@ -345,8 +345,8 @@ namespace QLVT
         private bool validateInput()
         {
             if (!ValidateInput1(txtMakho, "Mã kho hàng", @"^[a-zA-Z0-9]+$", 4)) return false;
-            if (!ValidateInput1(txtTenkho, "Tên kho hàng", @"^[\p{L}\p{N}, ]+$", 30)) return false;
-            if (!ValidateInput1(txtDiachi, "Địa chỉ kho hàng", @"^[\p{L}\p{N}, ]+$", 100)) return false;
+            if (!ValidateInput1(txtTenkho, "Tên kho hàng", @"^[\p{L}\p{N}, .!?-]+$", 30)) return false;
+            if (!ValidateInput1(txtDiachi, "Địa chỉ kho hàng", @"^[\p{L}\p{N}, .!?-]+$", 100)) return false;
 
             return true;
         }

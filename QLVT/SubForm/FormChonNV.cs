@@ -65,8 +65,7 @@ namespace QLVT.SubForm
             //Console.WriteLine(maNhanVien);
             Program.selectedEmp = maNhanVien;
             Program.empName = tenNV;
-            //this.Close();
-            Dispose();
+            this.Close();
         }
 
         private void comboBox1_SelectedIndexChanged(object sender, EventArgs e)

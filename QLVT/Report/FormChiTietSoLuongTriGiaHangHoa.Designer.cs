@@ -200,6 +200,7 @@
             this.Controls.Add(this.panel1);
             this.Name = "FormChiTietSoLuongTriGiaHangHoa";
             this.Text = "Chi tiết hàng hóa";
+            this.Load += new System.EventHandler(this.FormChiTietSoLuongTriGiaHangHoa_Load);
             this.panel1.ResumeLayout(false);
             this.panel1.PerformLayout();
             this.panel3.ResumeLayout(false);

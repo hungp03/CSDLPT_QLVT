@@ -94,6 +94,7 @@
             this.btnPublish.TabIndex = 5;
             this.btnPublish.Text = "XUẤT BẢN";
             this.btnPublish.UseVisualStyleBackColor = false;
+            this.btnPublish.Click += new System.EventHandler(this.btnPublish_Click);
             // 
             // FormDonHangKhongPhieuNhap
             // 

@@ -576,6 +576,7 @@
             this.dataGridViewTextBoxColumn2,
             this.dataGridViewTextBoxColumn3,
             this.dataGridViewTextBoxColumn4});
+            this.dgvCTPX.ContextMenuStrip = this.contextMenuStripCTPX;
             this.dgvCTPX.DataSource = this.bdsCTPX;
             this.dgvCTPX.Dock = System.Windows.Forms.DockStyle.Fill;
             this.dgvCTPX.Location = new System.Drawing.Point(979, 338);
@@ -688,7 +689,6 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1924, 1041);
-            this.ContextMenuStrip = this.contextMenuStripCTPX;
             this.Controls.Add(this.dgvCTPX);
             this.Controls.Add(this.groupBoxPhieuXuat);
             this.Controls.Add(this.phieuXuatGridControl);

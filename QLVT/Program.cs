@@ -23,8 +23,8 @@ namespace QLVT
 
         //Chuỗi kết nối về server
         public static string conStr = "";
-        //public static string conPublisher = "Data Source=HUNG-PC;Initial Catalog=QLVT;User ID=HTKN;Password=123456;TrustServerCertificate=True";
-        public static string conPublisher = "Data Source=LAPTOP-IG8QK02F;Initial Catalog=QLVT;Integrated Security=True;User ID=HTKN;Password=123456";
+        public static string conPublisher = "Data Source=HUNG-PC;Initial Catalog=QLVT;User ID=HTKN;Password=123456;TrustServerCertificate=True";
+        //public static string conPublisher = "Data Source=LAPTOP-IG8QK02F;Initial Catalog=QLVT;Integrated Security=True;User ID=HTKN;Password=123456";
 
 
 

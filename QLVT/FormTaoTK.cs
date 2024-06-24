@@ -83,7 +83,6 @@ namespace QLVT
             {
                 return;
             }
-            MessageBox.Show("CHON NV CONN: " + Program.conStr);
             loginName = txtTendangnhap.Text.Trim();
             password = txtMatkhau.Text.Trim();
             userID = Program.selectedEmp;
@@ -107,6 +106,7 @@ namespace QLVT
                     return;
                 }
                 MessageBox.Show("Tạo TK thành công\nNV: " + userID + " - ROLE: " + role +"\nTK: " + loginName + " - PASS: " + password , "Thông báo", MessageBoxButtons.OK);
+                Program.myReader.Close();
             }
             catch (SqlException ex)
             {

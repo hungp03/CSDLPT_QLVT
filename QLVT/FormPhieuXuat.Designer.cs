@@ -584,6 +584,7 @@
             this.dgvCTPX.RowTemplate.Height = 24;
             this.dgvCTPX.Size = new System.Drawing.Size(945, 703);
             this.dgvCTPX.TabIndex = 29;
+            this.dgvCTPX.CellContentClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.dgvCTPX_CellContentClick);
             // 
             // dataGridViewTextBoxColumn1
             // 

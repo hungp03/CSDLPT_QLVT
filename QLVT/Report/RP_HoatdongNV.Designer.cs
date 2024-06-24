@@ -95,6 +95,7 @@ namespace QLVT.Report
             this.xrLabel5 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel1 = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel7 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.table1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.table3)).BeginInit();
@@ -132,11 +133,12 @@ namespace QLVT.Report
             // ReportHeader
             // 
             this.ReportHeader.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel7,
             this.xrDate,
             this.xrReportDate,
             this.xrName,
             this.label1});
-            this.ReportHeader.HeightF = 170.8333F;
+            this.ReportHeader.HeightF = 208.3333F;
             this.ReportHeader.Name = "ReportHeader";
             // 
             // xrDate
@@ -146,7 +148,9 @@ namespace QLVT.Report
             this.xrDate.Name = "xrDate";
             this.xrDate.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrDate.SizeF = new System.Drawing.SizeF(409.1667F, 23F);
+            this.xrDate.StylePriority.UseTextAlignment = false;
             this.xrDate.Text = "xrDate";
+            this.xrDate.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
             // 
             // xrReportDate
             // 
@@ -155,7 +159,9 @@ namespace QLVT.Report
             this.xrReportDate.Name = "xrReportDate";
             this.xrReportDate.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrReportDate.SizeF = new System.Drawing.SizeF(434.9773F, 22.99999F);
+            this.xrReportDate.StylePriority.UseTextAlignment = false;
             this.xrReportDate.Text = "xrReportDate";
+            this.xrReportDate.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
             // 
             // xrName
             // 
@@ -164,7 +170,9 @@ namespace QLVT.Report
             this.xrName.Name = "xrName";
             this.xrName.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
             this.xrName.SizeF = new System.Drawing.SizeF(434.9774F, 23.00001F);
+            this.xrName.StylePriority.UseTextAlignment = false;
             this.xrName.Text = "xrName";
+            this.xrName.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
             // 
             // label1
             // 
@@ -666,6 +674,17 @@ namespace QLVT.Report
             this.xrLabel2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel2.TextFormatString = "{0:n0}.đ";
             // 
+            // xrLabel7
+            // 
+            this.xrLabel7.LocationFloat = new DevExpress.Utils.PointFloat(126.2202F, 175.3333F);
+            this.xrLabel7.Multiline = true;
+            this.xrLabel7.Name = "xrLabel7";
+            this.xrLabel7.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 96F);
+            this.xrLabel7.SizeF = new System.Drawing.SizeF(434.9773F, 23F);
+            this.xrLabel7.StylePriority.UseTextAlignment = false;
+            this.xrLabel7.Text = "xrLabel7";
+            this.xrLabel7.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            // 
             // RP_HoatdongNV
             // 
             this.Bands.AddRange(new DevExpress.XtraReports.UI.Band[] {
@@ -757,5 +776,6 @@ namespace QLVT.Report
         private DevExpress.XtraReports.UI.XRLabel xrLabel3;
         private DevExpress.XtraReports.UI.XRLabel xrLabel5;
         private DevExpress.XtraReports.UI.XRLabel xrLabel6;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel7;
     }
 }

@@ -120,8 +120,9 @@ namespace QLVT.Report
             this.sqlDataSource1.Fill();
             xrDate.Text = "Từ ngày " + fromDate.ToString("dd/MM/yyyy") + "đến ngày " + toDate.ToString("dd/MM/yyyy");
             DateTime currentDay = DateTime.Now;
-            string formattedDate = "Ngày tạo báo cáo: " + currentDay.ToString("dd/MM/yyyy");
+            string formattedDate = "Ngày tạo báo cáo: " + currentDay.ToString("HH:mm dd/MM/yyyy");
             xrReportDate.Text = formattedDate;
+            xrLabel7.Text = "Người lập: " + Program.mName;
         }
     }
 

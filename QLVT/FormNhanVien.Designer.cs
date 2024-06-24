@@ -348,6 +348,7 @@
             this.tableAdapterManager.CTPNTableAdapter = null;
             this.tableAdapterManager.CTPXTableAdapter = null;
             this.tableAdapterManager.DatHangTableAdapter = null;
+            this.tableAdapterManager.DSNVTableAdapter = null;
             this.tableAdapterManager.KhoTableAdapter = null;
             this.tableAdapterManager.NhanVienTableAdapter = this.nhanVienTableAdapter;
             this.tableAdapterManager.PhieuNhapTableAdapter = null;
@@ -403,7 +404,6 @@
             this.nhanVienGridControl.TabIndex = 10;
             this.nhanVienGridControl.ViewCollection.AddRange(new DevExpress.XtraGrid.Views.Base.BaseView[] {
             this.gridView1});
-            this.nhanVienGridControl.Click += new System.EventHandler(this.nhanVienGridControl_Click);
             // 
             // gridView1
             // 

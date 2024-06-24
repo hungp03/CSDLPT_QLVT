@@ -297,7 +297,9 @@ namespace QLVT
                 return;
             }
         }
-
+        private void nhanVienGridControl_Click(object sender, EventArgs e)
+        {
+        }
         private void btnThem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             // Lấy vị trí của con trỏ

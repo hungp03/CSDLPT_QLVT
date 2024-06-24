@@ -147,7 +147,14 @@ namespace QLVT
                 txtMAPN.Focus();
                 return false;
             }
-            return true;
+            if (maPN.Length > 8)
+            {
+                MessageBox.Show("Mã đơn dặt hàng tối đa 8 kí tự", "Thông báo", MessageBoxButtons.OK);
+                txtMAPN.Focus();
+                return false;
+            }
+
+                return true;
         }
         private bool validateMaNhanVien(string maNV)
         {
@@ -165,6 +172,11 @@ namespace QLVT
             {
                 ThongBao("Vui lòng chọn kho cho phiếu nhập");
                 tENKHOComboBox.Focus();
+                return false;
+            }
+            if (maKho.Length > 100)
+            {
+                MessageBox.Show("Nhà cung cấp chỉ có tối đa 100 kí tự", "Thông báo", MessageBoxButtons.OK);
                 return false;
             }
             return true;

@@ -568,7 +568,9 @@ namespace QLVT
         {
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
             String maPX = txtMAPX.Text.Trim();
-            DataRowView dr = ((DataRowView)bdsPhieuXuat[bdsPhieuXuat.Position]);
+            DataRowView drv = ((DataRowView)bdsPhieuXuat[bdsPhieuXuat.Position-1]);
+            Console.WriteLine(bdsPhieuXuat.Position);
+            DataRow dr = drv.Row;
             DateTime ngayLap = new DateTime();
             if (dr["NGAY"] != DBNull.Value)
             {
@@ -590,29 +592,31 @@ namespace QLVT
             String maNV = dr["MANV"].ToString();
             String maKho = dr["MAKHO"].ToString();
             String hotenKH = dr["HOTENKH"].ToString();
+            Console.WriteLine($"{maNV} {maKho} {maKho}");
             //Kiểm tra xem nhân viên trong phiếu nhập có phải là người dùng không
-            if (isAdding)
-            {
-                if (maNV != Program.username)
-                {
-                    ThongBao("Không thể tạo phiếu xuất cho người khác");
-                    return;
-                }
-            }
-            else
-            {
-                string checkMaNV = traCuuMANVPhieuXuat();
-                if (checkMaNV != Program.username)
-                {
-                    ThongBao("Không thể chỉnh sửa phiếu xuất do người khác tạo ra");
-                    return;
-                }
-                else if (checkMaNV == Program.username && maNV != Program.username)
-                {
-                    ThongBao("Không thể tạo phiếu nhập cho người khác");
-                    return;
-                }
-            }
+            //if (isAdding)
+            //{
+            //    if (maNV != Program.username.Trim())
+            //    {
+            //        Console.WriteLine($"{maNV} {Program.username.Trim()} {maNV != Program.username.Trim()}");
+            //        ThongBao("Không thể tạo phiếu xuất cho người khác");
+            //        return;
+            //    }
+            //}
+            //else
+            //{
+            //    string checkMaNV = traCuuMANVPhieuXuat();
+            //    if (checkMaNV != Program.username)
+            //    {
+            //        ThongBao("Không thể chỉnh sửa phiếu xuất do người khác tạo ra");
+            //        return;
+            //    }
+            //    else if (checkMaNV == Program.username && maNV != Program.username)
+            //    {
+            //        ThongBao("Không thể tạo phiếu nhập cho người khác");
+            //        return;
+            //    }
+            //}
             
             
             int pnResult = ExecuteSP_TracuuPhieuXuat(maPX);

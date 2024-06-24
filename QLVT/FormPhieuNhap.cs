@@ -636,6 +636,14 @@ namespace QLVT
                 ghiToolStripMenuItem.Enabled = true;
                 xóaToolStripMenuItem.Enabled = true;
             }
+            if (undoCTPN.Count == 0)
+            {
+                hoanTacVatTuToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                hoanTacVatTuToolStripMenuItem.Enabled = true;
+            }
         }
         private void btnThem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -670,6 +678,11 @@ namespace QLVT
         }
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            if (bdsPhieuNhap.Count == 0 && isAdding == true)
+            {
+                ThongBao("Không có phiếu nhập để ghi");
+                return;
+            }
             int vitriPN = bdsPhieuNhap.Position;
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
             String maPN = txtMAPN.Text.Trim();
@@ -857,6 +870,11 @@ namespace QLVT
         }
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            if (bdsPhieuNhap.Count == 0)
+            {
+                ThongBao("Không có phiếu nhập để xóa");
+                return;
+            }
             DataRowView dr = ((DataRowView)bdsPhieuNhap[bdsPhieuNhap.Position]);
             DateTime ngayLap = new DateTime();
             if (dr["NGAY"] != DBNull.Value)
@@ -1304,9 +1322,10 @@ namespace QLVT
         }
         private void hoanTacVatTuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (undoCTPN.Count == 0)
+            if (undoCTPN.Count == 0 && isAdding==true)
             {
                 ThongBao("Không còn thao tác để hoàn tác");
+                hoanTacVatTuToolStripMenuItem.Enabled = false;
                 return;
             }
             btnXoa.Enabled = true;

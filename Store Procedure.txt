@@ -188,11 +188,9 @@ BEGIN
 		RETURN
 	END
 	EXEC sp_addrolemember @ROLE, @USERNAME
-	IF @ROLE = 'CONGTY'
+	IF @ROLE = 'CONGTY' OR @ROLE = 'CHINHANH'
 	BEGIN
 		EXEC sp_addsrvrolemember @LOGINNAME, 'SecurityAdmin'
-	        EXEC sp_addsrvrolemember @LGNAME, 'DBCREATOR'
-		EXEC sp_addsrvrolemember @LGNAME, 'ProcessAdmin'
 	END
 END
 --*****Kiểm tra mã phiếu nhập xuất đã tồn tại chưa*****

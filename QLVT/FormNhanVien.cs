@@ -553,6 +553,11 @@ namespace QLVT
 
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
             string maNv = txtManv.Text.Trim();
+            if (maNv == Program.username)
+            {
+                ThongBao("Không thể sửa thông tin chính mình");
+                return;
+            }
             DataRowView drv = ((DataRowView)bdsNhanVien[bdsNhanVien.Position]);
             string cmnd = drv["CMND"].ToString();
             string ho = drv["HO"].ToString();
@@ -578,7 +583,7 @@ namespace QLVT
             int luong = int.Parse(luongcleanedString);
             //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
-
+            int reverseTrangThai = trangThai == 1 ? 0 : 1;
             //Sử dụng kết quả bước trên và vị trí của txtManv => các trường hợp xảy ra
             /*TH1: result = 1 && pointerPosition != nvPosition->Thêm mới nhưng MANV đã tồn tại
             TH2: result = 1 && pointerPosition == nvPosition->Sửa nhân viên đang tồn tại
@@ -601,7 +606,7 @@ namespace QLVT
                 return;
             }
             // TH2,3,4
-
+            
             // Kiểm tra CMND
             int cmndResult = ExecuteSP_TracuuCMND(txtCMND.Text.Trim(), maNv);
             //Console.WriteLine(cmndResult);
@@ -667,7 +672,7 @@ namespace QLVT
                         "DIACHI = N'" + diaChi + "'," +
                         "NGAYSINH = CAST('" + ngaySinh.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
                         "LUONG = '" + luong + "'," +
-                        "TrangThaiXoa = " + trangThai + " " +
+                        "TrangThaiXoa = " + reverseTrangThai + " " +
                         "WHERE MANV = '" + maNv + "'";
                     }
                     // Console.WriteLine(undoQuery);
@@ -888,12 +893,5 @@ namespace QLVT
             this.nhanVienTableAdapter.Fill(this.dS1.NhanVien);
         }
 
-
-
-
-        private void nhanVienGridControl_Click(object sender, EventArgs e)
-        {
-
-        }
     }
 }   

@@ -340,6 +340,10 @@ namespace QLVT
             {
                 MessageBox.Show("Số lượng trong chi tiết đơn đặt hàng phải là 1 số","Thông báo", MessageBoxButtons.OK);
             }
+            if (soLuong<0)
+            {
+                MessageBox.Show("Số lượng trong chi tiết đơn đặt hàng phải >0", "Thông báo", MessageBoxButtons.OK);
+            }    
             return result;
         }
         private bool validateDonGiaCTDDH(String  donGiaString)
@@ -349,6 +353,10 @@ namespace QLVT
             if (result == false) 
             {
                 MessageBox.Show("Đơn giá trong chi tiết đơn hàng không hợp lệ", "Thông báo", MessageBoxButtons.OK);
+            }
+            if (donGia < 0)
+            {
+                MessageBox.Show("Đơn giá trong chi tiết đơn đặt hàng phải >0", "Thông báo", MessageBoxButtons.OK);
             }
             return result;
         }
@@ -513,7 +521,8 @@ namespace QLVT
                         hOTENComboBox.Enabled = false;
                         //Lấy dữ liệu mới để phục vụ xóa dữ liệu mơi nhập vào
                         DataRowView drv = (DataRowView)bdsDatHang[bdsDatHang.Position];
-                        String maDDH = drv["MasoDDH"].ToString().Trim();
+                        DataRow drvRow = drv.Row;
+                        String maDDH = drvRow["MasoDDH"].ToString().Trim();
                         undoQuery = "DELETE FROM CTDDH WHERE MasoDDH = N'" + maDDH + "'\r\nDELETE FROM DatHang WHERE MasoDDH= N'" + maDDH + "'";
                     }
                     else
@@ -762,7 +771,6 @@ namespace QLVT
         private void ghiToolStripMenuItem_Click(object sender, EventArgs e)
         {
             positionDDH = bdsDatHang.Position;
-            
             if (bdsCTDDH.Count == 0)
             {
                 MessageBox.Show("Không ghi được vì chưa có thông tin gì để ghi hãy thêm mới ", "Thông báo", MessageBoxButtons.OK);
@@ -1010,18 +1018,18 @@ namespace QLVT
                 MessageBox.Show("Không xóa được đơn đặt hàng này vì đơn đặt hàng đã được sử dụng cho phiếu nhập", "Thông báo", MessageBoxButtons.OK);
                 return;
             }
-            bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
-            if (isSameNhanVien == false)
-            {
-                MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
-                return;
-            }
+            
             DataRowView drv = ((DataRowView)bdsDatHang[bdsDatHang.Position]);
 
             String MaNV = drv["MANV"].ToString().Trim();
             String NhaCC = drv["NhaCC"].ToString().Trim();
             String MaDDH = drv["MasoDDH"].ToString().Trim();
             String MaKho = drv["MAKHO"].ToString().Trim();
+            if (Program.username.ToString().Trim() == MaNV)
+            {
+                MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
+                return;
+            }
             DateTime NgayLap = DateTime.Now;
             if (DateTime.TryParse(drv["NGAY"].ToString(), out NgayLap))
             {

@@ -35,6 +35,7 @@ namespace QLVT.Report
             currentDay = DateTime.Now;
             ReportTongHopNhapXuat thnx = new ReportTongHopNhapXuat(fromDate, toDate);
             ReportPrintTool rpt = new ReportPrintTool(thnx);
+            thnx.xrLabel8.Text = Program.mName;
             thnx.xrLabel7.Text = fromDate.ToString("dd/MM/yyyy");
             thnx.xrLabel4.Text = toDate.ToString("dd/MM/yyyy");
             thnx.xrLabel5.Text = cbChiNhanh.SelectedValue.ToString().Contains("SERVER1") ? " Hồ Chí Minh" : "HÀ NỘI";
@@ -73,11 +74,15 @@ namespace QLVT.Report
                 currentDay = DateTime.Now;
                 chiNhanh = cbChiNhanh.SelectedValue.ToString().Contains("SERVER1") ? "HCM" : "HÀ NỘI";
                 ReportTongHopNhapXuat reportExportToPDF = new ReportTongHopNhapXuat(fromDate, toDate);
+                reportExportToPDF.xrLabel8.Text = Program.mName;
+                reportExportToPDF.xrLabel7.Text = fromDate.ToString("dd/MM/yyyy");
+                reportExportToPDF.xrLabel4.Text = toDate.ToString("dd/MM/yyyy");
+                reportExportToPDF.xrLabel5.Text = cbChiNhanh.SelectedValue.ToString().Contains("SERVER1") ? " Hồ Chí Minh" : "HÀ NỘI";
                 string savePath = $@"D:\ReportQLVT\ReportTongHopNhapXuat{currentDay.ToString("dd-MM-yyyy")}_chi_nhanh_{chiNhanh}.pdf";
                 if (File.Exists($@"{savePath}"))
                 {
-                    DialogResult dr = MessageBox.Show("Đã có file khác trùng tên với file của Report này", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                    if (dr != DialogResult.Yes)
+                    DialogResult dr = MessageBox.Show("Đã có file khác trùng tên với file của Report này ban có muốn ghi đè lên file cũ", "Xác nhận", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    if (dr == DialogResult.Yes)
                     {
                         reportExportToPDF.ExportToPdf(savePath);
                         MessageBox.Show($"File đã được lưu thành công tại {savePath}", "Xác nhận", MessageBoxButtons.OK, MessageBoxIcon.Information);

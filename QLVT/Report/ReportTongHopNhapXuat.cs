@@ -19,6 +19,8 @@ namespace QLVT.Report
             this.sqlDataSource1.Queries[0].Parameters[0].Value = fromDate;
             this.sqlDataSource1.Queries[0].Parameters[1].Value = toDate;
             this.sqlDataSource1.Fill();
+            DateTime currentDay = DateTime.Now;
+            this.xrLabel10.Text = currentDay.ToString("dd/MM/yyyy");
         }
     }
 }

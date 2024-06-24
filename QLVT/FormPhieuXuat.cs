@@ -1219,6 +1219,11 @@ namespace QLVT
 
             }
         }
+
+        private void dgvCTPX_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
     }
     
 }

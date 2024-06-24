@@ -23,8 +23,8 @@ namespace QLVT
 
         //Chuỗi kết nối về server
         public static string conStr = "";
-        //public static string conPublisher = "Data Source=HUNG-PC;Initial Catalog=QLVT;User ID=HTKN;Password=123456;TrustServerCertificate=True";
-        public static string conPublisher = "Data Source=LAPTOP-PUD7RCFK;Initial Catalog=QLVT;Integrated Security=True;User ID=HTKN;Password=123456";
+        public static string conPublisher = "Data Source=HUNG-PC;Initial Catalog=QLVT;User ID=HTKN;Password=123456;TrustServerCertificate=True";
+        //public static string conPublisher = "Data Source=LAPTOP-PUD7RCFK;Initial Catalog=QLVT;Integrated Security=True;User ID=HTKN;Password=123456";
 
 
 
@@ -91,8 +91,8 @@ namespace QLVT
                 Program.conn.Open();
             try
             {
-                myreader = sqlcmd.ExecuteReader(); return myreader;
-
+                myreader = sqlcmd.ExecuteReader(CommandBehavior.CloseConnection);
+                return myreader;
             }
             catch (SqlException ex)
             {
@@ -101,6 +101,7 @@ namespace QLVT
                 return null;
             }
         }
+
 
         // Hàm thực hiện truy xuất dữ liệu, có thể CRUD thoải mái
         public static DataTable ExecSqlDataTable(String strLenh)

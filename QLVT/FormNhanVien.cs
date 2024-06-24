@@ -578,7 +578,7 @@ namespace QLVT
             int luong = int.Parse(luongcleanedString);
             //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
-            int nguocTrangThai = trangThai == 1 ? 0 : 1;
+
             //Sử dụng kết quả bước trên và vị trí của txtManv => các trường hợp xảy ra
             /*TH1: result = 1 && pointerPosition != nvPosition->Thêm mới nhưng MANV đã tồn tại
             TH2: result = 1 && pointerPosition == nvPosition->Sửa nhân viên đang tồn tại
@@ -667,7 +667,7 @@ namespace QLVT
                         "DIACHI = N'" + diaChi + "'," +
                         "NGAYSINH = CAST('" + ngaySinh.ToString("yyyy-MM-dd") + "' AS DATETIME)," +
                         "LUONG = '" + luong + "'," +
-                        "TrangThaiXoa = " + nguocTrangThai + " " +
+                        "TrangThaiXoa = " + trangThai + " " +
                         "WHERE MANV = '" + maNv + "'";
                     }
                     // Console.WriteLine(undoQuery);

@@ -2,6 +2,7 @@
 ﻿using DevExpress.Pdf.Native.BouncyCastle.Utilities;
 using DevExpress.XtraGrid;
 using DevExpress.XtraPrinting.Native;
+using DevExpress.XtraRichEdit.Fields;
 using QLVT.DS1TableAdapters;
 using System;
 using System.Collections;
@@ -535,6 +536,14 @@ namespace QLVT
                 ghiToolStripMenuItem.Enabled = true;
                 xoaToolStripMenuItem.Enabled = true;
             }
+            if (undoCTPX.Count == 0)
+            {
+                hoanTacVatTuToolStripMenuItem.Enabled = false;
+            }
+            else
+            {
+                hoanTacVatTuToolStripMenuItem.Enabled = true;
+            }
         }
         private void btnThem_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
@@ -566,6 +575,10 @@ namespace QLVT
         }
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            if(bdsPhieuXuat.Count == 0 && isAdding == true) {
+                ThongBao("Không có phiếu xuất để ghi");
+                return;
+            }
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
             String maPX = txtMAPX.Text.Trim();
             DataRowView drv = ((DataRowView)bdsPhieuXuat[bdsPhieuXuat.Position-1]);
@@ -714,6 +727,14 @@ namespace QLVT
                 cTPXTableAdapter.Fill(this.dS1.CTPX);
                 bdsPhieuXuat.Position = vitri;
                 bdsCTPX.Position = vitriCT;
+                if (undoCTPX.Count == 0)
+                {
+                    hoanTacVatTuToolStripMenuItem.Enabled = false;
+                }
+                else
+                {
+                    hoanTacVatTuToolStripMenuItem.Enabled = true;
+                }
             }
             catch (Exception ex)
             {
@@ -723,6 +744,11 @@ namespace QLVT
         }
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            if (bdsPhieuXuat.Count == 0)
+            {
+                ThongBao("Không có phiếu xuất để xóa");
+                return;
+            }
             DataRowView dr = ((DataRowView)bdsPhieuXuat[bdsPhieuXuat.Position]);
             DateTime ngayLap = new DateTime();
             if (dr["NGAY"] != DBNull.Value)
@@ -1101,13 +1127,14 @@ namespace QLVT
                 }
             }
         }
-        private void huyThemVatTuToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            
-        }
-
         private void hoanTacVatTuToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (undoCTPX.Count == 0 && isAdding == true)
+            {
+                ThongBao("Không còn thao tác để hoàn tác");
+                hoanTacVatTuToolStripMenuItem.Enabled = false;
+                return;
+            }
             btnXoa.Enabled = true;
             btnGhi.Enabled = true;
             btnLamMoi.Enabled = true;

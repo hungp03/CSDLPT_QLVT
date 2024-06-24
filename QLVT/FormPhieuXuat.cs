@@ -566,6 +566,11 @@ namespace QLVT
         }
         private void btnGhi_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            if(bdsPhieuXuat.Count == 0 && isAdding==true)
+            {
+                ThongBao("Chưa có phiếu xuất để chỉnh sứa");
+                return;
+            }
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
             String maPX = txtMAPX.Text.Trim();
             DataRowView drv = ((DataRowView)bdsPhieuXuat[bdsPhieuXuat.Position-1]);
@@ -723,6 +728,11 @@ namespace QLVT
         }
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
+            if (bdsPhieuXuat.Count == 0)
+            {
+                ThongBao("Chưa có phiếu xuất để xóa");
+                return;
+            }
             DataRowView dr = ((DataRowView)bdsPhieuXuat[bdsPhieuXuat.Position]);
             DateTime ngayLap = new DateTime();
             if (dr["NGAY"] != DBNull.Value)
@@ -1108,6 +1118,12 @@ namespace QLVT
 
         private void hoanTacVatTuToolStripMenuItem_Click(object sender, EventArgs e)
         {
+            if (undoCTPX.Count == 0 && isAdding == false)
+            {
+                ThongBao("Không còn thao tác để hoàn tác");
+                hoanTacVatTuToolStripMenuItem.Enabled = false;
+                return;
+            }
             btnXoa.Enabled = true;
             btnGhi.Enabled = true;
             btnLamMoi.Enabled = true;

@@ -14,6 +14,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace QLVT
 {
@@ -325,53 +326,11 @@ namespace QLVT
             deNgaySinh.DateTime = new DateTime(2001, 1, 1);
         }
 
-        private int checkTHXoaNV(string manv)
-        {
-            string query = "select TrangThaiXoa from NhanVien where MANV = " + manv;
-
-            int result = -1;
-
-            try
-            {
-                if (Program.myReader != null && !Program.myReader.IsClosed)
-                {
-                    Program.myReader.Close();
-                }
-
-                Program.myReader = Program.ExecSqlDataReader(query);
-
-                // Không có kết quả thì kết thúc
-                if (Program.myReader == null)
-                {
-                    return result;
-                }
-
-                if (Program.myReader.Read())
-                {
-                    result = int.Parse(Program.myReader.GetValue(0).ToString());
-                }
-
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show("Kiểm tra trạng thái xóa thất bại\n" + ex.Message, "Thông báo",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
-            finally
-            {
-                if (Program.myReader != null && !Program.myReader.IsClosed)
-                {
-                    Program.myReader.Close();
-                }
-            }
-
-            return result;
-        }
-
        
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             string maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
+            int status = (int)((DataRowView)bdsNhanVien[bdsNhanVien.Position]).Row["TRANGTHAIXOA", DataRowVersion.Original];
             // Không cho phép xóa tài khoảng đang đăng nhập
             if (maNV == Program.username)
             {
@@ -405,7 +364,7 @@ namespace QLVT
                 ThongBao("Không thế xóa tài khoản đã lập đơn đặt hàng");
                 return;
             }
-            if (checkTHXoaNV(maNV) == 1)
+            if (status == 1)
             {
                 ThongBao("Nhân viên đã bị vô hiệu hóa hoặc đang ở chi nhánh khác");
                 return;
@@ -584,8 +543,9 @@ namespace QLVT
             int luong = int.Parse(luongcleanedString);
             //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
+            int checkTrangThai = (int)((DataRowView)bdsNhanVien[bdsNhanVien.Position]).Row["TRANGTHAIXOA", DataRowVersion.Original];
             int reverseTrangThai;
-            if (checkTHXoaNV(maNv) == trangThai)
+            if (checkTrangThai == trangThai)
             {
                 reverseTrangThai = trangThai;
             }
@@ -664,7 +624,7 @@ namespace QLVT
                     // Trường hợp sửa nhân viên
                     else
                     {
-                        if (trangThai == 1)
+                        if (trangThai == 1 && checkTrangThai == 0)
                         {
                             DialogResult dr1 = MessageBox.Show("Bạn có muốn vô hiệu tài khoản đăng nhập của nhân viên này (nếu có)?", "Thông báo", MessageBoxButtons.OKCancel, MessageBoxIcon.Question);
                             if (dr1 == DialogResult.OK)
@@ -800,7 +760,7 @@ namespace QLVT
         {
             int currentPosition = bdsNhanVien.Position;
             string maNv = ((DataRowView)(bdsNhanVien[currentPosition]))["MANV"].ToString();
-
+            int statusNV = (int)((DataRowView)bdsNhanVien[bdsNhanVien.Position]).Row["TRANGTHAIXOA", DataRowVersion.Original];
             //Không cho chuyển chi nhánh của người đang đăng nhập
             if (Program.username == maNv)
             {
@@ -808,7 +768,7 @@ namespace QLVT
                 return;
             }
             // Kiểm tra trạng thái xóa, nếu đã xóa thì không chuyển nữa
-            if (checkTHXoaNV(maNv) == 1)
+            if (statusNV == 1)
             {
                 MessageBox.Show("NV này không còn ở CN này", "Thông báo", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;

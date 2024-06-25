@@ -350,6 +350,7 @@ namespace QLVT
                 {
                     result = int.Parse(Program.myReader.GetValue(0).ToString());
                 }
+
             }
             catch (Exception ex)
             {
@@ -371,7 +372,6 @@ namespace QLVT
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             string maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
-            int status = int.Parse(((DataRowView)bdsNhanVien[bdsNhanVien.Position])["TrangThaiXoa"].ToString());
             // Không cho phép xóa tài khoảng đang đăng nhập
             if (maNV == Program.username)
             {
@@ -411,7 +411,6 @@ namespace QLVT
                 return;
             }
 
-            DateTime ngsinh = (DateTime)((DataRowView)bdsNhanVien[bdsNhanVien.Position])["NGAYSINH"];
 
             //Tạo truy vấn hoàn tác, đưa vào undoStack
             string undoQuery = string.Format("INSERT INTO DBO.NHANVIEN( MANV, CMND,HO,TEN,DIACHI,NGAYSINH,LUONG,MACN)" +
@@ -585,7 +584,15 @@ namespace QLVT
             int luong = int.Parse(luongcleanedString);
             //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
-            int reverseTrangThai = trangThai == 1 ? 0 : 1;
+            int reverseTrangThai;
+            if (checkTHXoaNV(maNv) == trangThai)
+            {
+                reverseTrangThai = trangThai;
+            }
+            else
+            {
+                reverseTrangThai = trangThai == 1 ? 0 : 1;
+            }
             //Sử dụng kết quả bước trên và vị trí của txtManv => các trường hợp xảy ra
             /*TH1: result = 1 && pointerPosition != nvPosition->Thêm mới nhưng MANV đã tồn tại
             TH2: result = 1 && pointerPosition == nvPosition->Sửa nhân viên đang tồn tại
@@ -739,7 +746,7 @@ namespace QLVT
             bdsNhanVien.CancelEdit();
             // Tạo một String để lưu truy vấn được lấy ra từ stack
             string undoSql = undoStack.Pop().ToString();
-            Console.WriteLine(undoSql);
+            //Console.WriteLine(undoSql);
 
             //Nếu lệnh undo là lệnh chuyển chi nhánh
             if (undoSql.Contains("SP_ChuyenCN"))
@@ -862,7 +869,7 @@ namespace QLVT
                 if (reader.Read())
                 {
                     maNhanVienMoi = reader["MANV"].ToString();
-                    Console.WriteLine("Ma nhan vien moi:"+maNhanVienMoi);
+                    //Console.WriteLine("Ma nhan vien moi:"+maNhanVienMoi);
                 }
                 reader.Close();
 
@@ -895,5 +902,9 @@ namespace QLVT
             this.nhanVienTableAdapter.Fill(this.dS1.NhanVien);
         }
 
+        private void nhanVienGridControl_Click_1(object sender, EventArgs e)
+        {
+
+        }
     }
 }   

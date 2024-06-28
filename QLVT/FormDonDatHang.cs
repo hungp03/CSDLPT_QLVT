@@ -811,15 +811,11 @@ namespace QLVT
                     bdsCTDDH.CancelEdit();
                     positionDDH = bdsDatHang.Position;
                     
-                    bdsDatHang.Position = positionDDH;
-
-                    this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
-                    //this.datHangTableAdapter.Fill(this.dS1.DatHang);
-                    this.datHangTableAdapter.FillBy(this.dS1.DatHang);
+                    
                     this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
 
-
+                    bdsDatHang.Position = positionDDH;
                     continueRun = false;
                     break;
                 }

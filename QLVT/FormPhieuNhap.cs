@@ -95,7 +95,6 @@ namespace QLVT
                 btnXoa.Enabled = false;
                 btnHoanTac.Enabled = false;
                 groupBoxPhieuNhap.Enabled = false;
-                dgvCTPN.Enabled = false;
                 contextMenuStripCTPN.Enabled = false;
             }
 
@@ -905,7 +904,7 @@ namespace QLVT
                 ThongBao("Không thể xóa phiếu nhập vì có chi tiết phiếu nhập");
                 return;
             }
-            String cauTruyVanHoanTac = "INSERT INTO DBO.PHIEUNHAP(MAPN, NGAY, MasoDDH, MANV, MAKHO) " +
+            String cauTruyVanHoanTac = "INSERT INTO DBO.PhieuNhap(MAPN, NGAY, MasoDDH, MANV, MAKHO) " +
                     "VALUES( '" + maPN + "', '" +
                     ngayLap.ToString("yyyy-MM-dd") + "', '" +
                     maDDH + "', '" +
@@ -1322,7 +1321,7 @@ namespace QLVT
         }
         private void hoanTacVatTuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (undoCTPN.Count == 0 && isAdding==true)
+            if (undoCTPN.Count == 0 && isAdding==false)
             {
                 ThongBao("Không còn thao tác để hoàn tác");
                 hoanTacVatTuToolStripMenuItem.Enabled = false;

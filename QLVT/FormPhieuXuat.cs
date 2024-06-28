@@ -92,7 +92,6 @@ namespace QLVT
                 btnXoa.Enabled = false;
                 btnHoanTac.Enabled = false;
                 groupBoxPhieuXuat.Enabled = false;
-                dgvCTPX.Enabled = false;
                 contextMenuStripCTPX.Enabled = false;
             }
 
@@ -580,10 +579,9 @@ namespace QLVT
                 return;
             }
             // Lấy dữ liệu trước khi ghi phục vụ cho việc hoàn tác
+            int vitriPX = bdsPhieuXuat.Position;
             String maPX = txtMAPX.Text.Trim();
-            DataRowView drv = ((DataRowView)bdsPhieuXuat[bdsPhieuXuat.Position-1]);
-            Console.WriteLine(bdsPhieuXuat.Position);
-            DataRow dr = drv.Row;
+            DataRowView dr = ((DataRowView)bdsPhieuXuat[vitriPX]);
             DateTime ngayLap = new DateTime();
             if (dr["NGAY"] != DBNull.Value)
             {
@@ -602,36 +600,16 @@ namespace QLVT
             {
                 return;
             }
-            String maNV = dr["MANV"].ToString();
+            String maNV = txtMANV.Text.Trim();
             String maKho = dr["MAKHO"].ToString();
             String hotenKH = dr["HOTENKH"].ToString();
-            Console.WriteLine($"{maNV} {maKho} {maKho}");
             //Kiểm tra xem nhân viên trong phiếu nhập có phải là người dùng không
-            //if (isAdding)
-            //{
-            //    if (maNV != Program.username.Trim())
-            //    {
-            //        Console.WriteLine($"{maNV} {Program.username.Trim()} {maNV != Program.username.Trim()}");
-            //        ThongBao("Không thể tạo phiếu xuất cho người khác");
-            //        return;
-            //    }
-            //}
-            //else
-            //{
-            //    string checkMaNV = traCuuMANVPhieuXuat();
-            //    if (checkMaNV != Program.username)
-            //    {
-            //        ThongBao("Không thể chỉnh sửa phiếu xuất do người khác tạo ra");
-            //        return;
-            //    }
-            //    else if (checkMaNV == Program.username && maNV != Program.username)
-            //    {
-            //        ThongBao("Không thể tạo phiếu nhập cho người khác");
-            //        return;
-            //    }
-            //}
-            
-            
+
+            if (maNV != Program.username)
+            {
+                ThongBao("Không thể chỉnh sửa phiếu xuất do người khác tạo ra");
+                return;
+            }
             int pnResult = ExecuteSP_TracuuPhieuXuat(maPX);
             //Tìm vị trí con trỏ và vị trí ma phieu nhap
             int viTriConTro = bdsPhieuXuat.Position;
@@ -677,7 +655,7 @@ namespace QLVT
                     this.phieuXuatTableAdapter.Update(this.dS1.PhieuXuat);
                     this.phieuXuatTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.phieuXuatTableAdapter.Fill(this.dS1.PhieuXuat);
-
+                    bdsPhieuXuat.Position = vitriPX;
                     /*cập nhật lại trạng thái thêm mới cho chắc*/
                     isAdding = false;
                     ThongBao("Ghi thành công.");
@@ -779,7 +757,7 @@ namespace QLVT
                 ThongBao("Không thể xóa phiếu xuất vì có chi tiết phiếu xuất");
                 return;
             }
-            String cauTruyVanHoanTac = "INSERT INTO DBO.PHIEUNHAP(MAPX, NGAY, HOTENKH, MANV, MAKHO) " +
+            String cauTruyVanHoanTac = "INSERT INTO DBO.PhieuXuat(MAPX, NGAY, HOTENKH, MANV, MAKHO) " +
                     "VALUES( '" + MAPX + "', '" +
                     ngayLap.ToString("yyyy-MM-dd") + "', '" +
                     hotenKH + "', '" +
@@ -846,10 +824,11 @@ namespace QLVT
                 {
                     bdsPhieuXuat.RemoveCurrent();
                 }
-                /* trở về lúc đầu con trỏ đang đứng*/
-                bdsPhieuXuat.Position = position;
+                
                 this.phieuXuatTableAdapter.Connection.ConnectionString = Program.conStr;
                 this.phieuXuatTableAdapter.Fill(this.dS1.PhieuXuat);
+                /*trở về lúc đầu con trỏ đang đứng */
+                bdsPhieuXuat.Position = position;
                 return;
             }
             btnThem.Enabled = true;
@@ -1129,7 +1108,7 @@ namespace QLVT
         }
         private void hoanTacVatTuToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            if (undoCTPX.Count == 0 && isAdding == true)
+            if (undoCTPX.Count == 0 && isAdding == false)
             {
                 ThongBao("Không còn thao tác để hoàn tác");
                 hoanTacVatTuToolStripMenuItem.Enabled = false;
@@ -1202,6 +1181,7 @@ namespace QLVT
                         //Xử lý lỗi ràng buộc SOLUONGTON Vật tư > 0
                         if (!validateSoLuongCTPX(maPX, maVT, soluong.ToString()))
                         {
+                            undoCTPX.Clear();
                             return;
                         }
                         ExecuteSP_CapNhatSoLuongVatTu(maVT, soluong);
@@ -1217,7 +1197,7 @@ namespace QLVT
                         //Xử lý lỗi ràng buộc SOLUONGTON Vật tư > 0
                         if (!validateSoLuongCTPX(maPX, preMAVT, preSoluong.ToString()))
                         {
-                            ThongBao("Không thể hoàn tác chi tiết phiếu nhập này vì vật tư không đủ số lượng tồn");
+                            undoCTPX.Clear();
                             return;
                         }
                         ExecuteSP_CapNhatSoLuongVatTu(currMAVT, currSoluong * (-1));
@@ -1247,10 +1227,6 @@ namespace QLVT
             }
         }
 
-        private void dgvCTPX_CellContentClick(object sender, DataGridViewCellEventArgs e)
-        {
-
-        }
     }
     
 }

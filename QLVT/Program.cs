@@ -27,7 +27,6 @@ namespace QLVT
         //public static string conPublisher = "Data Source=LAPTOP-PUD7RCFK;Initial Catalog=QLVT;Integrated Security=True;User ID=HTKN;Password=123456";
 
 
-
         //Tên server (phân mảnh) kết nối tới
         public static string servername = "";
         public static string username = "";

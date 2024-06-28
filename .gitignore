@@ -6,6 +6,5 @@
 *.user
 *.sln.cache
 *.dll
-QLVT/App.config
-.gitignore
-QLVT/App.config
+**/App.config
+

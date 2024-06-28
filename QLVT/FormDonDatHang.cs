@@ -340,9 +340,10 @@ namespace QLVT
             {
                 MessageBox.Show("Số lượng trong chi tiết đơn đặt hàng phải là 1 số","Thông báo", MessageBoxButtons.OK);
             }
-            if (soLuong<0)
+            if (soLuong<=0)
             {
                 MessageBox.Show("Số lượng trong chi tiết đơn đặt hàng phải >0", "Thông báo", MessageBoxButtons.OK);
+                return false;
             }    
             return result;
         }
@@ -354,20 +355,18 @@ namespace QLVT
             {
                 MessageBox.Show("Đơn giá trong chi tiết đơn hàng không hợp lệ", "Thông báo", MessageBoxButtons.OK);
             }
-            if (donGia < 0)
+            if (donGia <= 0)
             {
                 MessageBox.Show("Đơn giá trong chi tiết đơn đặt hàng phải >0", "Thông báo", MessageBoxButtons.OK);
+                return false;
             }
             return result;
         }
         private void datHangGridControl_Click(object sender, EventArgs e)
-        {
-            if (e is DataGridViewCellEventArgs cellEventArgs)
+        {            
+            if (bdsDatHang.Count > 0)
             {
-                if (cellEventArgs.RowIndex >= 0)
-                {
-                    positionDDH = cellEventArgs.RowIndex;
-                }
+                positionDDH = bdsDatHang.Position;
             }
         }
 
@@ -789,12 +788,62 @@ namespace QLVT
             {
                 return;
             }
-            //bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
-            //if (isSameNhanVien == false)
-            //{
-            //    MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
-            //    return;
-            //}
+            bool continueRun = true;
+            int checkrow = 0;
+            while (bdsCTDDH.Count > checkrow)
+            {
+                //Lấy dữ liệu mới kiểm tra
+
+                DataRowView drvOldRow = (DataRowView)bdsCTDDH[checkrow];
+                DataRow row = drvOldRow.Row;
+                string MaVTCTDDH = row["MAVT"].ToString().Trim();
+                string MaDDH = row["MasoDDH"].ToString().Trim();
+                int SoLuongCTDDH;
+                int.TryParse(row["SOLUONG"].ToString().Trim(), out SoLuongCTDDH);
+                int DonGiaCTDDH;
+                int.TryParse(row["DONGIA"].ToString().Trim(), out DonGiaCTDDH);
+                
+                //bool continueRun = true;
+                if ((validateMaVTCTDDH(MaVTCTDDH) &&
+                    validateSoLuongCTDDH(SoLuongCTDDH.ToString()) &&
+                    validateDonGiaCTDDH(DonGiaCTDDH.ToString())) == false)
+                {
+                    bdsCTDDH.CancelEdit();
+                    positionDDH = bdsDatHang.Position;
+                    
+                    bdsDatHang.Position = positionDDH;
+
+                    this.datHangTableAdapter.Connection.ConnectionString = Program.conStr;
+                    //this.datHangTableAdapter.Fill(this.dS1.DatHang);
+                    this.datHangTableAdapter.FillBy(this.dS1.DatHang);
+                    this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
+                    this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+
+
+                    continueRun = false;
+                    break;
+                }
+                checkrow++;
+            }
+            if (continueRun == false)
+            {
+                // TODO: This line of code loads data into the 'dS1.CTDDH' table. You can move, or remove it, as needed.
+                
+                try {
+                    this.cTDDHTableAdapter.Connection.ConnectionString = Program.conStr;
+                    this.cTDDHTableAdapter.Fill(this.dS1.CTDDH);
+                }catch (Exception ex)
+                {
+
+                }
+                return;
+            }
+                //bool isSameNhanVien = Program.username.ToString().Trim() == txtMANV.Text.ToString().Trim();
+                //if (isSameNhanVien == false)
+                //{
+                //    MessageBox.Show("Không thể cập nhập đơn hàng của nhân viên khác", "Thông báo", MessageBoxButtons.OK);
+                //    return;
+                //}
             String MasoDDH = dgvCTDDH.Rows[positionCTDDH].Cells[0].Value.ToString().Trim();
             if (Execute_SPKiemTraDDHPhieuNhap(MasoDDH) == 1) //1 tức là không được phép sửa vì MasoDDH đã đc dùng cho với phiếu nhập
             {

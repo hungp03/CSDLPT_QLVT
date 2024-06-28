@@ -13,6 +13,8 @@ namespace QLVT.Report
             InitializeComponent();
             this.sqlDataSource1.Connection.ConnectionString = Program.conStr;
             this.sqlDataSource1.Fill();
+            xrLabel3.Text = "Ngày tạo báo cáo: " + DateTime.Now.ToString("HH:mm dd/MM/yyyy");
+            xrLabel4.Text = "Người lập: " + Program.mName;
         }
 
     }

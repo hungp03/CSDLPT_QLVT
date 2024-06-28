@@ -19,6 +19,8 @@ namespace QLVT.Report
             this.sqlDataSource1.Queries[0].Parameters[1].Value = loai;
             this.sqlDataSource1.Queries[0].Parameters[2].Value = fromDate;
             this.sqlDataSource1.Queries[0].Parameters[3].Value = toDate;
+            xrLabel3.Text = "Ngày tạo báo cáo: " + DateTime.Now.ToString("HH:mm dd/MM/yyyy");
+            xrLabel6.Text = "Người lập: " + Program.mName;
             this.sqlDataSource1.Fill();
         }
     }

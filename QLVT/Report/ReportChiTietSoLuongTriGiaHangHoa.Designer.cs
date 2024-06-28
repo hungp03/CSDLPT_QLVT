@@ -73,8 +73,10 @@
             this.xrTableCell2 = new DevExpress.XtraReports.UI.XRTableCell();
             this.xrTableCell3 = new DevExpress.XtraReports.UI.XRTableCell();
             this.ReportFooter = new DevExpress.XtraReports.UI.ReportFooterBand();
-            this.TỔNG = new DevExpress.XtraReports.UI.XRLabel();
             this.xrLabel2 = new DevExpress.XtraReports.UI.XRLabel();
+            this.TỔNG = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel3 = new DevExpress.XtraReports.UI.XRLabel();
+            this.xrLabel6 = new DevExpress.XtraReports.UI.XRLabel();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable4)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable3)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.xrTable2)).BeginInit();
@@ -112,6 +114,8 @@
             // ReportHeader
             // 
             this.ReportHeader.Controls.AddRange(new DevExpress.XtraReports.UI.XRControl[] {
+            this.xrLabel6,
+            this.xrLabel3,
             this.xrLabel1,
             this.txtLoaiPhieu,
             this.xrLabel4,
@@ -119,7 +123,7 @@
             this.xrLabel5,
             this.txtToiNgay,
             this.label1});
-            this.ReportHeader.HeightF = 116.2692F;
+            this.ReportHeader.HeightF = 200.4359F;
             this.ReportHeader.Name = "ReportHeader";
             // 
             // xrLabel1
@@ -513,19 +517,6 @@
             this.TỔNG});
             this.ReportFooter.Name = "ReportFooter";
             // 
-            // TỔNG
-            // 
-            this.TỔNG.Font = new System.Drawing.Font("Arial", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.TỔNG.LocationFloat = new DevExpress.Utils.PointFloat(365F, 22.5F);
-            this.TỔNG.Multiline = true;
-            this.TỔNG.Name = "TỔNG";
-            this.TỔNG.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
-            this.TỔNG.SizeF = new System.Drawing.SizeF(110.8333F, 23F);
-            this.TỔNG.StylePriority.UseFont = false;
-            this.TỔNG.StylePriority.UseTextAlignment = false;
-            this.TỔNG.Text = "TỔNG TRỊ GIÁ:";
-            this.TỔNG.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
-            // 
             // xrLabel2
             // 
             this.xrLabel2.ExpressionBindings.AddRange(new DevExpress.XtraReports.UI.ExpressionBinding[] {
@@ -541,6 +532,41 @@
             this.xrLabel2.Summary = xrSummary1;
             this.xrLabel2.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleRight;
             this.xrLabel2.TextFormatString = "{0:#,#}";
+            // 
+            // TỔNG
+            // 
+            this.TỔNG.Font = new System.Drawing.Font("Arial", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.TỔNG.LocationFloat = new DevExpress.Utils.PointFloat(365F, 22.5F);
+            this.TỔNG.Multiline = true;
+            this.TỔNG.Name = "TỔNG";
+            this.TỔNG.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.TỔNG.SizeF = new System.Drawing.SizeF(110.8333F, 23F);
+            this.TỔNG.StylePriority.UseFont = false;
+            this.TỔNG.StylePriority.UseTextAlignment = false;
+            this.TỔNG.Text = "TỔNG TRỊ GIÁ:";
+            this.TỔNG.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleCenter;
+            // 
+            // xrLabel3
+            // 
+            this.xrLabel3.LocationFloat = new DevExpress.Utils.PointFloat(151.6666F, 113.5F);
+            this.xrLabel3.Multiline = true;
+            this.xrLabel3.Name = "xrLabel3";
+            this.xrLabel3.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel3.SizeF = new System.Drawing.SizeF(353.3462F, 23.00001F);
+            this.xrLabel3.StylePriority.UseTextAlignment = false;
+            this.xrLabel3.Text = "xrLabel3";
+            this.xrLabel3.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
+            // 
+            // xrLabel6
+            // 
+            this.xrLabel6.LocationFloat = new DevExpress.Utils.PointFloat(151.6666F, 152.8334F);
+            this.xrLabel6.Multiline = true;
+            this.xrLabel6.Name = "xrLabel6";
+            this.xrLabel6.Padding = new DevExpress.XtraPrinting.PaddingInfo(2, 2, 0, 0, 100F);
+            this.xrLabel6.SizeF = new System.Drawing.SizeF(353.3463F, 23.00001F);
+            this.xrLabel6.StylePriority.UseTextAlignment = false;
+            this.xrLabel6.Text = "xrLabel3";
+            this.xrLabel6.TextAlignment = DevExpress.XtraPrinting.TextAlignment.MiddleLeft;
             // 
             // ReportChiTietSoLuongTriGiaHangHoa
             // 
@@ -612,5 +638,7 @@
         private DevExpress.XtraReports.UI.ReportFooterBand ReportFooter;
         private DevExpress.XtraReports.UI.XRLabel xrLabel2;
         private DevExpress.XtraReports.UI.XRLabel TỔNG;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel3;
+        private DevExpress.XtraReports.UI.XRLabel xrLabel6;
     }
 }

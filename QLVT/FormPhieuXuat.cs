@@ -652,7 +652,8 @@ namespace QLVT
                         "WHERE MAPX = N'" + maPX + "'";
                     }
                     this.bdsPhieuXuat.EndEdit();
-                    this.phieuXuatTableAdapter.Update(this.dS1.PhieuXuat);
+                    DataRow currentRow = dr.Row;
+                    this.phieuXuatTableAdapter.Update(new DataRow[] { currentRow });
                     this.phieuXuatTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.phieuXuatTableAdapter.Fill(this.dS1.PhieuXuat);
                     bdsPhieuXuat.Position = vitriPX;

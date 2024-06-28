@@ -196,8 +196,8 @@ namespace QLVT
                 return false;
             }
             int viTriConTro = bdsPhieuNhap.Position;
-            int viTriMaPN = bdsPhieuNhap.Find("MAPN", maPN);
-            if (result == 1 && viTriConTro != viTriMaPN)
+            int viTriMaDDH = bdsPhieuNhap.Find("MasoDDH", masoDDH);
+            if (result == 1 && viTriConTro != viTriMaDDH)
             {
                 ThongBao("Đã có phiếu nhập cho đơn đặt hàng này!");
                 cbxMASODDH.Focus();
@@ -748,12 +748,12 @@ namespace QLVT
                 return;
             }
             //Kiểm tra xem khi người dùng đổi đơn đặt hàng trong phiếu nhập thì phiếu nhập đó có chi tiết phiếu nhập chưa
-            string traCuuMANV = "SELECT MasoDDH FROM DBO.PhieuNhap " +
+            string traCuuMADDH = "SELECT MasoDDH FROM DBO.PhieuNhap " +
                                   "WHERE MAPN = '" + maPN + "' ";
             string checkMaDDH = "";
             try
             {
-                Program.myReader = Program.ExecSqlDataReader(traCuuMANV);
+                Program.myReader = Program.ExecSqlDataReader(traCuuMADDH);
             }
             catch (Exception ex)
             {
@@ -797,7 +797,8 @@ namespace QLVT
                         "WHERE MAPN = N'" + maPN + "'";
                     }
                     this.bdsPhieuNhap.EndEdit();
-                    this.phieuNhapTableAdapter.Update(this.dS1.PhieuNhap);
+                    DataRow currentRow = dr.Row;
+                    this.phieuNhapTableAdapter.Update(new DataRow[] { currentRow });
                     this.phieuNhapTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.phieuNhapTableAdapter.Fill(this.dS1.PhieuNhap);
                     bdsPhieuNhap.Position = vitriPN;

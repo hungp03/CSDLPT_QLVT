@@ -115,7 +115,7 @@ namespace QLVT
                    validateEmptyBirthDate() &&
                    validateEmployeeBirthDate(deNgaySinh.DateTime) &&
                    validateEmployeeSalary(txtLuong.EditValue.ToString())
-            && validateEmployeeID(txtCMND.Text); 
+            && validateEmployeeID(txtCMND.Text);
         }
 
         private bool validateEmployeeCode(string code)
@@ -134,7 +134,7 @@ namespace QLVT
             }
             return true;
         }
-        
+
         private bool validateEmployeeName(string lastName, string firstName)
         {
             if (string.IsNullOrEmpty(lastName) || !Regex.IsMatch(lastName, @"^[\p{L}\p{N}, ]+$") || lastName.Length > 40)
@@ -326,7 +326,7 @@ namespace QLVT
             deNgaySinh.DateTime = new DateTime(2001, 1, 1);
         }
 
-       
+
         private void btnXoa_ItemClick(object sender, DevExpress.XtraBars.ItemClickEventArgs e)
         {
             string maNV = ((DataRowView)bdsNhanVien[bdsNhanVien.Position])["MANV"].ToString();
@@ -387,7 +387,7 @@ namespace QLVT
                 {
                     position = bdsNhanVien.Position;
                     bdsNhanVien.RemoveCurrent();
-                    _ = Program.ExecSqlNonQuery("EXEC [dbo].[Xoa_Login] '" +maNV + "'");
+                    _ = Program.ExecSqlNonQuery("EXEC [dbo].[Xoa_Login] '" + maNV + "'");
                     this.nhanVienTableAdapter.Connection.ConnectionString = Program.conStr;
                     this.nhanVienTableAdapter.Update(this.dS1.NhanVien);
 
@@ -527,7 +527,7 @@ namespace QLVT
             DateTime ngaySinh;
             if (DateTime.TryParse(drv["NGAYSINH"].ToString(), out ngaySinh))
             {
-            //
+                //
             }
             else
             {
@@ -543,7 +543,12 @@ namespace QLVT
             int luong = int.Parse(luongcleanedString);
             //string maChiNhanh = drv["MACN"].ToString();
             int trangThai = (checkboxTHXoa.Checked == true) ? 1 : 0;
-            int checkTrangThai = (int)((DataRowView)bdsNhanVien[bdsNhanVien.Position]).Row["TRANGTHAIXOA", DataRowVersion.Original];
+            int checkTrangThai;
+            if (isAdding == true)
+            {
+                checkTrangThai = trangThai;
+            }
+            else checkTrangThai = (int)((DataRowView)bdsNhanVien[bdsNhanVien.Position]).Row["TRANGTHAIXOA", DataRowVersion.Original];
             int reverseTrangThai;
             if (checkTrangThai == trangThai)
             {
@@ -562,7 +567,7 @@ namespace QLVT
             int nvResult = ExecuteSP_TracuuNV(maNv);
             int pointerPosition = bdsNhanVien.Position;
             int nvPosition = bdsNhanVien.Find("MANV", txtManv.Text);
-           
+
             if (nvResult != 1 && nvResult != 0)
             {
                 ThongBao("Có lỗi trong quá trình xử lý kiểm tra MANV");
@@ -575,11 +580,11 @@ namespace QLVT
                 return;
             }
             // TH2,3,4
-            
+
             // Kiểm tra CMND
             int cmndResult = ExecuteSP_TracuuCMND(txtCMND.Text.Trim(), maNv);
             //Console.WriteLine(cmndResult);
-            if(cmndResult != 0 && cmndResult != 1)
+            if (cmndResult != 0 && cmndResult != 1)
             {
                 ThongBao("Lỗi kiểm tra CMND");
                 return;
@@ -787,7 +792,7 @@ namespace QLVT
             form.branchTransfer = new FormChuyenCN.MyDelegate(chuyenCN);
             btnHoanTac.Enabled = true;
         }
-       
+
         public void chuyenCN(string chiNhanh)
         {
             Console.WriteLine("Chi nhánh đang chọn: " + chiNhanh);
@@ -821,7 +826,7 @@ namespace QLVT
             try
             {
                 if (Program.conn.State == ConnectionState.Closed)
-                   Program.conn.Open();
+                    Program.conn.Open();
                 SqlDataReader reader = command.ExecuteReader();
 
                 // Lấy mã nhân viên mới được tạo ra
@@ -867,4 +872,4 @@ namespace QLVT
 
         }
     }
-}   
+}
